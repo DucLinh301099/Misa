@@ -11,7 +11,7 @@ const routes = [
   
   { path: '/register', component: RegisterComponent },
   { path: '/admin', component: AdminComponent , meta: { requiresAuth: true }},  // Add route for AdminComponent
-   { path: '/forgot-password', component: ForgotPasswordComponent }
+  { path: '/forgot-password', component: ForgotPasswordComponent }
 ];
 
 

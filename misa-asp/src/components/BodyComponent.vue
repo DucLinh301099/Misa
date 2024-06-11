@@ -151,10 +151,12 @@ export default {
 
 .search-input {
   padding: 10px;
-  border: 0;
-  border-radius: 4px;
-  margin-right: 20px;
-  width: 300px;
+    /* border: 0; */
+    border-radius: 4px;
+    margin-right: 20px;
+    width: 300px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
 }
 
 .filter-buttons {

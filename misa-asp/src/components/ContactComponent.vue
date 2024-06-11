@@ -30,12 +30,16 @@
             <label for="organization">Đơn vị thuê KTDV</label>
           </div>
         </div>
+        <!-- <div class="form-group">
+          <label for="address">Nơi làm việc của bạn?</label>
+          <input class="form-control" type="address" id="address" v-model="form.address" />
+        </div> -->
         <div class="form-group">
           <label for="message">Nội dung cần tư vấn</label>
           <textarea class="form-control" id="message" v-model="form.message" placeholder="Vui lòng nhập nội dung bạn cần tư vấn tại đây"></textarea>
         </div>
         <p class="disclaimer">
-          Bằng cách bấm vào nút Nhận tư vấn miễn phí, bạn đã đồng ý với <a href="#">Chính sách quyền riêng tư</a> của MISA.
+          Bằng cách bấm vào nút Nhận tư vấn miễn phí, bạn đã đồng ý với <a href="https://www.misa.vn/privacy/">Chính sách quyền riêng tư</a> của MISA.
         </p>
         <div class="form-footer">
           <button type="submit" class="primary">Nhận tư vấn miễn phí</button>

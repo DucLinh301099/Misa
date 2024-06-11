@@ -6,7 +6,7 @@
           src="https://asp.misa.vn/Content/Images/SVG/Logo.svg"
           alt="Logo" />
       </router-link>
-      <h1>Quản lý người dùng</h1>
+      <!-- <h1>Quản lý người dùng</h1> -->
     </div>
     <table class="user-table">
       <thead>

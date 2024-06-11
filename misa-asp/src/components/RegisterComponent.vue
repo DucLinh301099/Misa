@@ -9,21 +9,23 @@
         </router-link>
       </div>
       <div class="main-title mt-3">
-             <div class="row">
-                 <div class="col-6-1">
-                     <span class="bold">Đăng Ký</span>
-                   </div>
-                    <div class="col-6-2">
-                   <img src="https://asp.misa.vn/App/Content/images/Logo2.png" class="float-right">
-                    </div>
-               </div>
-         </div>
-      <form @submit.prevent="register">
-        <div class="form-group">
-          <input type="text" v-model="firstName" placeholder="Họ" required />
+        <div class="row">
+          <div class="col-6-1">
+            <span class="bold">Đăng Ký</span>
+          </div>
+          <div class="col-6-2">
+            <img src="https://asp.misa.vn/App/Content/images/Logo2.png" class="float-right">
+          </div>
         </div>
-        <div class="form-group">
-          <input type="text" v-model="lastName" placeholder="Tên" required />
+      </div>
+      <form @submit.prevent="register">
+        <div class="form-group-inline">
+          <div class="form-group">
+            <input type="text" v-model="firstName" placeholder="Họ và đệm" required />
+          </div>
+          <div class="form-group">
+            <input type="text" v-model="lastName" placeholder="Tên" required />
+          </div>
         </div>
         <div class="form-group">
           <input type="text" v-model="email" placeholder="Email" required />
@@ -36,17 +38,20 @@
         <div class="form-group">
           <input type="password" v-model="password" placeholder="Mật khẩu" required />
         </div>
+        <p class="disclaimer">
+          Bằng cách bấm vào nút Nhận tư vấn miễn phí, bạn đã đồng ý với <a href="https://www.misa.vn/privacy/">Chính sách quyền riêng tư</a> của MISA.
+        </p>
         <button type="submit" class="register-button">Đăng ký</button>
-        <div v-if="generalError" class="error">{{ generalError }}
-        </div>
+        <div v-if="generalError" class="error">{{ generalError }}</div>
         <div class="extra-links">
-        <p>Bạn đã có tài khoản? <router-link to="/login">Đăng Nhập</router-link></p>
-        <p><router-link to="/href">Trợ giúp</router-link></p>
-      </div>
+          <p>Bạn đã có tài khoản? <router-link to="/login">Đăng Nhập</router-link></p>
+          <p><router-link to="/href">Trợ giúp</router-link></p>
+        </div>
       </form>
     </div>
   </div>
 </template>
+
 
 <script>
 import { register } from '../api/account';
@@ -97,6 +102,28 @@ export default {
 </script>
 
 <style scoped>
+.disclaimer {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: left;
+    
+}
+ .agree-text {
+    font-size: 14px;
+    user-select: none;
+    display: inline;
+    line-height: 20px;
+    
+}
+ a {
+    text-decoration: none;
+}
+a {
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+}
 .bold{
   font-weight: 550;
 }
