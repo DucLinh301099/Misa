@@ -6,6 +6,7 @@ namespace MisaAsp.Models.ViewModel
     {
         [Required]
         public int Id { get; set; }
+
         [Required]
         public string FirstName { get; set; }
 
@@ -19,5 +20,12 @@ namespace MisaAsp.Models.ViewModel
         [Required]
         [Phone]
         public string PhoneNumber { get; set; }
+
+        // New properties for RoleId and RoleName
+        [Required]
+        public int RoleId { get; set; }
+
+        [Required]
+        public string RoleName { get; set; }
     }
 }

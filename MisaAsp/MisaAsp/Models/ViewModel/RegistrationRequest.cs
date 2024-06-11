@@ -21,5 +21,7 @@ namespace MisaAsp.Models.ViewModel
         [Required(ErrorMessage = "Password is required.")]
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
         public string Password { get; set; }
+        public int RoleId { get; set; } // New property to select role during registration
+
     }
 }

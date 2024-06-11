@@ -84,6 +84,12 @@ namespace MisaAsp.Services
 
             if (await _accountRepo.AuthenticateUserAsync(request))
             {
+                var userRole = await _accountRepo.GetUserRoleAsync(request.EmailOrPhoneNumber);
+                if (userRole == null)
+                {
+                    throw new Exception("Role not found for the user.");
+                }
+
                 var jwtTokenHandler = new JwtSecurityTokenHandler();
                 var secretKey = _configuration.GetSection("Jwt").GetSection("SecretKey").Value;
                 if (string.IsNullOrEmpty(secretKey))
@@ -92,21 +98,14 @@ namespace MisaAsp.Services
                 var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
                 var tokenDescription = new SecurityTokenDescriptor
                 {
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha256),
-                    Expires = DateTime.UtcNow.AddHours(1)
+                    Subject = new ClaimsIdentity(new[]
+                    {
+                        new Claim(ClaimTypes.Name, request.EmailOrPhoneNumber),
+                        new Claim(ClaimTypes.Role, userRole.RoleName)
+                    }),
+                    Expires = DateTime.UtcNow.AddHours(1),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha256)
                 };
-                //if (listRole != null && listRole.Count() > 0)
-                //{
-                //    foreach (var role in listRole)
-                //    {
-                //        if (role != null && !string.IsNullOrEmpty(role.RoleName))
-                //        {
-                //            tokenDescription?.Subject.AddClaim(new Claim(Role, role.RoleName));
-
-                //        }
-                //    }
-                //}
-
 
                 var token = jwtTokenHandler.CreateToken(tokenDescription);
                 return jwtTokenHandler.WriteToken(token);
@@ -140,7 +139,7 @@ namespace MisaAsp.Services
             {
                 jwtTokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                return jwtToken.Claims.First(x => x.Type == "role").Value;
+                return jwtToken.Claims.First(x => x.Type == ClaimTypes.Role).Value;
             }
             catch (Exception)
             {

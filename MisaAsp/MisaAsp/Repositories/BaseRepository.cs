@@ -8,16 +8,16 @@ namespace MisaAsp.Repositories
 {
     public interface IBaseRepository
     {
-
         Task<int> ExecuteAsync(string sql, object parameters = null);
         Task<IEnumerable<T>> QueryAsync<T>(string sql, object parameters = null);
         Task<T> ExecuteScalarAsync<T>(string sql, object parameters = null);
         Task<T> ExecuteProcScalarAsync<T>(string procedureName, object parameters);
+        Task<T> QuerySingleOrDefaultAsync<T>(string sql, object parameters = null);
     }
 
     public class BaseRepository : IBaseRepository
     {
-        private readonly IDbConnection _connection;
+        protected readonly IDbConnection _connection;
 
         public BaseRepository(IDbConnection connection)
         {
@@ -88,6 +88,20 @@ namespace MisaAsp.Repositories
             {
                 _connection.Open();
                 return await _connection.ExecuteScalarAsync<T>(sql, parameters);
+            }
+            finally
+            {
+                if (_connection.State == ConnectionState.Open)
+                    _connection.Close();
+            }
+        }
+
+        public async Task<T> QuerySingleOrDefaultAsync<T>(string sql, object parameters = null)
+        {
+            try
+            {
+                _connection.Open();
+                return await _connection.QuerySingleOrDefaultAsync<T>(sql, parameters);
             }
             finally
             {

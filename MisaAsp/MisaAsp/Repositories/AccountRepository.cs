@@ -1,5 +1,8 @@
-﻿using MisaAsp.Models.ViewModel;
+﻿using MisaAsp.Models.BaseModel;
+using MisaAsp.Models.ViewModel;
 using System.Data;
+using Dapper;
+using System.Threading.Tasks;
 
 namespace MisaAsp.Repositories
 {
@@ -13,6 +16,7 @@ namespace MisaAsp.Repositories
         Task<bool> IsPhoneUniqueAsync(string phoneNumber);
         Task<bool> AuthenticateUserAsync(LoginRequest request);
         Task<bool> ForgotPasswordAsync(ForgotPasswordRequest request);
+        Task<RoleAccount> GetUserRoleAsync(string emailOrPhoneNumber);
     }
 
     public class AccountRepository : BaseRepository, IAccountRepository
@@ -21,7 +25,7 @@ namespace MisaAsp.Repositories
 
         public async Task<bool> UpdateUserAsync(UpdateUser user)
         {
-            var sql = "UPDATE Registrations SET FirstName = @FirstName, LastName = @LastName, Email = @Email, PhoneNumber = @PhoneNumber WHERE Id = @Id";
+            var sql = "UPDATE Registrations SET FirstName = @FirstName, LastName = @LastName, Email = @Email, PhoneNumber = @PhoneNumber, RoleId = @RoleId WHERE Id = @Id";
             var result = await ExecuteAsync(sql, user);
             return result > 0;
         }
@@ -48,9 +52,11 @@ namespace MisaAsp.Repositories
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
                 Password = request.Password,
+                RoleId = request.RoleId,
             };
             return await ExecuteProcScalarAsync<int>("registeruser", parameters);
         }
+    
 
         public async Task<bool> IsEmailUniqueAsync(string email)
         {
@@ -81,6 +87,17 @@ namespace MisaAsp.Repositories
             var sql = "SELECT CheckEmailExists(@Email)";
             var parameters = new { request.Email };
             return await ExecuteScalarAsync<bool>(sql, parameters);
+        }
+
+        public async Task<RoleAccount> GetUserRoleAsync(string emailOrPhoneNumber)
+        {
+            var sql = @"
+                SELECT ra.UserId, ra.RoleId, r.RoleName
+                FROM RoleAccount ra
+                JOIN Roles r ON ra.RoleId = r.Id
+                JOIN Registrations u ON ra.UserId = u.Id
+                WHERE u.Email = @EmailOrPhoneNumber OR u.PhoneNumber = @EmailOrPhoneNumber";
+            return await QuerySingleOrDefaultAsync<RoleAccount>(sql, new { EmailOrPhoneNumber = emailOrPhoneNumber });
         }
     }
 }

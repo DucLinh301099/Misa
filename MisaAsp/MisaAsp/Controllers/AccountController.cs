@@ -21,7 +21,7 @@ namespace MisaAsp.Controllers
         }
 
         [HttpPost("register")]
-        [AllowAnonymous] // Cho phép truy cập không cần xác thực
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegistrationRequest request)
         {
             var res = new ResOutput();
@@ -35,7 +35,7 @@ namespace MisaAsp.Controllers
                 else
                 {
                     var userId = await _accountService.RegisterUserAsync(request);
-                    
+
                     if (userId > 0)
                     {
                         res.HandleSuccess("Đăng kí thành công", new { UserId = userId });
@@ -54,7 +54,12 @@ namespace MisaAsp.Controllers
                 return BadRequest(res);
             }
         }
-
+        /// <summary>
+        /// Đăng nhập
+        /// Create by vdlinh 06/11/2024
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
@@ -89,8 +94,13 @@ namespace MisaAsp.Controllers
             }
         }
 
+        /// <summary>
+        /// Lấy tất cả user
+        /// CreatedBy vdlinh 11.06.2024
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("users")]
-        //[Authorize(Roles = "admin")] // Chỉ admin mới được truy cập
+        [Authorize(Roles = "Admin")] // Chỉ admin mới có quyền truy cập
         public async Task<IActionResult> GetUsers()
         {
             var users = await _accountService.GetAllUsersAsync();
@@ -109,7 +119,7 @@ namespace MisaAsp.Controllers
         }
 
         [HttpPut("users/{id}")]
-        //[Authorize(Roles = "user")] // Chỉ admin mới được truy cập
+        [Authorize(Roles = "Admin,User")] // Chỉ admin và người dùng mới có quyền truy cập
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUser user)
         {
             var res = new ResOutput();
@@ -143,7 +153,7 @@ namespace MisaAsp.Controllers
         }
 
         [HttpDelete("users/{id}")]
-       // [Authorize(Roles = "admin")] // Chỉ admin mới được truy cập
+        [Authorize(Roles = "Admin")] // Chỉ admin mới có quyền truy cập
         public async Task<IActionResult> DeleteUser(int id)
         {
             var res = new ResOutput();
