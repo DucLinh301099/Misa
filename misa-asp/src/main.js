@@ -3,7 +3,10 @@ import App from './App.vue';
 import router from './router';
 import './assets/styles.css';
 
-
 const app = createApp(App);
 
-createApp(App).use(router).mount('#app');
+// Sử dụng router trong ứng dụng
+app.use(router);
+
+// Mount ứng dụng vào phần tử với id 'app'
+app.mount('#app');

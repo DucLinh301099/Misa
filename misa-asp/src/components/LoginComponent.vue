@@ -57,9 +57,9 @@ export default {
         console.log('Role from localStorage:', role);
 
         if (role === 'Admin') {
-          this.$router.push('/admin'); // Chuyển hướng đến trang Admin sau khi đăng nhập thành công
+          this.$router.push('/admin'); 
         } else {
-          this.$router.push('/user'); // Chuyển hướng đến trang User sau khi đăng nhập thành công
+          this.$router.push('/user'); 
         }
       } catch (error) {
         console.error('There was an error logging in the user:', error);
@@ -75,3 +75,5 @@ export default {
   }
 };
 </script>
+<style>
+</style>

@@ -24,6 +24,7 @@ namespace MisaAsp.Services
         Task<bool> DeleteUserAsync(int userId);
         Task<bool> UpdateUserAsync(UpdateUser user);
         Task<string> GetRoleAsync(string token);
+        Task<UpdateUser> GetUserByIdAsync(int id);
     }
 
     public class AccountService : IAccountService
@@ -50,6 +51,10 @@ namespace MisaAsp.Services
         public async Task<IEnumerable<UserRequest>> GetAllUsersAsync()
         {
             return await _accountRepo.GetAllUsersAsync();
+        }
+        public async Task<UpdateUser> GetUserByIdAsync(int id)
+        {
+            return await _accountRepo.GetUserByIdAsync(id);
         }
 
         public async Task<bool> IsEmailUniqueAsync(string email)

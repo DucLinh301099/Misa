@@ -3,6 +3,7 @@ using MisaAsp.Models.ViewModel;
 using System.Data;
 using Dapper;
 using System.Threading.Tasks;
+using System.Data.Common;
 
 namespace MisaAsp.Repositories
 {
@@ -17,6 +18,7 @@ namespace MisaAsp.Repositories
         Task<bool> AuthenticateUserAsync(LoginRequest request);
         Task<bool> ForgotPasswordAsync(ForgotPasswordRequest request);
         Task<RoleAccount> GetUserRoleAsync(string emailOrPhoneNumber);
+        Task<UpdateUser> GetUserByIdAsync(int id);
     }
 
     public class AccountRepository : BaseRepository, IAccountRepository
@@ -50,7 +52,11 @@ namespace MisaAsp.Repositories
             var sql = "SELECT * FROM GetAllUsers()";
             return await QueryAsync<UserRequest>(sql);
         }
-
+        public async Task<UpdateUser> GetUserByIdAsync(int id)
+        {
+            var sql = "SELECT * FROM Registrations WHERE Id = @Id";
+            return await QueryFirstOrDefaultAsync<UpdateUser>(sql, new { Id = id });
+        }
         public async Task<int> RegisterUserAsync(RegistrationRequest request)
         {
             var parameters = new

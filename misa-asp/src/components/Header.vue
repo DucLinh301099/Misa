@@ -109,7 +109,7 @@ export default {
 
 .nav-item a {
   text-decoration: none;
-  color: #70767a;
+  color: #666;
   font-weight: 500;
   padding: 10px 0;
   display: inline-block;

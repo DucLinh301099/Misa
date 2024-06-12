@@ -118,6 +118,16 @@ namespace MisaAsp.Controllers
                 return BadRequest(res);
             }
         }
+        [HttpGet("users/{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var user = await _accountService.GetUserByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
 
         [HttpPut("users/{id}")]
         [Authorize(Roles = "Admin,User")] // Chỉ admin và người dùng mới có quyền truy cập

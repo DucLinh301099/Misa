@@ -13,6 +13,7 @@ namespace MisaAsp.Repositories
         Task<T> ExecuteScalarAsync<T>(string sql, object parameters = null);
         Task<T> ExecuteProcScalarAsync<T>(string procedureName, object parameters);
         Task<T> QuerySingleOrDefaultAsync<T>(string sql, object parameters = null);
+        Task<T> QueryFirstOrDefaultAsync<T>(string sql, object parameters = null); // Thêm phương thức này
     }
 
     public class BaseRepository : IBaseRepository
@@ -102,6 +103,20 @@ namespace MisaAsp.Repositories
             {
                 _connection.Open();
                 return await _connection.QuerySingleOrDefaultAsync<T>(sql, parameters);
+            }
+            finally
+            {
+                if (_connection.State == ConnectionState.Open)
+                    _connection.Close();
+            }
+        }
+
+        public async Task<T> QueryFirstOrDefaultAsync<T>(string sql, object parameters = null) // Thêm phương thức này
+        {
+            try
+            {
+                _connection.Open();
+                return await _connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
             }
             finally
             {
