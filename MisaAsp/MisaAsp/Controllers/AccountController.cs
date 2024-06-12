@@ -74,10 +74,10 @@ namespace MisaAsp.Controllers
                 }
                 else
                 {
-                    var token = await _accountService.AuthenticateUserAsync(request);
-                    if (!string.IsNullOrEmpty(token))
+                    var authResult = await _accountService.AuthenticateUserAsync(request);
+                    if (authResult != null && !string.IsNullOrEmpty(authResult.Token))
                     {
-                        res.HandleSuccess("Đăng nhập thành công", new { Token = token });
+                        res.HandleSuccess("Đăng nhập thành công", new { Token = authResult.Token, Role = authResult.Role });
                     }
                     else
                     {
@@ -93,6 +93,7 @@ namespace MisaAsp.Controllers
                 return BadRequest(res);
             }
         }
+
 
         /// <summary>
         /// Lấy tất cả user

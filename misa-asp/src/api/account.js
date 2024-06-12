@@ -1,5 +1,7 @@
 import { apiClient, setAuthHeader } from './base';
 
+/// call api to login
+
 export const login = async (emailOrPhoneNumber, password) => {
   try {
     console.log('Attempting to log in user...');
@@ -8,11 +10,15 @@ export const login = async (emailOrPhoneNumber, password) => {
       Password: password
     });
 
-    if (response.status === 200) { // Đảm bảo rằng đăng nhập thành công
-      // Lưu token vào localStorage
-      localStorage.setItem('token', response.data.data.token);
-      console.log('User logged in successfully. Token received:', response.data.data.token);
-      // Gắn token vào header
+    console.log('Response received:', response); // Thêm logging để kiểm tra toàn bộ response
+
+    if (response.status === 200) {
+      const { token, role } = response.data.data;
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', role); // Lưu role vào localStorage
+      console.log('User logged in successfully. Token received:', token);
+      console.log('Role received:', role); // Thêm logging để kiểm tra role
       setAuthHeader();
       return response.data;
     } else {
@@ -25,10 +31,36 @@ export const login = async (emailOrPhoneNumber, password) => {
   }
 };
 
+
+
+// export const login = async (emailOrPhoneNumber, password) => {
+//   try {
+//     console.log('Attempting to log in user...');
+//     const response = await apiClient.post('Account/login', {
+//       EmailOrPhoneNumber: emailOrPhoneNumber,
+//       Password: password
+//     });
+
+//     if (response.status === 200) { // Đảm bảo rằng đăng nhập thành công
+//       // Lưu token vào localStorage
+//       localStorage.setItem('token', response.data.data.token);
+//       console.log('User logged in successfully. Token received:', response.data.data.token);
+//       // Gắn token vào header
+//       setAuthHeader();
+//       return response.data;
+//     } else {
+//       console.error('Login failed:', response.data);
+//       throw new Error('Login failed');
+//     }
+//   } catch (error) {
+//     console.error('Error logging in:', error.response ? error.response.data : error.message);
+//     throw error.response ? error.response.data : error.message;
+//   }
+// };
+
 export const fetchProtectedData = async () => {
   try {
     console.log('Fetching protected data...');
-    // Gắn token vào header trước khi thực hiện request
     setAuthHeader();
     const response = await apiClient.get('Account/users');
     console.log('Protected data fetched successfully:', response.data);
@@ -39,19 +71,24 @@ export const fetchProtectedData = async () => {
   }
 };
 
+
+
 // API call to register
-export const register = async (firstName, lastName, email, phoneNumber, password) => {
+export const register = async (firstName, lastName, email, phoneNumber, password, roleId) => {
   console.log('Attempting to register user...');
   const response = await apiClient.post('Account/register', {
     FirstName: firstName,
     LastName: lastName,
     Email: email,
     PhoneNumber: phoneNumber,
-    Password: password
+    Password: password,
+    RoleId: roleId // Thêm RoleId vào yêu cầu
   });
   console.log('User registered successfully:', response.data);
   return response.data;
 };
+
+
 
 // API call to forgot password
 export const forgotPassword = async (email) => {

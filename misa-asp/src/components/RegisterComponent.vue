@@ -38,6 +38,13 @@
         <div class="form-group">
           <input type="password" v-model="password" placeholder="Mật khẩu" required />
         </div>
+        <div class="form-group">
+          <select v-model="roleId" required>
+            <option value="" disabled>Chọn quyền</option>
+            <option value="1">Admin</option>
+            <option value="2">User</option>
+          </select>
+        </div>
         <p class="disclaimer">
           Bằng cách bấm vào nút Nhận tư vấn miễn phí, bạn đã đồng ý với <a href="https://www.misa.vn/privacy/">Chính sách quyền riêng tư</a> của MISA.
         </p>
@@ -52,7 +59,6 @@
   </div>
 </template>
 
-
 <script>
 import { register } from '../api/account';
 import '../assets/css/register.css';
@@ -66,6 +72,7 @@ export default {
       email: '',
       phoneNumber: '',
       password: '',
+      roleId: '',
       errors: {},
       generalError: ''
     };
@@ -74,7 +81,7 @@ export default {
     async register() {
       try {
         console.log('Sending request to register user...');
-        const data = await register(this.firstName, this.lastName, this.email, this.phoneNumber, this.password);
+        const data = await register(this.firstName, this.lastName, this.email, this.phoneNumber, this.password, this.roleId);
         console.log('User registered:', data);
         alert('Registration successful!');
         this.$router.push('/login');
@@ -100,65 +107,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.disclaimer {
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 20px;
-    text-align: left;
-    
-}
- .agree-text {
-    font-size: 14px;
-    user-select: none;
-    display: inline;
-    line-height: 20px;
-    
-}
- a {
-    text-decoration: none;
-}
-a {
-    color: #007bff;
-    text-decoration: none;
-    background-color: transparent;
-}
-.bold{
-  font-weight: 550;
-}
-  .main-title {
-    font-family: AvertaStdCY_Semibold, Helvetica, Arial, sans-serif;
-    font-size: 20px !important;
-}
-.mt-3, .my-3 {
-    margin-top: 1rem !important;
-}
-.row {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    padding-bottom: 15px;
-    
-}
-.col-6-1 {
-    -ms-flex: 0 0 50%;
-    flex: 0 0 50%;
-    max-width: 50%;
-    text-align: left;
-}
-.col-6-2 {
-    -ms-flex: 0 0 50%;
-    flex: 0 0 50%;
-    max-width: 50%;
-    
-}
-.float-right {
-    float: right !important;
-}
-img {
-    vertical-align: middle;
-    border-style: none;
-}
-</style>

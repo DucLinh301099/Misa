@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Security.Claims;
+using MisaAsp.Models.BaseModel;
 
 namespace MisaAsp.Services
 {
@@ -17,7 +18,7 @@ namespace MisaAsp.Services
         Task<bool> IsEmailUniqueAsync(string email);
         Task<bool> IsPhoneUniqueAsync(string phone);
         Task<int> RegisterUserAsync(RegistrationRequest request);
-        Task<string> AuthenticateUserAsync(LoginRequest request);
+        Task<AuthResult> AuthenticateUserAsync(LoginRequest request);
         Task<IEnumerable<UserRequest>> GetAllUsersAsync();
         Task<bool> ForgotPasswordAsync(ForgotPasswordRequest request);
         Task<bool> DeleteUserAsync(int userId);
@@ -78,7 +79,7 @@ namespace MisaAsp.Services
             return await _accountRepo.RegisterUserAsync(request);
         }
 
-        public async Task<string> AuthenticateUserAsync(LoginRequest request)
+        public async Task<AuthResult> AuthenticateUserAsync(LoginRequest request)
         {
             request.Password = GetMd5Hash(request.Password);
 
@@ -100,19 +101,26 @@ namespace MisaAsp.Services
                 {
                     Subject = new ClaimsIdentity(new[]
                     {
-                        new Claim(ClaimTypes.Name, request.EmailOrPhoneNumber),
-                        new Claim(ClaimTypes.Role, userRole.RoleName)
-                    }),
-                    Expires = DateTime.UtcNow.AddHours(1),
+                new Claim(ClaimTypes.Name, request.EmailOrPhoneNumber),
+                new Claim(ClaimTypes.Role, userRole.RoleName)
+            }),
+                    Expires = DateTime.UtcNow.AddHours(10),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha256)
                 };
 
                 var token = jwtTokenHandler.CreateToken(tokenDescription);
-                return jwtTokenHandler.WriteToken(token);
+                var tokenString = jwtTokenHandler.WriteToken(token);
+
+                return new AuthResult
+                {
+                    Token = tokenString,
+                    Role = userRole.RoleName
+                };
             }
 
             return null;
         }
+
 
         public async Task<bool> ForgotPasswordAsync(ForgotPasswordRequest request)
         {

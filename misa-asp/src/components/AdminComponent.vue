@@ -2,28 +2,25 @@
   <div class="admin-page">
     <div class="header">
       <router-link to="/" class="logo">
-        <img
-          src="https://asp.misa.vn/Content/Images/SVG/Logo.svg"
-          alt="Logo" />
+        <img src="https://asp.misa.vn/Content/Images/SVG/Logo.svg" alt="Logo" />
       </router-link>
-      <!-- <h1>Quản lý người dùng</h1> -->
     </div>
     <table class="user-table">
       <thead>
         <tr>
-          <!-- <th>Id</th> -->
           <th>Họ Tên</th>
           <th>Email</th>
           <th>Số điện thoại</th>
+          <th>Quyền Truy Cập</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="user in users" :key="user.id">
-          <!-- <td>{{ user.id }}</td> -->
           <td>{{ user.firstName }} {{ user.lastName }}</td>
           <td>{{ user.email }}</td>
           <td>{{ user.phoneNumber }}</td>
+          <td>{{ user.roleName }}</td> <!-- Hiển thị quyền -->
           <td>
             <button @click="editUser(user)">Sửa</button>
             <button @click="deleteUser(user.id)">Xóa</button>
@@ -32,7 +29,6 @@
       </tbody>
     </table>
 
-    <!-- Edit Modal -->
     <div v-if="editingUser" class="modal">
       <div class="modal-content">
         <span class="close" @click="cancelEdit">&times;</span>
@@ -53,6 +49,10 @@
           <div class="form-group">
             <label>Số Điện Thoại</label>
             <input type="text" v-model="editingUser.phoneNumber" required>
+          </div>
+          <div class="form-group">
+            <label>Authorization</label>
+            <input type="text" v-model="editingUser.role" disabled> <!-- Không cho phép chỉnh sửa quyền -->
           </div>
           <button type="submit">Lưu</button>
         </form>
@@ -94,7 +94,7 @@ export default {
         await updateUser(this.editingUser);
         this.editingUser = null;
         alert('User updated successfully!');
-        await this.loadUsers(); // Load lại danh sách người dùng sau khi cập nhật thành công
+        await this.loadUsers();
       } catch (error) {
         console.error('Error saving user:', error);
         alert('Failed to update user: ' + error.message);
@@ -120,4 +120,5 @@ export default {
 </script>
 
 <style scoped>
+/* Add your styles here */
 </style>

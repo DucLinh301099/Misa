@@ -25,11 +25,19 @@ namespace MisaAsp.Repositories
 
         public async Task<bool> UpdateUserAsync(UpdateUser user)
         {
-            var sql = "UPDATE Registrations SET FirstName = @FirstName, LastName = @LastName, Email = @Email, PhoneNumber = @PhoneNumber, RoleId = @RoleId WHERE FirstName = @FirstName";
-            var result = await ExecuteAsync(sql, user);
-            return result > 0;
+            var sql = "SELECT updateuser(@user_id, @first_name, @last_name, @Email, @phone_number)";
+            var parameters = new
+            {
+                user_id = user.Id,
+                first_name = user.FirstName,
+                last_name = user.LastName,
+                Email = user.Email,
+                phone_number = user.PhoneNumber,
+               
+            };
+            var result = await ExecuteScalarAsync<bool>(sql, parameters);
+            return result;
         }
-
         public async Task<bool> DeleteUserAsync(int userId)
         {
             var sql = "SELECT delete_user(@user_id)";

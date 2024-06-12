@@ -9,15 +9,15 @@
         </router-link>
       </div>
       <div class="main-title mt-3">
-             <div class="row">
-                 <div class="col-6-1">
-                     <span class="bold">Đăng nhập</span>
-                   </div>
-                    <div class="col-6-2">
-                   <img src="https://asp.misa.vn/App/Content/images/Logo2.png" class="float-right">
-                    </div>
-               </div>
-         </div>
+        <div class="row">
+          <div class="col-6-1">
+            <span class="bold">Đăng nhập</span>
+          </div>
+          <div class="col-6-2">
+            <img src="https://asp.misa.vn/App/Content/images/Logo2.png" class="float-right">
+          </div>
+        </div>
+      </div>
       <form @submit.prevent="login">
         <div class="form-group">
           <input type="text" v-model="emailOrPhoneNumber" placeholder="Số điện thoại/Email" required />
@@ -53,7 +53,14 @@ export default {
         console.log('Sending request to login user...');
         const data = await login(this.emailOrPhoneNumber, this.password);
         console.log('User logged in:', data);
-        this.$router.push('/admin'); // Chuyển hướng đến trang Admin sau khi đăng nhập thành công
+        const role = localStorage.getItem('role'); // Kiểm tra role sau khi lưu trữ
+        console.log('Role from localStorage:', role);
+
+        if (role === 'Admin') {
+          this.$router.push('/admin'); // Chuyển hướng đến trang Admin sau khi đăng nhập thành công
+        } else {
+          this.$router.push('/user'); // Chuyển hướng đến trang User sau khi đăng nhập thành công
+        }
       } catch (error) {
         console.error('There was an error logging in the user:', error);
         let errorMessage;
@@ -68,43 +75,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.bold{
-  font-weight: 550;
-}
-  .main-title {
-    font-family: AvertaStdCY_Semibold, Helvetica, Arial, sans-serif;
-    font-size: 20px !important;
-}
-.mt-3, .my-3 {
-    margin-top: 1rem !important;
-}
-.row {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    padding-bottom: 15px;
-    
-}
-.col-6-1 {
-    -ms-flex: 0 0 50%;
-    flex: 0 0 50%;
-    max-width: 50%;
-    text-align: left;
-}
-.col-6-2 {
-    -ms-flex: 0 0 50%;
-    flex: 0 0 50%;
-    max-width: 50%;
-    
-}
-.float-right {
-    float: right !important;
-}
-img {
-    vertical-align: middle;
-    border-style: none;
-}
-</style>
