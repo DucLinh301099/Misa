@@ -25,7 +25,7 @@ namespace MisaAsp.Repositories
 
         public async Task<bool> UpdateUserAsync(UpdateUser user)
         {
-            var sql = "UPDATE Registrations SET FirstName = @FirstName, LastName = @LastName, Email = @Email, PhoneNumber = @PhoneNumber, RoleId = @RoleId WHERE Id = @Id";
+            var sql = "UPDATE Registrations SET FirstName = @FirstName, LastName = @LastName, Email = @Email, PhoneNumber = @PhoneNumber, RoleId = @RoleId WHERE FirstName = @FirstName";
             var result = await ExecuteAsync(sql, user);
             return result > 0;
         }
