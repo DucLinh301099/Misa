@@ -1,12 +1,11 @@
-import { apiClient, setAuthHeader } from './base';
-
+import { apiClient } from './base';
 
 
 // Call API to login
 export const login = async (emailOrPhoneNumber, password) => {
   try {
     console.log('Attempting to log in user...');
-    const response = await apiClient.post('Account/login', {
+    const response = await apiClient.post('/Account/login', {
       EmailOrPhoneNumber: emailOrPhoneNumber,
       Password: password
     });
@@ -14,40 +13,40 @@ export const login = async (emailOrPhoneNumber, password) => {
     console.log('Response received:', response); // Thêm logging để kiểm tra toàn bộ response
 
     if (response.status === 200) {
-      const { token, role, lastName } = response.data.data; // Đảm bảo lastName có trong phản hồi
+      const { role, lastName, token} = response.data.data; // Đảm bảo lastName có trong phản hồi
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('role', role); // Lưu role vào localStorage
-      localStorage.setItem('lastName', lastName); // Lưu lastName vào localStorage
-      console.log('User logged in successfully. Token received:', token);
+      // Lưu role và lastName vào localStorage
+      localStorage.setItem('role', role);
+      localStorage.setItem('lastName', lastName);
+
+      console.log('User logged in successfully.');
       console.log('Role received:', role); // Thêm logging để kiểm tra role
       console.log('Last Name received:', lastName); // Thêm logging để kiểm tra lastName
-      setAuthHeader();
+      console.log('Token received:', token);
+
       return response.data;
     } else {
       console.error('Login failed:', response.data);
       throw new Error('Login failed');
     }
   } catch (error) {
-    console.error('Error logging in:', error.response ? error.response.data : error.message);
-    throw error.response ? error.response.data : error.message;
+    console.error('Error logging in:', error);
+    throw error;
   }
 };
-
-// Other functions remain unchanged
 
 export const fetchProtectedData = async () => {
   try {
     console.log('Fetching protected data...');
-    setAuthHeader();
-    const response = await apiClient.get('Account/users');
+    const response = await apiClient.get('/Account/users');
     console.log('Protected data fetched successfully:', response.data);
-    return response.data.data; // Ensure the correct data is returned
+    return response.data.data; // Đảm bảo trả về đúng data
   } catch (error) {
     console.error('Error fetching protected data:', error.response ? error.response.data : error.message);
     throw error.response ? error.response.data : error.message;
   }
 };
+
 
 export const register = async (firstName, lastName, email, phoneNumber, password, roleId) => {
   console.log('Attempting to register user...');

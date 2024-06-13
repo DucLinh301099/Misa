@@ -74,11 +74,13 @@ namespace MisaAsp.Controllers
                 }
                 else
                 {
-                    var authResult = await _accountService.AuthenticateUserAsync(request);
+                    var authResult = await _accountService.AuthenticateUserAsync(request, Response);
                     if (authResult != null && !string.IsNullOrEmpty(authResult.Token))
                     {
-                        var lastName = await _accountService.GetLastNameById(authResult.UserId);
-                        res.HandleSuccess("Đăng nhập thành công", new { Token = authResult.Token, Role = authResult.Role, LastName = lastName });
+                        // Thêm lastName và userId vào phản hồi
+                        var user = await _accountService.GetUserByIdAsync(authResult.UserId);
+
+                        res.HandleSuccess("Đăng nhập thành công", new { Role = authResult.Role, Token = authResult.Token, LastName = user.LastName });
                     }
                     else
                     {
@@ -94,6 +96,7 @@ namespace MisaAsp.Controllers
                 return BadRequest(res);
             }
         }
+
 
 
 

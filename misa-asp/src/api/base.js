@@ -1,22 +1,27 @@
+import Cookies from 'js-cookie';
 import axios from 'axios';
 
-// Cấu hình axios instance
 export const apiClient = axios.create({
   baseURL: 'https://localhost:7173/api/',
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true // Đảm bảo cookie được gửi kèm với mỗi yêu cầu
 });
 
-// Hàm để lấy token từ localStorage và gắn vào headers của axios
-export const setAuthHeader = () => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    console.log('Token set in header:', token);
-  } else {
-    console.log('No token found in localStorage');
-  }
+const getTokenFromCookie = () => {
+  return Cookies.get('token');
 };
-
-setAuthHeader();
+// Thêm interceptor để gắn token vào header
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = getTokenFromCookie();
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);

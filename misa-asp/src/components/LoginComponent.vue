@@ -53,8 +53,8 @@ export default {
         console.log('Sending request to login user...');
         const data = await login(this.emailOrPhoneNumber, this.password);
         console.log('User logged in:', data);
-        const role = localStorage.getItem('role'); // Check role after storing
-        const lastName = localStorage.getItem('lastName'); // Get lastName from localStorage
+        const role = localStorage.getItem('role'); // Kiểm tra role sau khi lưu trữ
+        const lastName = localStorage.getItem('lastName'); // Lấy lastName từ localStorage
         console.log('Role from localStorage:', role);
         console.log('Last Name from localStorage:', lastName);
 
@@ -67,11 +67,11 @@ export default {
         console.error('There was an error logging in the user:', error);
         let errorMessage;
         if (error.response && error.response.data && error.response.data.message) {
-          errorMessage = error.response.data.message; // Get error message from server
+          errorMessage = error.response.data.message; // Lấy thông báo lỗi từ server
         } else {
-          errorMessage = 'Tài khoản hoặc mật khẩu sai. Vui lòng thử lại.'; // General error message
+          errorMessage = 'Tài khoản hoặc mật khẩu sai. Vui lòng thử lại.'; // Thông báo lỗi chung
         }
-        alert(errorMessage); // Show error message with alert
+        alert(errorMessage); // Hiển thị thông báo lỗi bằng alert
       }
     }
   }
