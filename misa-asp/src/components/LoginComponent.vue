@@ -59,7 +59,7 @@ export default {
         if (role === 'Admin') {
           this.$router.push('/admin'); 
         } else {
-          this.$router.push('/user'); 
+          this.$router.push('/userAccount'); 
         }
       } catch (error) {
         console.error('There was an error logging in the user:', error);

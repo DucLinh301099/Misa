@@ -18,71 +18,91 @@
     </div>
     <div class="content">
       <div class="header">
-        <h1>Chỉnh Sửa Thông Tin Người Dùng</h1>
+        <h1>Tạo Mới User</h1>
       </div>
       <div class="create">
           <p class="links"><router-link to="/admin">Quay lại danh sách User</router-link></p>
-      </div>
-      <form @submit.prevent="saveUser" class="form-container" v-if="editingUser">
+        </div>
+      <form @submit.prevent="createUser" class="form-container">
         <div class="form-group-inline">
           <div class="form-group">
-            <input type="text" v-model="editingUser.firstName" placeholder="Họ và đệm" required />
+            <input type="text" v-model="firstName" placeholder="Họ và đệm" required />
           </div>
           <div class="form-group">
-            <input type="text" v-model="editingUser.lastName" placeholder="Tên" required />
+            <input type="text" v-model="lastName" placeholder="Tên" required />
           </div>
         </div>
         <div class="form-group">
-          <input type="email" v-model="editingUser.email" placeholder="Email" required />
+          <input type="text" v-model="email" placeholder="Email" required />
+          <div v-if="errors.Email" class="error">{{ errors.Email }}</div>
         </div>
         <div class="form-group">
-          <input type="text" v-model="editingUser.phoneNumber" placeholder="Số điện thoại" required />
+          <input type="text" v-model="phoneNumber" placeholder="Số điện thoại" required />
+          <div v-if="errors.PhoneNumber" class="error">{{ errors.PhoneNumber }}</div>
         </div>
-        <div class="form-group-button">
-          <button type="submit" class="edit-button">Lưu</button>
-          <button type="button" @click="cancelEdit" class="cancel-button">Hủy</button>
+        <div class="form-group">
+          <input type="password" v-model="password" placeholder="Mật khẩu" required />
         </div>
+        <div class="form-group">
+          <select v-model="roleId" required>
+            <option value="" disabled>Chọn quyền</option>
+            <option value="1">Admin</option>
+            <option value="2">User</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="create-button">Tạo mới User</button>
+        <div v-if="generalError" class="error">{{ generalError }}</div>
+        
       </form>
-      <div v-else class="loading-message">
-        Đang tải dữ liệu người dùng...
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { updateUser, fetchUserById } from '../api/account';
+import { register } from '../api/account';
+import '../assets/css/admin.css';
 
 export default {
-  name: 'EditUserPage',
-  props: ['id'],
+  name: 'CreateUserComponent',
   data() {
     return {
-      editingUser: null,
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: '',
+      password: '',
+      roleId: '',
+      errors: {},
+      generalError: ''
     };
   },
-  async created() {
-    try {
-      const response = await fetchUserById(this.id);
-      this.editingUser = response;
-    } catch (error) {
-      console.error('Error fetching user:', error);
-      alert('Failed to fetch user data: ' + (error.response ? error.response.data.message : error.message));
-    }
-  },
   methods: {
-    async saveUser() {
+    async createUser() {
       try {
-        await updateUser(this.editingUser);
-        alert('User updated successfully!');
+        console.log('Sending request to create user...');
+        const data = await register(this.firstName, this.lastName, this.email, this.phoneNumber, this.password, this.roleId);
+        console.log('User created:', data);
+        alert('User created successfully!');
         this.$router.push('/admin');
       } catch (error) {
-        console.error('Error saving user:', error);
-        alert('Failed to update user: ' + error.message);
+        console.error('There was an error creating the user:', error);
+        this.errors = {};
+        this.generalError = '';
+
+        // Handle specific validation errors
+        if (error.message.includes('Email error')) {
+          this.errors.Email = error.message.split(', ').find(msg => msg.includes('Email error'));
+        }
+        if (error.message.includes('Phone number error')) {
+          this.errors.PhoneNumber = error.message.split(', ').find(msg => msg.includes('Phone number error'));
+        }
+
+        // Handle general error
+        if (!this.errors.Email && !this.errors.PhoneNumber) {
+          this.generalError = error.message;
+        }
       }
-    },
-    cancelEdit() {
-      this.$router.push('/admin');
     }
   }
 };
@@ -190,20 +210,14 @@ export default {
 .form-group-inline {
   display: flex;
   gap: 20px;
-   padding-bottom: 0px;
- 
-}
-.form-group-button {
-  display: flex;
-  gap: 20px;
-  justify-content: flex-start;
-}
-.form-group {
-  margin-bottom: 15px;
-  padding-bottom: 20px;
 }
 
-.form-group input {
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group input,
+.form-group select {
   width: 100%;
   padding: 10px;
   font-size: 16px;
@@ -211,17 +225,18 @@ export default {
   border-radius: 5px;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-
-.form-group input:focus {
+a{
+    color: white;
+}
+.form-group input:focus,
+.form-group select:focus {
   border-color: #007bff;
   outline: none;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
-a{
-  color:white;
-}
-.edit-button {
-  background-color: #28a745;
+
+.create-button {
+  background-color: #007bff;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -232,25 +247,23 @@ a{
   align-items: center;
 }
 
-.edit-button:hover {
-  background-color: #218838;
+.create-button i {
+  margin-right: 8px;
 }
 
-.cancel-button {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  margin-left: 10px;
+.create-button:hover {
+  background-color: #0069d9;
 }
 
-.cancel-button:hover {
-  background-color: #c82333;
+.disclaimer {
+  font-size: 14px;
+  color: #555;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
 }
 
 .create {
@@ -260,7 +273,7 @@ a{
 
 .create .links {
   display: inline-block;
-  background-color: #007bff;
+  background-color: #28a745;
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
@@ -269,11 +282,6 @@ a{
 }
 
 .create .links:hover {
-  background-color: #0069d9;
-}
-
-.loading-message {
-  color: #333;
-  font-size: 18px;
+  background-color: #218838;
 }
 </style>

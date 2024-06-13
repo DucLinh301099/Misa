@@ -8,31 +8,31 @@
           <div class="reason-group panel-group">
             <div class="panel-default">
               <div class="advantages-icon"></div>
-              <div class="content">
+              <div class="content-advantage">
                 Dễ dàng tìm kiếm kế toán dịch vụ, đại lý thuế uy tín trên toàn quốc
               </div>
             </div>
             <div class="panel-default">
               <div class="advantages-icon"></div>
-              <div class="content">
+              <div class="content-advantage">
                 Nắm bắt được tức thời tiến trình làm việc của kế toán dịch vụ qua app mobile
               </div>
             </div>
             <div class="panel-default">
               <div class="advantages-icon"></div>
-              <div class="content">
+              <div class="content-advantage">
                 Làm chủ dữ liệu nhằm tránh những rủi ro về tài chính, kế toán, thuế
               </div>
             </div>
             <div class="panel-default">
               <div class="advantages-icon"></div>
-              <div class="content">
+              <div class="content-advantage">
                 Tiếp cận được nguồn vốn vay nhờ báo cáo tài chính, báo cáo thuế công khai, minh bạch.
               </div>
             </div>
             <div class="panel-default">
               <div class="advantages-icon"></div>
-              <div class="content">
+              <div class="content-advantage">
                 Quản lý được dữ liệu xuyên suốt kể cả khi không thuê hoặc thay đổi đơn vị dịch vụ
               </div>
             </div>

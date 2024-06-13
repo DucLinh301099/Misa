@@ -1,7 +1,14 @@
 <template>
   <header class="header">
     <div class="container">
-      <img src="https://asp.misa.vn/Content/Images/SVG/Logo.svg" alt="MISA ASP Logo" class="logo" />
+      <div class="logo-section-header">
+        <router-link to="/">
+          <img
+            src="https://asp.misa.vn/Content/Images/SVG/Logo.svg"
+            alt="MISA ASP Logo" class="logo" />
+        </router-link>
+      </div>
+      
       <nav class="nav">
         <ul class="nav-list">
           <li class="nav-item"><a href="#">Tìm kế toán</a></li>
@@ -88,6 +95,12 @@ export default {
 
 .logo {
   height: 50px; /* Adjusted for better alignment */
+}
+.logo-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
 }
 
 .nav {

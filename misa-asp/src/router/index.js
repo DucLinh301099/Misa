@@ -6,15 +6,18 @@ import ForgotPasswordComponent from '../components/ForgotPasswordComponent.vue';
 import AdminComponent from '../components/AdminComponent.vue'; // Import AdminComponent
 import UserComponent from '../components/UserComponent.vue'; // Import UserComponent
 import EditUserPage from '../components/EditUserPage.vue'; // Import EditUserPage
+import CreateUserComponent from '../components/CreateUserComponent.vue'; // Import CreateUserComponent
+import UserAccount from '../views/UserAccount.vue';
 
 const routes = [
   { path: '/', component: Home },
   { path: '/login', component: LoginComponent },
   { path: '/register', component: RegisterComponent },
   { path: '/admin', component: AdminComponent, meta: { requiresAuth: true, role: 'Admin' } },  // Add route for AdminComponent
-  { path: '/user', component: UserComponent, meta: { requiresAuth: true, role: 'User' } },  // Add route for UserComponent
-   { path: '/edit-user/:id', component: EditUserPage, meta: { requiresAuth: true, role: 'Admin' }, props: true },
-  { path: '/forgot-password', component: ForgotPasswordComponent }
+  { path: '/userAccount', component: UserAccount, meta: { requiresAuth: true, role: 'User' } },  // Add route for UserComponent
+  { path: '/edit-user/:id', component: EditUserPage, meta: { requiresAuth: true, role: 'Admin' }, props: true },
+  { path: '/forgot-password', component: ForgotPasswordComponent },
+  { path: '/create-user', component: CreateUserComponent, meta: { requiresAuth: true, role: 'Admin' } }, // Add route for CreateUserComponent
 ];
 
 const router = createRouter({
@@ -22,19 +25,19 @@ const router = createRouter({
   routes
 });
 
-// Middleware để kiểm tra xác thực và phân quyền
+// Middleware to check authentication and authorization
 router.beforeEach((to, from, next) => {
   const publicPages = ['/login', '/register'];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem('token');
-  const userRole = localStorage.getItem('role'); // Lấy vai trò người dùng từ localStorage
+  const userRole = localStorage.getItem('role'); // Get user role from localStorage
 
   if (authRequired && !loggedIn) {
     return next('/login');
   }
 
   if (to.meta.requiresAuth && to.meta.role && to.meta.role !== userRole) {
-    return next('/login'); // Chuyển hướng đến trang đăng nhập nếu vai trò không khớp
+    return next('/login'); // Redirect to login if the role does not match
   }
 
   next();

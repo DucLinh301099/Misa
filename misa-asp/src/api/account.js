@@ -62,6 +62,21 @@ export const register = async (firstName, lastName, email, phoneNumber, password
   return response.data;
 };
 
+// API call to register
+export const createUser = async (firstName, lastName, email, phoneNumber, password, roleId) => {
+  console.log('Attempting to create user...');
+  const response = await apiClient.post('Account/register', {
+    FirstName: firstName,
+    LastName: lastName,
+    Email: email,
+    PhoneNumber: phoneNumber,
+    Password: password,
+    RoleId: roleId // Thêm RoleId vào yêu cầu
+  });
+  console.log('User created successfully:', response.data);
+  return response.data;
+};
+
 // api hiển thị thông tin user cần update
 export const fetchUserById = async (id) => {
   try {
