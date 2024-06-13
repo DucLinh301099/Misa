@@ -25,6 +25,7 @@ namespace MisaAsp.Services
         Task<bool> UpdateUserAsync(UpdateUser user);
         Task<string> GetRoleAsync(string token);
         Task<UpdateUser> GetUserByIdAsync(int id);
+        Task<string> GetLastNameById(int id);
     }
 
     public class AccountService : IAccountService
@@ -56,6 +57,12 @@ namespace MisaAsp.Services
         {
             return await _accountRepo.GetUserByIdAsync(id);
         }
+        public async Task<string> GetLastNameById(int userId)
+        {
+            var user = await _accountRepo.GetUserByIdAsync(userId);
+            return user?.LastName;
+        }
+
 
         public async Task<bool> IsEmailUniqueAsync(string email)
         {
@@ -119,7 +126,8 @@ namespace MisaAsp.Services
                 return new AuthResult
                 {
                     Token = tokenString,
-                    Role = userRole.RoleName
+                    Role = userRole.RoleName,
+                    UserId = userRole.UserId // Thêm UserId vào AuthResult
                 };
             }
 

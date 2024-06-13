@@ -1,7 +1,8 @@
 import { apiClient, setAuthHeader } from './base';
 
-/// call api to login
 
+
+// Call API to login
 export const login = async (emailOrPhoneNumber, password) => {
   try {
     console.log('Attempting to log in user...');
@@ -13,12 +14,14 @@ export const login = async (emailOrPhoneNumber, password) => {
     console.log('Response received:', response); // Thêm logging để kiểm tra toàn bộ response
 
     if (response.status === 200) {
-      const { token, role } = response.data.data;
-      
+      const { token, role, lastName } = response.data.data; // Đảm bảo lastName có trong phản hồi
+
       localStorage.setItem('token', token);
       localStorage.setItem('role', role); // Lưu role vào localStorage
+      localStorage.setItem('lastName', lastName); // Lưu lastName vào localStorage
       console.log('User logged in successfully. Token received:', token);
       console.log('Role received:', role); // Thêm logging để kiểm tra role
+      console.log('Last Name received:', lastName); // Thêm logging để kiểm tra lastName
       setAuthHeader();
       return response.data;
     } else {
@@ -31,6 +34,7 @@ export const login = async (emailOrPhoneNumber, password) => {
   }
 };
 
+// Other functions remain unchanged
 
 export const fetchProtectedData = async () => {
   try {
@@ -38,16 +42,13 @@ export const fetchProtectedData = async () => {
     setAuthHeader();
     const response = await apiClient.get('Account/users');
     console.log('Protected data fetched successfully:', response.data);
-    return response.data.data; // Đảm bảo trả về đúng data
+    return response.data.data; // Ensure the correct data is returned
   } catch (error) {
     console.error('Error fetching protected data:', error.response ? error.response.data : error.message);
     throw error.response ? error.response.data : error.message;
   }
 };
 
-
-
-// API call to register
 export const register = async (firstName, lastName, email, phoneNumber, password, roleId) => {
   console.log('Attempting to register user...');
   const response = await apiClient.post('Account/register', {
@@ -56,13 +57,12 @@ export const register = async (firstName, lastName, email, phoneNumber, password
     Email: email,
     PhoneNumber: phoneNumber,
     Password: password,
-    RoleId: roleId // Thêm RoleId vào yêu cầu
+    RoleId: roleId // Add RoleId to the request
   });
   console.log('User registered successfully:', response.data);
   return response.data;
 };
 
-// API call to register
 export const createUser = async (firstName, lastName, email, phoneNumber, password, roleId) => {
   console.log('Attempting to create user...');
   const response = await apiClient.post('Account/register', {
@@ -71,26 +71,22 @@ export const createUser = async (firstName, lastName, email, phoneNumber, passwo
     Email: email,
     PhoneNumber: phoneNumber,
     Password: password,
-    RoleId: roleId // Thêm RoleId vào yêu cầu
+    RoleId: roleId // Add RoleId to the request
   });
   console.log('User created successfully:', response.data);
   return response.data;
 };
 
-// api hiển thị thông tin user cần update
 export const fetchUserById = async (id) => {
   try {
     const response = await apiClient.get(`Account/users/${id}`);
-    return response.data; // Đảm bảo rằng response.data chứa đối tượng người dùng
+    return response.data; // Ensure that response.data contains the user object
   } catch (error) {
     console.error('Error fetching user by id:', error.response ? error.response.data : error.message);
     throw error.response ? error.response.data : error.message;
   }
 };
 
-
-
-//API call to forgot password
 export const forgotPassword = async (email) => {
   console.log('Attempting to send forgot password request...');
   const response = await apiClient.post('Account/forgot-password', { Email: email });
@@ -98,7 +94,6 @@ export const forgotPassword = async (email) => {
   return response.data;
 };
 
-// API call to update user
 export const updateUser = async (user) => {
   console.log('Attempting to update user...');
   const response = await apiClient.put(`Account/users/${user.id}`, user, {
@@ -110,7 +105,6 @@ export const updateUser = async (user) => {
   return response.data;
 };
 
-// API call to delete a user
 export const deleteUserById = async (id) => {
   const response = await apiClient.delete(`Account/users/${id}`);
   return response.data;

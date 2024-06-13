@@ -19,6 +19,9 @@ namespace MisaAsp.Repositories
         Task<bool> ForgotPasswordAsync(ForgotPasswordRequest request);
         Task<RoleAccount> GetUserRoleAsync(string emailOrPhoneNumber);
         Task<UpdateUser> GetUserByIdAsync(int id);
+       // Task<UserRequest> GetLastNameById(int id);
+
+
     }
 
     public class AccountRepository : BaseRepository, IAccountRepository
@@ -57,6 +60,12 @@ namespace MisaAsp.Repositories
             var sql = "SELECT * FROM Registrations WHERE Id = @Id";
             return await QueryFirstOrDefaultAsync<UpdateUser>(sql, new { Id = id });
         }
+        //public async Task<UpdateUser> GetLastNameById(int id)
+       // {
+       //     var sql = "SELECT * FROM Registrations WHERE Id = @Id";
+       //     return await QueryFirstOrDefaultAsync<UpdateUser>(sql, new { Id = id });
+       // }
+
         public async Task<int> RegisterUserAsync(RegistrationRequest request)
         {
             var parameters = new

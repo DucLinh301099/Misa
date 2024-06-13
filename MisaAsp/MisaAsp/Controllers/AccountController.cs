@@ -77,7 +77,8 @@ namespace MisaAsp.Controllers
                     var authResult = await _accountService.AuthenticateUserAsync(request);
                     if (authResult != null && !string.IsNullOrEmpty(authResult.Token))
                     {
-                        res.HandleSuccess("Đăng nhập thành công", new { Token = authResult.Token, Role = authResult.Role });
+                        var lastName = await _accountService.GetLastNameById(authResult.UserId);
+                        res.HandleSuccess("Đăng nhập thành công", new { Token = authResult.Token, Role = authResult.Role, LastName = lastName });
                     }
                     else
                     {
@@ -93,6 +94,9 @@ namespace MisaAsp.Controllers
                 return BadRequest(res);
             }
         }
+
+
+
 
 
         /// <summary>
