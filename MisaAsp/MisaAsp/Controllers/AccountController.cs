@@ -54,12 +54,7 @@ namespace MisaAsp.Controllers
                 return BadRequest(res);
             }
         }
-        /// <summary>
-        /// Đăng nhập
-        /// Create by vdlinh 06/11/2024
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
+
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
@@ -74,11 +69,21 @@ namespace MisaAsp.Controllers
                 }
                 else
                 {
-                    var authResult = await _accountService.AuthenticateUserAsync(request, Response);
+                    var authResult = await _accountService.AuthenticateUserAsync(request);
                     if (authResult != null && !string.IsNullOrEmpty(authResult.Token))
                     {
                         // Thêm lastName và userId vào phản hồi
                         var user = await _accountService.GetUserByIdAsync(authResult.UserId);
+
+                        // Đặt cookie HttpOnly cho token
+                        var cookieOptions = new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true, // Đảm bảo cookie chỉ được gửi qua HTTPS
+                            SameSite = SameSiteMode.Strict,
+                            Expires = DateTime.UtcNow.AddHours(10)
+                        };
+                        Response.Cookies.Append("token", authResult.Token, cookieOptions);
 
                         res.HandleSuccess("Đăng nhập thành công", new { Role = authResult.Role, Token = authResult.Token, LastName = user.LastName });
                     }
@@ -97,16 +102,14 @@ namespace MisaAsp.Controllers
             }
         }
 
+        [HttpPost("logout")]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("token");
+            return Ok(new { message = "Đăng xuất thành công" });
+        }
 
-
-
-
-
-        /// <summary>
-        /// Lấy tất cả user
-        /// CreatedBy vdlinh 11.06.2024
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("users")]
         [Authorize(Roles = "Admin")] // Chỉ admin mới có quyền truy cập
         public async Task<IActionResult> GetUsers()
@@ -125,6 +128,7 @@ namespace MisaAsp.Controllers
                 return BadRequest(res);
             }
         }
+
         [HttpGet("users/{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {

@@ -1,27 +1,24 @@
-import Cookies from 'js-cookie';
 import axios from 'axios';
 
+// Helper function to get token from cookies
+const getTokenFromCookie = () => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; token=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+};
+
 export const apiClient = axios.create({
-  baseURL: 'https://localhost:7173/api/',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true // Đảm bảo cookie được gửi kèm với mỗi yêu cầu
+  baseURL: 'https://localhost:7173/api',
+  withCredentials: true
 });
 
-const getTokenFromCookie = () => {
-  return Cookies.get('token');
-};
-// Thêm interceptor để gắn token vào header
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = getTokenFromCookie();
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+apiClient.interceptors.request.use((config) => {
+  const token = getTokenFromCookie();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-);
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});

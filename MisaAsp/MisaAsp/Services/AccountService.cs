@@ -18,7 +18,7 @@ namespace MisaAsp.Services
         Task<bool> IsEmailUniqueAsync(string email);
         Task<bool> IsPhoneUniqueAsync(string phone);
         Task<int> RegisterUserAsync(RegistrationRequest request);
-        Task<AuthResult> AuthenticateUserAsync(LoginRequest request, HttpResponse response);
+        Task<AuthResult> AuthenticateUserAsync(LoginRequest request);
         Task<IEnumerable<UserRequest>> GetAllUsersAsync();
         Task<bool> ForgotPasswordAsync(ForgotPasswordRequest request);
         Task<bool> DeleteUserAsync(int userId);
@@ -91,7 +91,7 @@ namespace MisaAsp.Services
             return await _accountRepo.RegisterUserAsync(request);
         }
 
-        public async Task<AuthResult> AuthenticateUserAsync(LoginRequest request, HttpResponse response)
+        public async Task<AuthResult> AuthenticateUserAsync(LoginRequest request)
         {
             request.Password = GetMd5Hash(request.Password);
 
@@ -123,15 +123,7 @@ namespace MisaAsp.Services
                 var token = jwtTokenHandler.CreateToken(tokenDescription);
                 var tokenString = jwtTokenHandler.WriteToken(token);
 
-                // Đặt cookie HttpOnly cho token
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true, // Đảm bảo cookie chỉ được gửi qua HTTPS
-                    SameSite = SameSiteMode.Strict,
-                    Expires = DateTime.UtcNow.AddHours(10)
-                };
-                response.Cookies.Append("tokenUser", tokenString, cookieOptions);
+                
 
                 return new AuthResult
                 {
