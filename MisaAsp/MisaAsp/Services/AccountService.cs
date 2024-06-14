@@ -133,9 +133,10 @@ namespace MisaAsp.Services
                     SameSite = SameSiteMode.Strict,
                     Expires = DateTime.UtcNow.AddHours(10)
                 };
-                _httpContextAccessor.HttpContext.Response.Cookies.Append("token", tokenString, cookieOptions);
+                _httpContextAccessor.HttpContext.Response.Cookies.Append("AuthToken", tokenString, cookieOptions);
 
                 return new AuthResult
+
                 {
                     Token = tokenString,
                     Role = userRole.RoleName,

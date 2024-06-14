@@ -5,15 +5,15 @@
         <img src="https://asp.misa.vn/Content/Images/SVG/Logo.svg" alt="Logo" />
       </router-link>
       <ul class="menu">
-        <li><router-link to="/dashboard"><i class="fa fa-tachometer"></i> Dashboard</router-link></li>
-        <li><router-link to="/user"><i class="fa fa-users"></i> User</router-link></li>
-        <li><router-link to="/user-profile"><i class="fa fa-user"></i> User Profile</router-link></li>
-        <li><router-link to="/account"><i class="fa fa-credit-card"></i> Account</router-link></li>
-        <li><router-link to="/charts"><i class="fa fa-bar-chart"></i> Charts</router-link></li>
-        <li><router-link to="/forms"><i class="fa fa-pencil"></i> Forms</router-link></li>
-        <li><router-link to="/apps"><i class="fa fa-th"></i> Apps</router-link></li>
-        <li><router-link to="/maps"><i class="fa fa-map"></i> Maps</router-link></li>
-        <li><router-link to="/pages"><i class="fa fa-file"></i> Pages</router-link></li>
+        <li><router-link to="/"><i class="fa fa-tachometer"></i> Dashboard</router-link></li>
+        <li><router-link to="/"><i class="fa fa-users"></i> User</router-link></li>
+        <li><router-link to="/"><i class="fa fa-user"></i> User Profile</router-link></li>
+        <li><router-link to="/"><i class="fa fa-credit-card"></i> Account</router-link></li>
+        <li><router-link to="/"><i class="fa fa-bar-chart"></i> Charts</router-link></li>
+        <li><router-link to="/"><i class="fa fa-pencil"></i> Forms</router-link></li>
+        <li><router-link to="/"><i class="fa fa-th"></i> Apps</router-link></li>
+        <li><router-link to="/"><i class="fa fa-map"></i> Maps</router-link></li>
+        <li><router-link to="/"><i class="fa fa-file"></i> Pages</router-link></li>
       </ul>
     </div>
     <div class="content">

@@ -62,7 +62,8 @@ namespace MisaAsp.Controllers
             var res = new ResOutput();
 
             try
-            {
+            {   
+
                 if (!ModelState.IsValid)
                 {
                     res.HandleError("Thất bại");
@@ -101,7 +102,7 @@ namespace MisaAsp.Controllers
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(-1) // Đặt ngày hết hạn trong quá khứ để xóa cookie
             };
-            Response.Cookies.Append("token", "", cookieOptions);
+            Response.Cookies.Append("AuthToken", "", cookieOptions);
 
             return Ok(new { message = "Đăng xuất thành công" });
         }
