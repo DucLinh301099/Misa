@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { deleteUserById, fetchProtectedData, logout } from '../api/account';
+import { deleteUserById, fetchProtectedData } from '../api/account';
 import '../assets/css/admin.css';
 
 export default {
@@ -112,16 +112,13 @@ export default {
         }
       }
     },
-    async logout() {
-      try {
-        await logout();
-        localStorage.removeItem('role');
-        localStorage.removeItem('lastName');
-        this.$router.push('/login');
-      } catch (error) {
-        console.error('Có lỗi xảy ra khi đăng xuất:', error);
-        alert('Đăng xuất không thành công');
-      }
+    logout() {
+      // Xóa role và lastName khỏi localStorage
+      localStorage.removeItem('role');
+      localStorage.removeItem('lastName');
+    
+      // Chuyển hướng về trang đăng nhập
+      this.$router.push('/login');
     }
   }
 };

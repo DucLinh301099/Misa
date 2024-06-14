@@ -29,12 +29,12 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const publicPages = ['/login', '/register'];
   const authRequired = !publicPages.includes(to.path);
-  const loggedIn = localStorage.getItem('token');
+  // const loggedIn = localStorage.getItem('token');
   const userRole = localStorage.getItem('role'); // Get user role from localStorage
 
-  if (authRequired && !loggedIn) {
-    return next('/login');
-  }
+  // if (authRequired && !loggedIn) {
+  //   return next('/login');
+  // }
 
   if (to.meta.requiresAuth && to.meta.role && to.meta.role !== userRole) {
     return next('/login'); // Redirect to login if the role does not match

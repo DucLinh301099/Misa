@@ -53,25 +53,25 @@ export default {
         console.log('Sending request to login user...');
         const data = await login(this.emailOrPhoneNumber, this.password);
         console.log('User logged in:', data);
-        const role = localStorage.getItem('role'); // Kiểm tra role sau khi lưu trữ
-        const lastName = localStorage.getItem('lastName'); // Lấy lastName từ localStorage
+        const role = localStorage.getItem('role');
+        const lastName = localStorage.getItem('lastName');
         console.log('Role from localStorage:', role);
         console.log('Last Name from localStorage:', lastName);
 
         if (role === 'Admin') {
-          this.$router.push('/admin'); 
+          this.$router.push('/admin');
         } else {
-          this.$router.push('/userAccount'); 
+          this.$router.push('/userAccount');
         }
       } catch (error) {
         console.error('There was an error logging in the user:', error);
         let errorMessage;
         if (error.response && error.response.data && error.response.data.message) {
-          errorMessage = error.response.data.message; // Lấy thông báo lỗi từ server
+          errorMessage = error.response.data.message;
         } else {
-          errorMessage = 'Tài khoản hoặc mật khẩu sai. Vui lòng thử lại.'; // Thông báo lỗi chung
+          errorMessage = 'Tài khoản hoặc mật khẩu sai. Vui lòng thử lại.';
         }
-        alert(errorMessage); // Hiển thị thông báo lỗi bằng alert
+        alert(errorMessage);
       }
     }
   }

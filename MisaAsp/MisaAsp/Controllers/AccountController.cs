@@ -70,7 +70,7 @@ namespace MisaAsp.Controllers
                 else
                 {
                     var authResult = await _accountService.AuthenticateUserAsync(request);
-                    if (authResult != null && !string.IsNullOrEmpty(authResult.Token))
+                    if (authResult != null && !string.IsNullOrEmpty(authResult.Role))
                     {
                         var user = await _accountService.GetUserByIdAsync(authResult.UserId);
                         res.HandleSuccess("Đăng nhập thành công", new { Role = authResult.Role, Toke = authResult.Token, LastName = user.LastName });
@@ -96,7 +96,7 @@ namespace MisaAsp.Controllers
         {
             var cookieOptions = new CookieOptions
             {
-               
+                //HttpOnly = true,
                 Secure = true, // Đảm bảo cookie chỉ được gửi qua HTTPS
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(-1) // Đặt ngày hết hạn trong quá khứ để xóa cookie

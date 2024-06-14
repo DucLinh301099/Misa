@@ -5,7 +5,7 @@ const getTokenFromCookie = () => {
   const cookies = document.cookie.split(';');
   for (let cookie of cookies) {
     const [name, value] = cookie.trim().split('=');
-    if (name === 'token') {
+    if (name === 'AuthToken') {
       return value;
     }
   }
@@ -20,18 +20,16 @@ export const login = async (emailOrPhoneNumber, password) => {
       Password: password
     });
 
-    console.log('Response received:', response); // Thêm logging để kiểm tra toàn bộ response
-
     if (response.status === 200) {
-      const { role, lastName } = response.data.data; // Đảm bảo lastName có trong phản hồi
+      const { role, lastName } = response.data.data;
 
       // Lưu role và lastName vào localStorage
       localStorage.setItem('role', role);
       localStorage.setItem('lastName', lastName);
 
       console.log('User logged in successfully.');
-      console.log('Role received:', role); // Thêm logging để kiểm tra role
-      console.log('Last Name received:', lastName); // Thêm logging để kiểm tra lastName
+      console.log('Role received:', role);
+      console.log('Last Name received:', lastName);
 
       return response.data;
     } else {
@@ -150,4 +148,3 @@ export const logout = async () => {
     throw error.response ? error.response.data : error.message;
   }
 };
-

@@ -128,7 +128,7 @@ namespace MisaAsp.Services
 
                 var cookieOptions = new CookieOptions
                 {
-                    
+                    //HttpOnly = true,
                     Secure = true, // Đảm bảo cookie chỉ được gửi qua HTTPS
                     SameSite = SameSiteMode.Strict,
                     Expires = DateTime.UtcNow.AddHours(10)

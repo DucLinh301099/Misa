@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using MisaAsp.Middleware;
 using MisaAsp.Repositories;
 using MisaAsp.Services;
 using Npgsql;
@@ -91,6 +92,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 app.UseCors("CorsPolicy");
+app.UseMiddleware<TokenMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
