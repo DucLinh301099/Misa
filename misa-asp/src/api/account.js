@@ -2,16 +2,14 @@ import { apiClient } from './base';
 
 
 const getTokenFromCookie = () => {
-  const name = 'token=';
-  const decodedCookie = decodeURIComponent(document.cookie);
-  const ca = decodedCookie.split(';');
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i].trim();
-    if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length);
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    const [name, value] = cookie.trim().split('=');
+    if (name === 'token') {
+      return value;
     }
   }
-  return '';
+  return null;
 };
 // Call API to login
 export const login = async (emailOrPhoneNumber, password) => {
@@ -66,6 +64,7 @@ export const fetchProtectedData = async () => {
     throw error.response ? error.response.data : error.message;
   }
 };
+
 
 export const register = async (firstName, lastName, email, phoneNumber, password, roleId) => {
   console.log('Attempting to register user...');
@@ -143,8 +142,7 @@ export const deleteUserById = async (id) => {
 export const logout = async () => {
   try {
     await apiClient.post('/Account/logout');
-    // Xóa cookie chứa token
-    document.cookie = 'token=; Max-Age=0; path=/; domain=' + location.hostname;
+    // Xóa các mục trong localStorage nhưng không xóa token trong cookie
     localStorage.removeItem('role');
     localStorage.removeItem('lastName');
   } catch (error) {
@@ -152,3 +150,4 @@ export const logout = async () => {
     throw error.response ? error.response.data : error.message;
   }
 };
+

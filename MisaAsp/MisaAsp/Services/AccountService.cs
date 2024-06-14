@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Security.Claims;
 using MisaAsp.Models.BaseModel;
+using Microsoft.AspNetCore.Http;
 
 namespace MisaAsp.Services
 {
@@ -32,11 +33,13 @@ namespace MisaAsp.Services
     {
         private readonly IConfiguration _configuration;
         private readonly IAccountRepository _accountRepo;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AccountService(IAccountRepository accountRepo, IConfiguration configuration)
+        public AccountService(IAccountRepository accountRepo, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _accountRepo = accountRepo;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<bool> UpdateUserAsync(UpdateUser user)
@@ -123,7 +126,14 @@ namespace MisaAsp.Services
                 var token = jwtTokenHandler.CreateToken(tokenDescription);
                 var tokenString = jwtTokenHandler.WriteToken(token);
 
-                
+                var cookieOptions = new CookieOptions
+                {
+                    
+                    Secure = true, // Đảm bảo cookie chỉ được gửi qua HTTPS
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddHours(10)
+                };
+                _httpContextAccessor.HttpContext.Response.Cookies.Append("token", tokenString, cookieOptions);
 
                 return new AuthResult
                 {

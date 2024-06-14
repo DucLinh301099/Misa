@@ -14,8 +14,6 @@
         <li><router-link to="/apps"><i class="fa fa-th"></i> Apps</router-link></li>
         <li><router-link to="/maps"><i class="fa fa-map"></i> Maps</router-link></li>
         <li><router-link to="/pages"><i class="fa fa-file"></i> Pages</router-link></li>
-        
-
       </ul>
     </div>
     <div class="content">
@@ -24,7 +22,9 @@
         <div class="user-info">
           <img :src="userAvatar" alt="Avatar" class="avatar">
           <span>{{ userName }}</span>
-
+          <button @click="logout" class="logout-button">
+            <i class="fa fa-sign-out"></i> Đăng xuất
+          </button>
         </div>
       </div>
       <div class="search-create-container">
@@ -75,7 +75,7 @@ export default {
       users: [],
       searchQuery: '',
       userName: localStorage.getItem('lastName') || '',
-      userAvatar: 'https://via.placeholder.com/40' // Placeholder avatar, you can replace with actual URL
+      userAvatar: 'https://static.vecteezy.com/system/resources/thumbnails/007/407/996/small/user-icon-person-icon-client-symbol-login-head-sign-icon-design-vector.jpg' // Placeholder avatar, you can replace with actual URL
     };
   },
   async created() {
@@ -230,12 +230,19 @@ export default {
   margin-right: 10px;
 }
 
-.logout-button {
-  background-color: transparent;
-  border: none;
-  color: #333;
-  font-size: 16px;
-  cursor: pointer;
+.logout-button { 
+  padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #dc3545;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 10px;
+    
 }
 
 .logout-button:hover {

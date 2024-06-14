@@ -72,20 +72,8 @@ namespace MisaAsp.Controllers
                     var authResult = await _accountService.AuthenticateUserAsync(request);
                     if (authResult != null && !string.IsNullOrEmpty(authResult.Token))
                     {
-                        // Thêm lastName và userId vào phản hồi
                         var user = await _accountService.GetUserByIdAsync(authResult.UserId);
-
-                        // Đặt cookie HttpOnly cho token
-                        var cookieOptions = new CookieOptions
-                        {
-                            HttpOnly = true,
-                            Secure = true, // Đảm bảo cookie chỉ được gửi qua HTTPS
-                            SameSite = SameSiteMode.Strict,
-                            Expires = DateTime.UtcNow.AddHours(10)
-                        };
-                        Response.Cookies.Append("token", authResult.Token, cookieOptions);
-
-                        res.HandleSuccess("Đăng nhập thành công", new { Role = authResult.Role, Token = authResult.Token, LastName = user.LastName });
+                        res.HandleSuccess("Đăng nhập thành công", new { Role = authResult.Role, Toke = authResult.Token, LastName = user.LastName });
                     }
                     else
                     {
@@ -106,9 +94,18 @@ namespace MisaAsp.Controllers
         [Authorize]
         public IActionResult Logout()
         {
-            Response.Cookies.Delete("token");
+            var cookieOptions = new CookieOptions
+            {
+               
+                Secure = true, // Đảm bảo cookie chỉ được gửi qua HTTPS
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(-1) // Đặt ngày hết hạn trong quá khứ để xóa cookie
+            };
+            Response.Cookies.Append("token", "", cookieOptions);
+
             return Ok(new { message = "Đăng xuất thành công" });
         }
+
 
         [HttpGet("users")]
         [Authorize(Roles = "Admin")] // Chỉ admin mới có quyền truy cập
