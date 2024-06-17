@@ -14,9 +14,9 @@ namespace MisaAsp.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (context.Request.Cookies.ContainsKey("token") && !context.Request.Headers.ContainsKey("Authorization"))
+            if (context.Request.Cookies.ContainsKey("AuthToken") && !context.Request.Headers.ContainsKey("Authorization"))
             {
-                var token = context.Request.Cookies["token"];
+                var token = context.Request.Cookies["AuthToken"];
                 context.Request.Headers.Add("Authorization", $"Bearer {token}");
                
             }

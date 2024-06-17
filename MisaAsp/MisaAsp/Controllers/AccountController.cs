@@ -70,6 +70,10 @@ namespace MisaAsp.Controllers
                 }
                 else
                 {
+                    if (Request.Cookies.ContainsKey("AuthToken"))
+                    {
+                        Response.Cookies.Delete("AuthToken");
+                    }
                     var authResult = await _accountService.AuthenticateUserAsync(request);
                     if (authResult != null && !string.IsNullOrEmpty(authResult.Role))
                     {

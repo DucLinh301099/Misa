@@ -5,7 +5,9 @@
         <router-link to="/">
           <img
             src="https://asp.misa.vn/Content/Images/SVG/Logo.svg"
-            alt="MISA ASP Logo" class="main-logo1" />
+            alt="MISA ASP Logo"
+            class="main-logo1"
+          />
         </router-link>
       </div>
       <div class="main-title mt-3">
@@ -14,21 +16,37 @@
             <span class="bold">Đăng nhập</span>
           </div>
           <div class="col-6-2">
-            <img src="https://asp.misa.vn/App/Content/images/Logo2.png" class="float-right">
+            <img
+              src="https://asp.misa.vn/App/Content/images/Logo2.png"
+              class="float-right"
+            />
           </div>
         </div>
       </div>
       <form @submit.prevent="login">
         <div class="form-group">
-          <input type="text" v-model="emailOrPhoneNumber" placeholder="Số điện thoại/Email" required />
+          <input
+            type="text"
+            v-model="emailOrPhoneNumber"
+            placeholder="Số điện thoại/Email"
+            required
+          />
         </div>
         <div class="form-group">
-          <input type="password" v-model="password" placeholder="Mật khẩu" required />
+          <input
+            type="password"
+            v-model="password"
+            placeholder="Mật khẩu"
+            required
+          />
         </div>
         <button type="submit" class="login-button">Đăng nhập</button>
       </form>
       <div class="extra-links">
-        <p>Bạn chưa có tài khoản? <router-link to="/register">Đăng ký</router-link></p>
+        <p>
+          Bạn chưa có tài khoản?
+          <router-link to="/register">Đăng ký</router-link>
+        </p>
         <p><router-link to="/forgot-password">Quên mật khẩu?</router-link></p>
       </div>
     </div>
@@ -36,46 +54,49 @@
 </template>
 
 <script>
-import { login } from '../api/account';
-import '../assets/css/login.css';
+import { login } from "../api/account";
+import "../assets/css/login.css";
 
 export default {
-  name: 'LoginComponent',
+  name: "LoginComponent",
   data() {
     return {
-      emailOrPhoneNumber: '',
-      password: ''
+      emailOrPhoneNumber: "",
+      password: "",
     };
   },
   methods: {
     async login() {
       try {
-        console.log('Sending request to login user...');
+        console.log("Sending request to login user...");
         const data = await login(this.emailOrPhoneNumber, this.password);
-        console.log('User logged in:', data);
-        const role = localStorage.getItem('role');
-        const lastName = localStorage.getItem('lastName');
-        console.log('Role from localStorage:', role);
-        console.log('Last Name from localStorage:', lastName);
+        console.log("User logged in:", data);
+        const role = localStorage.getItem("role");
+        const lastName = localStorage.getItem("lastName");
+        console.log("Role from localStorage:", role);
+        console.log("Last Name from localStorage:", lastName);
 
-        if (role === 'Admin') {
-          this.$router.push('/admin');
+        if (role === "Admin") {
+          this.$router.push("/payment"); // this.$router.push("/admin"); // thay thể router admin ở đây khi đăng nhập.
         } else {
-          this.$router.push('/userAccount');
+          this.$router.push("/userAccount");
         }
       } catch (error) {
-        console.error('There was an error logging in the user:', error);
+        console.error("There was an error logging in the user:", error);
         let errorMessage;
-        if (error.response && error.response.data && error.response.data.message) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
           errorMessage = error.response.data.message;
         } else {
-          errorMessage = 'Tài khoản hoặc mật khẩu sai. Vui lòng thử lại.';
+          errorMessage = "Tài khoản hoặc mật khẩu sai. Vui lòng thử lại.";
         }
         alert(errorMessage);
       }
-    }
-  }
+    },
+  },
 };
 </script>
-<style>
-</style>
+<style></style>
