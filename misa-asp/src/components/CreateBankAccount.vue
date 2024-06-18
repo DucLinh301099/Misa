@@ -75,11 +75,10 @@
         </div>
       </div>
       <div class="form-actions">
-        <router-link to="/payment"
-          ><button type="button" class="btn cancel-btn" @click="cancelForm">
-            Hủy
-          </button>
-        </router-link>
+        <button type="button" class="btn cancel-btn" @click="$emit('close')">
+          Hủy
+        </button>
+
         <button type="submit" class="btn submit-btn">Cất và Thêm</button>
       </div>
     </form>
@@ -120,7 +119,7 @@ const cancelForm = () => {
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
   max-width: 600px;
   margin: auto;
 }

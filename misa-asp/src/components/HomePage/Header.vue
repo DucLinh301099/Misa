@@ -5,15 +5,19 @@
         <router-link to="/">
           <img
             src="https://asp.misa.vn/Content/Images/SVG/Logo.svg"
-            alt="MISA ASP Logo" class="logo" />
+            alt="MISA ASP Logo"
+            class="logo"
+          />
         </router-link>
       </div>
-      
+
       <nav class="nav">
         <ul class="nav-list">
           <li class="nav-item"><a href="#">Tìm kế toán</a></li>
           <li class="nav-item dropdown">
-            <a href="#" @click.prevent="toggleDropdown('ktdv')">Dành cho KTDV</a>
+            <a href="#" @click.prevent="toggleDropdown('ktdv')"
+              >Dành cho KTDV</a
+            >
             <ul class="dropdown-menu" v-if="dropdownOpen === 'ktdv'">
               <li><a href="#">Kiến thức chuyên môn</a></li>
               <li><a href="#">Kỹ năng nghề nghiệp</a></li>
@@ -38,7 +42,9 @@
             </ul>
           </li>
           <li class="nav-item dropdown">
-            <a href="#" @click.prevent="toggleDropdown('about')">Giới thiệu MISA ASP</a>
+            <a href="#" @click.prevent="toggleDropdown('about')"
+              >Giới thiệu MISA ASP</a
+            >
             <ul class="dropdown-menu" v-if="dropdownOpen === 'about'">
               <li><a href="#">Về chúng tôi</a></li>
               <li><a href="#">Đội ngũ</a></li>
@@ -58,24 +64,24 @@
 <script>
 // import '../assets/css/header.css';
 export default {
-  name: 'Header',
+  name: "Header",
   data() {
     return {
-      dropdownOpen: ''
+      dropdownOpen: "",
     };
   },
   methods: {
     toggleDropdown(menu) {
-      this.dropdownOpen = this.dropdownOpen === menu ? '' : menu;
-    }
-  }
+      this.dropdownOpen = this.dropdownOpen === menu ? "" : menu;
+    },
+  },
 };
 </script>
 
 <style scoped>
 .header {
   background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 15px 0;
   position: fixed;
   top: 0;
@@ -97,10 +103,9 @@ export default {
   height: 50px; /* Adjusted for better alignment */
 }
 .logo-section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .nav {
@@ -130,17 +135,17 @@ export default {
 }
 
 .nav-item.dropdown > a::after {
-  content: '';
+  content: "";
   margin-left: 8px;
   font-size: 0.8em;
   background: transparent url(/src/assets/image/ASP_icon_Sprites.svg) no-repeat -813px -428px;
 
-  background-color: rgba(255,255,255,0);
-    width: 16px;
-    height: 20px;
-    margin-left: 8px;
-    content: "";
-    position: absolute;
+  background-color: rgba(255, 255, 255, 0);
+  width: 16px;
+  height: 20px;
+  margin-left: 8px;
+  content: "";
+  position: absolute;
 }
 
 .dropdown-menu {
@@ -148,7 +153,7 @@ export default {
   top: 100%;
   left: 0;
   background-color: white;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   list-style: none;
   margin: 10px 0 0;
@@ -179,16 +184,15 @@ export default {
 }
 
 .dropdown-menu li a:hover {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: #fff;
 }
 
 .auth-buttons {
   display: flex;
   gap: 10px;
-  margin-left: 40px ;
+  margin-left: 40px;
 }
-
 
 .btn {
   padding: 10px 20px;
@@ -208,11 +212,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #70767a
+  color: #70767a;
 }
 
 .register {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: #fff;
   text-decoration: none;
   display: flex;
@@ -224,7 +228,8 @@ export default {
   /* width: 80px; */
 }
 
-.login:hover, .register:hover {
+.login:hover,
+.register:hover {
   opacity: 0.8;
 }
 </style>

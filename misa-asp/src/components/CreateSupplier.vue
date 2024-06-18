@@ -1,3 +1,4 @@
+<!-- src/components/CreateSupplier.vue -->
 <template>
   <div class="create-supplier">
     <h2 class="form-title">Thông tin nhà cung cấp</h2>
@@ -179,11 +180,9 @@
       <!-- Add content for other tabs as needed -->
 
       <div class="form-actions">
-        <router-link to="/payment"
-          ><button type="button" class="btn cancel-btn" @click="cancelForm">
-            Hủy
-          </button>
-        </router-link>
+        <button type="button" class="btn cancel-btn" @click="$emit('close')">
+          Hủy
+        </button>
         <button type="submit" class="btn submit-btn">Cất và Thêm</button>
       </div>
     </form>
@@ -217,6 +216,7 @@ const employees = ["Nhân viên 1", "Nhân viên 2", "Nhân viên 3"];
 const submitForm = () => {
   // Handle form submission logic here
   alert("Form submitted");
+  $emit("close"); // Emit close event to close modal after submission
 };
 
 const cancelForm = () => {
@@ -228,22 +228,32 @@ const cancelForm = () => {
 <style scoped>
 .create-supplier {
   background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 10px;
+
   max-width: 900px;
   margin: auto;
 }
+.btn-add {
+  border: 1px solid #28a745;
+  width: 40px;
+  height: 40px;
 
+  background-color: white;
+  cursor: pointer;
+  font-size: 24px;
+  color: green;
+}
 .form-title {
   font-size: 24px;
   margin-bottom: 20px;
+  color: #333;
 }
 
 .form-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .input-container {
@@ -251,6 +261,7 @@ const cancelForm = () => {
   flex-direction: column;
   flex: 1;
   margin-right: 20px;
+  width: 100px;
 }
 
 .input-container.full-width {
@@ -264,7 +275,8 @@ const cancelForm = () => {
 
 label {
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  color: #555;
 }
 
 .required {
@@ -272,9 +284,15 @@ label {
 }
 
 .input-field {
-  padding: 8px;
-  border: 1px solid #ccc;
+  padding: 10px;
+  border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+.input-field:focus {
+  border-color: #28a745;
 }
 
 .info-icon {
@@ -286,7 +304,7 @@ label {
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .btn {
@@ -294,6 +312,7 @@ label {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .cancel-btn {
@@ -312,7 +331,7 @@ label {
 
 .tabs {
   display: flex;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ddd;
   margin-bottom: 20px;
 }
 
@@ -321,10 +340,13 @@ label {
   background: none;
   border: none;
   cursor: pointer;
+  font-size: 14px;
+  color: #555;
 }
 
 .tabs button.active {
   border-bottom: 2px solid #28a745;
+  color: #28a745;
 }
 
 .tab-content {

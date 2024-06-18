@@ -44,7 +44,9 @@
       <div class="footer-section">
         <h3>Liên hệ</h3>
         <ul>
-          <li>Địa chỉ: Tòa nhà Technosoft - Ngõ 15 Duy Tân, Q.Cầu giấy, Hà Nội</li>
+          <li>
+            Địa chỉ: Tòa nhà Technosoft - Ngõ 15 Duy Tân, Q.Cầu giấy, Hà Nội
+          </li>
           <li>Email: <a href="mailto:asp@misa.com.vn">asp@misa.com.vn</a></li>
           <li>Hotline: <a href="tel:0904565649">0904565649</a></li>
         </ul>
@@ -54,12 +56,10 @@
 </template>
 
 <script>
-import '../assets/css/footer.css';
+import "../../assets/css/footer.css";
 export default {
-  name: 'FooterComponent',
+  name: "FooterComponent",
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

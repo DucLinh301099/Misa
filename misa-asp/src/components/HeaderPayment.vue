@@ -33,156 +33,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Body Container -->
-    <div class="body-container">
-      <!-- Left Form -->
-      <div id="payment-layout" class="payment">
-        <div class="form-body">
-          <form>
-            <!-- Row 1 -->
-            <div class="form-row">
-              <div class="input-container">
-                <label for="account">Tài khoản chi</label>
-                <div class="input-group">
-                  <input
-                    type="text"
-                    id="account"
-                    v-model="account"
-                    class="input-field"
-                  />
-                  <router-link to="/create-bank-account"
-                    ><button type="button" class="btn-add">
-                      +
-                    </button></router-link
-                  >
-                </div>
-              </div>
-              <div class="input-container">
-                <label for="account-address">Địa chỉ</label>
-                <input
-                  type="text"
-                  id="account-address"
-                  v-model="accountAddress"
-                  class="input-field"
-                />
-              </div>
-            </div>
-            <!-- Row 2 -->
-            <div class="form-row">
-              <div class="input-container">
-                <label for="beneficiary">Đối tượng</label>
-                <div class="input-group">
-                  <input
-                    type="text"
-                    id="beneficiary"
-                    v-model="beneficiary"
-                    class="input-field"
-                  />
-                  <router-link to="/create-supplier"
-                    ><button type="button" class="btn-add">
-                      +
-                    </button></router-link
-                  >
-                </div>
-              </div>
-              <div class="input-container">
-                <label for="address">Địa chỉ</label>
-                <input
-                  type="text"
-                  id="address"
-                  v-model="address"
-                  class="input-field"
-                />
-              </div>
-            </div>
-            <!-- Row 3 -->
-            <div class="form-row">
-              <div class="input-container">
-                <label for="account-receive">Tài khoản nhận</label>
-                <div class="input-group">
-                  <Multiselect
-                    v-model="accountReceive"
-                    :options="accountReceiveOptions"
-                    class="combo-input"
-                  ></Multiselect>
-                </div>
-              </div>
-            </div>
-            <!-- Row 4 -->
-            <div class="form-row">
-              <div class="input-container">
-                <label for="content">Nội dung thanh toán</label>
-                <input
-                  type="text"
-                  id="content"
-                  v-model="content"
-                  class="input-field"
-                />
-              </div>
-            </div>
-            <!-- Row 5 -->
-            <div class="form-row">
-              <div class="input-container">
-                <label for="employee">Nhân viên</label>
-                <div class="input-group">
-                  <input
-                    type="text"
-                    id="employee"
-                    v-model="employee"
-                    class="input-field"
-                  />
-                  <router-link to="/create-employee"
-                    ><button type="button" class="btn-add">
-                      +
-                    </button></router-link
-                  >
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- Right Form -->
-      <div id="form-layout" class="form-layout">
-        <div class="form-body-right">
-          <div class="left-column">
-            <div class="form-row1">
-              <label for="posting-date">Ngày hạch toán</label>
-              <input
-                type="date"
-                id="posting-date"
-                v-model="postingDate"
-                class="input-field"
-              />
-            </div>
-            <div class="form-row1">
-              <label for="document-date">Ngày chứng từ</label>
-              <input
-                type="date"
-                id="document-date"
-                v-model="documentDate"
-                class="input-field"
-              />
-            </div>
-            <div class="form-row1">
-              <label for="document-number">Số chứng từ</label>
-              <input
-                type="text"
-                id="document-number"
-                v-model="documentNumber"
-                class="input-field"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="right-column">
-          <div class="total-amount-label">Tổng tiền</div>
-          <div class="total-amount">{{ totalAmount }}</div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -244,7 +94,7 @@ const navigateTo = (path) => {
 #header-layout {
   background-color: #f7f7f7;
   border-bottom: 1px solid #e5e5e5;
-  padding: 5px 20px;
+  padding: 5px 10px;
   width: 100%;
 }
 
@@ -261,7 +111,7 @@ const navigateTo = (path) => {
 }
 
 .mi-recent-log {
-  font-size: 20px;
+  font-size: 25px;
   margin-right: 10px;
 }
 

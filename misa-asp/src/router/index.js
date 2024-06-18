@@ -4,11 +4,11 @@ import LoginComponent from '../components/LoginComponent.vue';
 import RegisterComponent from '../components/RegisterComponent.vue';
 import ForgotPasswordComponent from '../components/ForgotPasswordComponent.vue';
 import AdminComponent from '../components/AdminComponent.vue'; // Import AdminComponent
-import UserComponent from '../components/UserComponent.vue'; // Import UserComponent
+
 import EditUserPage from '../components/EditUserPage.vue'; // Import EditUserPage
 import CreateUserComponent from '../components/CreateUserComponent.vue'; // Import CreateUserComponent
 import UserAccount from '../views/UserAccount.vue';
-import PaymentComponent from '../components/PaymentComponent.vue';
+import Payment from '../views/Payment.vue';
 import CreateBankAccount from '../components/CreateBankAccount.vue';
 import CreateSupplier from '../components/CreateSupplier.vue';
 import CreateEmployee from '../components/CreateEmployee.vue';
@@ -20,7 +20,7 @@ const routes = [
   { path: '/admin', component: AdminComponent, meta: { requiresAuth: true, role: 'Admin' } },  // Add route for AdminComponent
   { path: '/userAccount', component: UserAccount, meta: { requiresAuth: true, role: 'User' } },  // Add route for UserComponent
   { path: '/edit-user/:id', component: EditUserPage, meta: { requiresAuth: true, role: 'Admin' }, props: true },
-  { path: '/payment', component: PaymentComponent, meta: { requiresAuth: true, role: 'Admin' } },
+  { path: '/payment', component: Payment, meta: { requiresAuth: true, role: 'Admin' } },
   { path: '/forgot-password', component: ForgotPasswordComponent },
   { path: '/create-user', component: CreateUserComponent, meta: { requiresAuth: true, role: 'Admin' } },
   { path: '/create-bank-account', component: CreateBankAccount, meta: { requiresAuth: true, role: 'Admin' } },
