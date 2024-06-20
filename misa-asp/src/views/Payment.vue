@@ -1,11 +1,18 @@
 <template>
   <section class="payment">
-    <HeaderPayment />
+    <HeaderPayment
+      :voucherType="voucherType"
+      :paymentMethod="paymentMethod"
+      @update:voucherType="voucherType = $event"
+      @update:paymentMethod="paymentMethod = $event"
+    />
     <div class="input-information">
       <div class="input-information-right">
         <ExpenseAccountInput />
         <SupplierInput />
-        <AccountReceive />
+        <component
+          :is="showInformationInput ? 'InformationInput' : 'AccountReceive'"
+        />
         <div class="bill-content-input-wrapper">
           <label for="bill-content-input">Nội dung thanh toán</label>
           <div class="input-container">
@@ -18,10 +25,10 @@
             </div>
           </div>
         </div>
-        <CreateEmployeeInput />
+        <CreateEmployeeInput v-if="!hideCreateEmployeeInput" />
       </div>
       <div class="input-information-center">
-        <DateTimeComponent />
+        <DateTimeComponent :voucherType="voucherType" />
       </div>
       <div class="input-information-left">
         <SummaryComponent />
@@ -34,7 +41,8 @@
 </template>
 
 <script>
-import HeaderPayment from "../components/HeaderPayment.vue";
+import { ref, computed } from "vue"; // Import ref và computed từ Vue
+import HeaderPayment from "../components/ControlComponent/HeaderPayment.vue";
 import ExpenseAccountInput from "../components/ControlComponent/ExpenseAccountInput.vue";
 import SupplierInput from "../components/ControlComponent/SupplierInput.vue";
 import AccountReceive from "../components/ControlComponent/AccountReceive.vue";
@@ -45,6 +53,7 @@ import FooterPayment from "../components/ControlComponent/FooterPayment.vue";
 import SummaryComponent from "../components/ControlComponent/SummaryComponent.vue";
 import AccountingComponent from "../components/ControlComponent/AccountingComponent.vue";
 import AttachFile from "../components/ControlComponent/AttachFile.vue";
+import InformationInput from "../components/ControlComponent/InformationInput.vue";
 
 export default {
   name: "Payment",
@@ -60,6 +69,25 @@ export default {
     SummaryComponent,
     AccountingComponent,
     AttachFile,
+    InformationInput,
+  },
+  setup() {
+    const voucherType = ref("1.Trả tiền nhà cung cấp");
+    const paymentMethod = ref("Ủy nhiệm chi");
+    const showInformationInput = computed(
+      () => paymentMethod.value === "Séc tiền mặt"
+    );
+    const hideCreateEmployeeInput = computed(
+      () =>
+        voucherType.value === "2.Trả các khoản vay" ||
+        voucherType.value === "3.Tạm ứng cho nhân viên"
+    );
+    return {
+      voucherType,
+      paymentMethod,
+      showInformationInput,
+      hideCreateEmployeeInput,
+    };
   },
 };
 </script>
@@ -76,6 +104,8 @@ export default {
 }
 .input-information-left {
   width: 30%;
+}
+.input-information-center {
 }
 .payment {
   font-family: AvertaStdCY, Helvetica, Arial, sans-serif;
@@ -100,7 +130,7 @@ label {
   display: flex;
   align-items: center;
   border: 1px solid #999;
-  border-radius: 4px;
+  border-radius: 2px;
   overflow: hidden;
   flex-grow: 2;
   height: 35px;

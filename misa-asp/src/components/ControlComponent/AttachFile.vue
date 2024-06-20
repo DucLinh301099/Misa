@@ -1,4 +1,3 @@
-<!-- src/components/AttachFile.vue -->
 <template>
   <div class="attach-file">
     <div class="attach-header">
@@ -6,7 +5,7 @@
       <span class="attach-title">Đính kèm</span>
       <span class="attach-info">Dung lượng tối đa 5MB</span>
     </div>
-    <div class="attach-dropzone">
+    <div class="attach-dropzone" @click="triggerFileInput">
       Kéo/thả tệp vào đây hoặc bấm vào đây
       <input
         type="file"
@@ -23,6 +22,9 @@
 export default {
   name: "AttachFile",
   methods: {
+    triggerFileInput() {
+      this.$refs.fileInput.click();
+    },
     handleFileUpload(event) {
       const files = event.target.files;
       console.log(files);

@@ -9,15 +9,17 @@
         </div>
         <div class="center-section">
           <Multiselect
-            v-model="voucherType"
+            v-model="localVoucherType"
             :options="voucherOptions"
             class="combo-input"
+            @update:modelValue="updateVoucherType"
           ></Multiselect>
           <label class="inline-label">Phương thức thanh toán</label>
           <Multiselect
-            v-model="paymentMethod"
+            v-model="localPaymentMethod"
             :options="paymentMethods"
             class="combo-input"
+            @update:modelValue="updatePaymentMethod"
           ></Multiselect>
         </div>
         <div class="right-section">
@@ -37,12 +39,39 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import Multiselect from "@vueform/multiselect";
 import "@vueform/multiselect/themes/default.css";
 
-const voucherType = ref("1.Trả tiền nhà cung cấp");
-const paymentMethod = ref("Ủy nhiệm chi");
+// Nhận prop từ component cha
+const props = defineProps({
+  voucherType: {
+    type: String,
+    required: true,
+  },
+  paymentMethod: {
+    type: String,
+    required: true,
+  },
+});
+const emit = defineEmits(["update:voucherType", "update:paymentMethod"]);
+
+const localVoucherType = ref(props.voucherType);
+const localPaymentMethod = ref(props.paymentMethod);
+
+watch(
+  () => props.voucherType,
+  (newVal) => {
+    localVoucherType.value = newVal;
+  }
+);
+
+watch(
+  () => props.paymentMethod,
+  (newVal) => {
+    localPaymentMethod.value = newVal;
+  }
+);
 
 const voucherOptions = [
   "1.Trả tiền nhà cung cấp",
@@ -54,27 +83,14 @@ const voucherOptions = [
 
 const paymentMethods = ["Ủy nhiệm chi", "Séc chuyển khoản", "Séc tiền mặt"];
 
-const dynamicTitle = computed(() => `${paymentMethod.value} UNC00001`);
+const dynamicTitle = computed(() => `${localPaymentMethod.value} UNC00001`);
 
-// Form data
-const account = ref("");
-const accountAddress = ref("");
-const beneficiary = ref("");
-const address = ref("");
-const accountReceive = ref("");
-const content = ref("");
-const employee = ref("");
-const postingDate = ref("2024-06-17");
-const documentDate = ref("2024-06-17");
-const documentNumber = ref("UNC00001");
-const totalAmount = ref(0);
+const updateVoucherType = (value) => {
+  emit("update:voucherType", value);
+};
 
-const accountOptions = ["Option 1", "Option 2"];
-const accountType = ref(accountOptions[0]);
-const accountReceiveOptions = ["Ngân hàng TMCP An Bình"];
-
-const navigateTo = (path) => {
-  router.push(path);
+const updatePaymentMethod = (value) => {
+  emit("update:paymentMethod", value);
 };
 </script>
 
@@ -127,7 +143,7 @@ const navigateTo = (path) => {
 
 .combo-input {
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 2px;
   min-width: 220px;
   font-size: 14px;
   height: 30px;
@@ -168,7 +184,7 @@ const navigateTo = (path) => {
 .form-body {
   padding: 20px;
 
-  border-radius: 4px;
+  border-radius: 2px;
   /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
   width: 100%;
   background-color: #f4f5f8;
@@ -216,7 +232,7 @@ form {
   flex: 1;
   padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 2ch;
   margin-top: 5px;
 }
 
@@ -225,7 +241,7 @@ form {
   color: white;
   border: none;
   padding: 5px 10px;
-  border-radius: 4px;
+  border-radius: 2px;
   cursor: pointer;
   margin-left: -30px;
   margin-top: 5px;

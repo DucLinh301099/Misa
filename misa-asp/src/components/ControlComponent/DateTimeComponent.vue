@@ -1,4 +1,3 @@
-<!-- src/components/DateTimeComponent.vue -->
 <template>
   <div class="datetime-component-wrapper">
     <div class="form-group">
@@ -19,6 +18,16 @@
         <BaseInput v-model="soChungTu" />
       </div>
     </div>
+    <div class="form-group" v-if="voucherType === '3.Tạm ứng cho nhân viên'">
+      <label for="han-quyet-toan">Hạn quyết toán</label>
+      <div class="input-with-button">
+        <BaseInput
+          v-model="hanQuyetToan"
+          type="date"
+          placeholder="DD/MM/YYYY"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -30,11 +39,18 @@ export default {
   components: {
     BaseInput,
   },
+  props: {
+    voucherType: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       ngayHachToan: "2024-06-18",
       ngayChungTu: "2024-06-18",
       soChungTu: "UNC00001",
+      hanQuyetToan: "",
     };
   },
 };
@@ -54,7 +70,7 @@ export default {
 }
 .input-with-button {
   border: 1px solid #999;
-  border-radius: 4px;
+  border-radius: 2px;
   overflow: hidden;
   flex-grow: 2;
   margin-right: auto;
@@ -64,11 +80,11 @@ export default {
 .form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 16px;
+  margin-bottom: 8px; /* Reduce the bottom margin to move the input fields closer to the labels */
 }
 
 label {
-  margin-bottom: 4px;
+  margin-bottom: 2px; /* Reduce the bottom margin of the label */
   font-weight: bold;
 }
 

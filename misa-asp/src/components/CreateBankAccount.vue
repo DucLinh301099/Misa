@@ -3,7 +3,7 @@
     <h2 class="form-title">Thêm Tài khoản ngân hàng</h2>
     <form @submit.prevent="submitForm">
       <div class="form-row">
-        <div class="input-container">
+        <div class="input-container-bank1">
           <label for="account-number"
             >Số tài khoản <span class="required">*</span></label
           >
@@ -15,7 +15,7 @@
             required
           />
         </div>
-        <div class="input-container">
+        <div class="input-container-bank2">
           <label for="bank-name"
             >Tên ngân hàng <span class="required">*</span></label
           >
@@ -66,12 +66,11 @@
       <div class="form-row">
         <div class="input-container">
           <label for="description">Diễn giải</label>
-          <input
-            type="text"
+          <textarea
             id="description"
             v-model="description"
-            class="input-field"
-          />
+            class="input-field textarea-field"
+          ></textarea>
         </div>
       </div>
       <div class="form-actions">
@@ -141,7 +140,17 @@ const cancelForm = () => {
   flex: 1;
   margin-right: 20px;
 }
-
+.input-container-bank1 {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-right: 15px;
+}
+.input-container-bank2 {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 .input-container:last-child {
   margin-right: 0;
 }
@@ -158,7 +167,12 @@ label {
 .input-field {
   padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 2px;
+}
+
+.textarea-field {
+  height: 50px; /* Adjust the height as needed */
+  resize: none; /* Allow users to resize the textarea vertically */
 }
 
 .form-actions {

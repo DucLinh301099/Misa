@@ -21,6 +21,7 @@
       </div>
       <BaseInput
         v-model:value="secondInputValue"
+        placeholder="Địa Chỉ"
         class="base-input second-input"
       />
     </div>
@@ -100,7 +101,7 @@ label {
   display: flex;
   align-items: center;
   border: 1px solid #999;
-  border-radius: 4px;
+  border-radius: 2px;
   overflow: hidden;
   flex-grow: 2;
   margin-right: 15px;
@@ -143,7 +144,7 @@ label {
 
 .second-input {
   border: 1px solid #999;
-  border-radius: 4px;
+  border-radius: 2px;
   padding: 8px;
   box-sizing: border-box;
   height: 37px;

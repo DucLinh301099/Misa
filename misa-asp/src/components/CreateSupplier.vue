@@ -44,13 +44,15 @@
           <label for="supplier-name"
             >Tên nhà cung cấp <span class="required">*</span></label
           >
-          <input
-            type="text"
-            id="supplier-name"
-            v-model="supplierName"
-            class="input-field"
-            required
-          />
+          <div class="input-group">
+            <input
+              type="text"
+              id="supplier-name"
+              v-model="supplierName"
+              class="input-field"
+              required
+            />
+          </div>
         </div>
         <div class="input-container">
           <label for="supplier-group">Nhóm nhà cung cấp</label>
