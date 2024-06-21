@@ -1,4 +1,3 @@
-<!-- src/components/CreateEmployee.vue -->
 <template>
   <div class="create-employee">
     <h2 class="form-title">Thông tin nhân viên</h2>
@@ -230,8 +229,21 @@ const dependents = ref(0);
 const activeTab = ref("salary-info");
 
 const submitForm = () => {
-  // Handle form submission logic here
-  alert("Form submitted");
+  // Tạo đối tượng nhân viên mới
+  const newEmployee = {
+    code: employeeCode.value,
+    name: employeeName.value,
+    department: department.value,
+    phone: "123456789", // Thay đổi số điện thoại cho phù hợp
+  };
+
+  // Emit sự kiện để thêm nhân viên mới
+  emit("employee-added", newEmployee);
+
+  // Reset form
+  employeeCode.value = "";
+  employeeName.value = "";
+  department.value = "";
 };
 
 const cancelForm = () => {

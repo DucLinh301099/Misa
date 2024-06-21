@@ -1,17 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
-import LoginComponent from '../components/LoginComponent.vue';
-import RegisterComponent from '../components/RegisterComponent.vue';
-import ForgotPasswordComponent from '../components/ForgotPasswordComponent.vue';
-import AdminComponent from '../components/AdminComponent.vue'; // Import AdminComponent
+import LoginComponent from '../components/HomePage/LoginComponent.vue';
+import RegisterComponent from '../components/HomePage/RegisterComponent.vue';
+import ForgotPasswordComponent from '../components/HomePage/ForgotPasswordComponent.vue';
+import AdminComponent from '../components/AdminPage/AdminComponent.vue'; // Import AdminComponent
 
-import EditUserPage from '../components/EditUserPage.vue'; // Import EditUserPage
-import CreateUserComponent from '../components/CreateUserComponent.vue'; // Import CreateUserComponent
+import EditUserPage from '../components/AdminPage/EditUserPage.vue'; // Import EditUserPage
+import CreateUserComponent from '../components/AdminPage/CreateUserComponent.vue'; // Import CreateUserComponent
 import UserAccount from '../views/UserAccount.vue';
 import Payment from '../views/Payment.vue';
-import CreateBankAccount from '../components/CreateBankAccount.vue';
-import CreateSupplier from '../components/CreateSupplier.vue';
-import CreateEmployee from '../components/CreateEmployee.vue';
+import CreateBankAccount from '../components/PaymentPage/CreateBankAccount.vue';
+import CreateSupplier from '../components/PaymentPage/CreateSupplier.vue';
+import CreateEmployee from '../components/PaymentPage/CreateEmployee.vue';
 
 const routes = [
   { path: '/', component: Home },

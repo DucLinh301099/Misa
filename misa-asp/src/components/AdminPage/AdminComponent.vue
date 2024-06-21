@@ -5,22 +5,48 @@
         <img src="https://asp.misa.vn/Content/Images/SVG/Logo.svg" alt="Logo" />
       </router-link>
       <ul class="menu">
-        <li><router-link to="/"><i class="fa fa-tachometer"></i> Dashboard</router-link></li>
-        <li><router-link to="/"><i class="fa fa-users"></i> User</router-link></li>
-        <li><router-link to="/"><i class="fa fa-user"></i> User Profile</router-link></li>
-        <li><router-link to="/"><i class="fa fa-credit-card"></i> Account</router-link></li>
-        <li><router-link to="/"><i class="fa fa-bar-chart"></i> Charts</router-link></li>
-        <li><router-link to="/"><i class="fa fa-pencil"></i> Forms</router-link></li>
-        <li><router-link to="/"><i class="fa fa-th"></i> Apps</router-link></li>
-        <li><router-link to="/"><i class="fa fa-map"></i> Maps</router-link></li>
-        <li><router-link to="/"><i class="fa fa-file"></i> Pages</router-link></li>
+        <li>
+          <router-link to="/"
+            ><i class="fa fa-tachometer"></i> Dashboard</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/"><i class="fa fa-users"></i> User</router-link>
+        </li>
+        <li>
+          <router-link to="/"
+            ><i class="fa fa-user"></i> User Profile</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/"
+            ><i class="fa fa-credit-card"></i> Account</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/"
+            ><i class="fa fa-bar-chart"></i> Charts</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/"><i class="fa fa-pencil"></i> Forms</router-link>
+        </li>
+        <li>
+          <router-link to="/"><i class="fa fa-th"></i> Apps</router-link>
+        </li>
+        <li>
+          <router-link to="/"><i class="fa fa-map"></i> Maps</router-link>
+        </li>
+        <li>
+          <router-link to="/"><i class="fa fa-file"></i> Pages</router-link>
+        </li>
       </ul>
     </div>
     <div class="content">
       <div class="header">
         <h1>Dashboard</h1>
         <div class="user-info">
-          <img :src="userAvatar" alt="Avatar" class="avatar">
+          <img :src="userAvatar" alt="Avatar" class="avatar" />
           <span>{{ userName }}</span>
           <button @click="logout" class="logout-button">
             <i class="fa fa-sign-out"></i> Đăng xuất
@@ -29,7 +55,12 @@
       </div>
       <div class="search-create-container">
         <div class="search-box">
-          <input type="text" v-model="searchQuery" @input="searchUsers" placeholder="Tìm Kiếm">
+          <input
+            type="text"
+            v-model="searchQuery"
+            @input="searchUsers"
+            placeholder="Tìm Kiếm"
+          />
         </div>
         <div class="create-user">
           <button class="create-button" @click="createUser">
@@ -65,17 +96,17 @@
 </template>
 
 <script>
-import { deleteUserById, fetchProtectedData } from '../api/account';
-import '../assets/css/admin.css';
+import { deleteUserById, fetchProtectedData } from "../../api/account";
 
 export default {
-  name: 'AdminComponent',
+  name: "AdminComponent",
   data() {
     return {
       users: [],
-      searchQuery: '',
-      userName: localStorage.getItem('lastName') || '',
-      userAvatar: 'https://static.vecteezy.com/system/resources/thumbnails/007/407/996/small/user-icon-person-icon-client-symbol-login-head-sign-icon-design-vector.jpg' // Placeholder avatar, you can replace with actual URL
+      searchQuery: "",
+      userName: localStorage.getItem("lastName") || "",
+      userAvatar:
+        "https://static.vecteezy.com/system/resources/thumbnails/007/407/996/small/user-icon-person-icon-client-symbol-login-head-sign-icon-design-vector.jpg", // Placeholder avatar, you can replace with actual URL
     };
   },
   async created() {
@@ -87,8 +118,11 @@ export default {
         const response = await fetchProtectedData();
         this.users = response;
       } catch (error) {
-        console.error('Error fetching users:', error);
-        alert('Failed to fetch user data: ' + (error.response ? error.response.data.message : error.message));
+        console.error("Error fetching users:", error);
+        alert(
+          "Failed to fetch user data: " +
+            (error.response ? error.response.data.message : error.message)
+        );
       }
     },
     searchUsers() {
@@ -101,31 +135,31 @@ export default {
       this.$router.push({ path: `/edit-user/${userId}` });
     },
     async deleteUser(id) {
-      if (confirm('Are you sure you want to delete this user?')) {
+      if (confirm("Are you sure you want to delete this user?")) {
         try {
           await deleteUserById(id);
-          this.users = this.users.filter(user => user.id !== id);
-          alert('User deleted successfully!');
+          this.users = this.users.filter((user) => user.id !== id);
+          alert("User deleted successfully!");
         } catch (error) {
-          console.error('Error deleting user:', error);
-          alert('Failed to delete user: ' + error.message);
+          console.error("Error deleting user:", error);
+          alert("Failed to delete user: " + error.message);
         }
       }
     },
     logout() {
       // Xóa role và lastName khỏi localStorage
-      localStorage.removeItem('role');
-      localStorage.removeItem('lastName');
-    
+      localStorage.removeItem("role");
+      localStorage.removeItem("lastName");
+
       // Chuyển hướng về trang đăng nhập
-      this.$router.push('/login');
-    }
-  }
+      this.$router.push("/login");
+    },
+  },
 };
 </script>
 
 <style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
 .admin-page {
   display: flex;
@@ -227,19 +261,18 @@ export default {
   margin-right: 10px;
 }
 
-.logout-button { 
+.logout-button {
   padding: 10px 20px;
-    font-size: 16px;
-    color: white;
-    background-color: #dc3545;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-left: 10px;
-    
+  font-size: 16px;
+  color: white;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 10px;
 }
 
 .logout-button:hover {

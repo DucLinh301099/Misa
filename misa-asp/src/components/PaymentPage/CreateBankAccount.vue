@@ -74,7 +74,7 @@
         </div>
       </div>
       <div class="form-actions">
-        <button type="button" class="btn cancel-btn" @click="$emit('close')">
+        <button type="button" class="btn cancel-btn" @click="cancelForm">
           Hủy
         </button>
 
@@ -103,13 +103,24 @@ const bankOptions = [
 ];
 
 const submitForm = () => {
-  // Handle form submission logic here
+  // Emit event to parent component with form data
+  const formData = {
+    accountNumber: accountNumber.value,
+    bankName: bankName.value,
+    city: city.value,
+    branch: branch.value,
+    branchAddress: branchAddress.value,
+    accountHolder: accountHolder.value,
+    description: description.value,
+  };
+  console.log(formData);
   alert("Form submitted");
+  this.$emit("submit", formData); // Emit the submit event with form data
 };
 
 const cancelForm = () => {
-  // Handle form cancel logic here
-  alert("Form canceled");
+  // Emit event to close the form
+  this.$emit("close");
 };
 </script>
 
@@ -118,7 +129,6 @@ const cancelForm = () => {
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
-
   max-width: 600px;
   margin: auto;
 }
@@ -140,17 +150,20 @@ const cancelForm = () => {
   flex: 1;
   margin-right: 20px;
 }
+
 .input-container-bank1 {
   display: flex;
   flex-direction: column;
   flex: 1;
   margin-right: 15px;
 }
+
 .input-container-bank2 {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
+
 .input-container:last-child {
   margin-right: 0;
 }

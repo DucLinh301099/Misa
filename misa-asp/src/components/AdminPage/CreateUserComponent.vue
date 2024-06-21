@@ -5,15 +5,45 @@
         <img src="https://asp.misa.vn/Content/Images/SVG/Logo.svg" alt="Logo" />
       </router-link>
       <ul class="menu">
-        <li><router-link to="/dashboard"><i class="fa fa-tachometer"></i> Dashboard</router-link></li>
-        <li><router-link to="/user"><i class="fa fa-users"></i> User</router-link></li>
-        <li><router-link to="/user-profile"><i class="fa fa-user"></i> User Profile</router-link></li>
-        <li><router-link to="/account"><i class="fa fa-credit-card"></i> Account</router-link></li>
-        <li><router-link to="/charts"><i class="fa fa-bar-chart"></i> Charts</router-link></li>
-        <li><router-link to="/forms"><i class="fa fa-pencil"></i> Forms</router-link></li>
-        <li><router-link to="/apps"><i class="fa fa-th"></i> Apps</router-link></li>
-        <li><router-link to="/maps"><i class="fa fa-map"></i> Maps</router-link></li>
-        <li><router-link to="/pages"><i class="fa fa-file"></i> Pages</router-link></li>
+        <li>
+          <router-link to="/dashboard"
+            ><i class="fa fa-tachometer"></i> Dashboard</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/user"><i class="fa fa-users"></i> User</router-link>
+        </li>
+        <li>
+          <router-link to="/user-profile"
+            ><i class="fa fa-user"></i> User Profile</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/account"
+            ><i class="fa fa-credit-card"></i> Account</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/charts"
+            ><i class="fa fa-bar-chart"></i> Charts</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/forms"
+            ><i class="fa fa-pencil"></i> Forms</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/apps"><i class="fa fa-th"></i> Apps</router-link>
+        </li>
+        <li>
+          <router-link to="/maps"><i class="fa fa-map"></i> Maps</router-link>
+        </li>
+        <li>
+          <router-link to="/pages"
+            ><i class="fa fa-file"></i> Pages</router-link
+          >
+        </li>
       </ul>
     </div>
     <div class="content">
@@ -21,12 +51,19 @@
         <h1>Tạo Mới User</h1>
       </div>
       <div class="create">
-          <p class="links"><router-link to="/admin">Quay lại danh sách User</router-link></p>
-        </div>
+        <p class="links">
+          <router-link to="/admin">Quay lại danh sách User</router-link>
+        </p>
+      </div>
       <form @submit.prevent="createUser" class="form-container">
         <div class="form-group-inline">
           <div class="form-group">
-            <input type="text" v-model="firstName" placeholder="Họ và đệm" required />
+            <input
+              type="text"
+              v-model="firstName"
+              placeholder="Họ và đệm"
+              required
+            />
           </div>
           <div class="form-group">
             <input type="text" v-model="lastName" placeholder="Tên" required />
@@ -37,11 +74,23 @@
           <div v-if="errors.Email" class="error">{{ errors.Email }}</div>
         </div>
         <div class="form-group">
-          <input type="text" v-model="phoneNumber" placeholder="Số điện thoại" required />
-          <div v-if="errors.PhoneNumber" class="error">{{ errors.PhoneNumber }}</div>
+          <input
+            type="text"
+            v-model="phoneNumber"
+            placeholder="Số điện thoại"
+            required
+          />
+          <div v-if="errors.PhoneNumber" class="error">
+            {{ errors.PhoneNumber }}
+          </div>
         </div>
         <div class="form-group">
-          <input type="password" v-model="password" placeholder="Mật khẩu" required />
+          <input
+            type="password"
+            v-model="password"
+            placeholder="Mật khẩu"
+            required
+          />
         </div>
         <div class="form-group">
           <select v-model="roleId" required>
@@ -50,52 +99,61 @@
             <option value="2">User</option>
           </select>
         </div>
-        
+
         <button type="submit" class="create-button">Tạo mới User</button>
         <div v-if="generalError" class="error">{{ generalError }}</div>
-        
       </form>
     </div>
   </div>
 </template>
 
 <script>
-import { register } from '../api/account';
-import '../assets/css/admin.css';
+import { register } from "../../api/account";
 
 export default {
-  name: 'CreateUserComponent',
+  name: "CreateUserComponent",
   data() {
     return {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phoneNumber: '',
-      password: '',
-      roleId: '',
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      password: "",
+      roleId: "",
       errors: {},
-      generalError: ''
+      generalError: "",
     };
   },
   methods: {
     async createUser() {
       try {
-        console.log('Sending request to create user...');
-        const data = await register(this.firstName, this.lastName, this.email, this.phoneNumber, this.password, this.roleId);
-        console.log('User created:', data);
-        alert('User created successfully!');
-        this.$router.push('/admin');
+        console.log("Sending request to create user...");
+        const data = await register(
+          this.firstName,
+          this.lastName,
+          this.email,
+          this.phoneNumber,
+          this.password,
+          this.roleId
+        );
+        console.log("User created:", data);
+        alert("User created successfully!");
+        this.$router.push("/admin");
       } catch (error) {
-        console.error('There was an error creating the user:', error);
+        console.error("There was an error creating the user:", error);
         this.errors = {};
-        this.generalError = '';
+        this.generalError = "";
 
         // Handle specific validation errors
-        if (error.message.includes('Email error')) {
-          this.errors.Email = error.message.split(', ').find(msg => msg.includes('Email error'));
+        if (error.message.includes("Email error")) {
+          this.errors.Email = error.message
+            .split(", ")
+            .find((msg) => msg.includes("Email error"));
         }
-        if (error.message.includes('Phone number error')) {
-          this.errors.PhoneNumber = error.message.split(', ').find(msg => msg.includes('Phone number error'));
+        if (error.message.includes("Phone number error")) {
+          this.errors.PhoneNumber = error.message
+            .split(", ")
+            .find((msg) => msg.includes("Phone number error"));
         }
 
         // Handle general error
@@ -103,13 +161,13 @@ export default {
           this.generalError = error.message;
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
 .admin-page {
   display: flex;
@@ -225,8 +283,8 @@ export default {
   border-radius: 5px;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-a{
-    color: white;
+a {
+  color: white;
 }
 .form-group input:focus,
 .form-group select:focus {

@@ -5,15 +5,45 @@
         <img src="https://asp.misa.vn/Content/Images/SVG/Logo.svg" alt="Logo" />
       </router-link>
       <ul class="menu">
-        <li><router-link to="/dashboard"><i class="fa fa-tachometer"></i> Dashboard</router-link></li>
-        <li><router-link to="/user"><i class="fa fa-users"></i> User</router-link></li>
-        <li><router-link to="/user-profile"><i class="fa fa-user"></i> User Profile</router-link></li>
-        <li><router-link to="/account"><i class="fa fa-credit-card"></i> Account</router-link></li>
-        <li><router-link to="/charts"><i class="fa fa-bar-chart"></i> Charts</router-link></li>
-        <li><router-link to="/forms"><i class="fa fa-pencil"></i> Forms</router-link></li>
-        <li><router-link to="/apps"><i class="fa fa-th"></i> Apps</router-link></li>
-        <li><router-link to="/maps"><i class="fa fa-map"></i> Maps</router-link></li>
-        <li><router-link to="/pages"><i class="fa fa-file"></i> Pages</router-link></li>
+        <li>
+          <router-link to="/dashboard"
+            ><i class="fa fa-tachometer"></i> Dashboard</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/user"><i class="fa fa-users"></i> User</router-link>
+        </li>
+        <li>
+          <router-link to="/user-profile"
+            ><i class="fa fa-user"></i> User Profile</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/account"
+            ><i class="fa fa-credit-card"></i> Account</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/charts"
+            ><i class="fa fa-bar-chart"></i> Charts</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/forms"
+            ><i class="fa fa-pencil"></i> Forms</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/apps"><i class="fa fa-th"></i> Apps</router-link>
+        </li>
+        <li>
+          <router-link to="/maps"><i class="fa fa-map"></i> Maps</router-link>
+        </li>
+        <li>
+          <router-link to="/pages"
+            ><i class="fa fa-file"></i> Pages</router-link
+          >
+        </li>
       </ul>
     </div>
     <div class="content">
@@ -21,41 +51,67 @@
         <h1>Chỉnh Sửa Thông Tin Người Dùng</h1>
       </div>
       <div class="create">
-          <p class="links"><router-link to="/admin">Quay lại danh sách User</router-link></p>
+        <p class="links">
+          <router-link to="/admin">Quay lại danh sách User</router-link>
+        </p>
       </div>
-      <form @submit.prevent="saveUser" class="form-container" v-if="editingUser">
+      <form
+        @submit.prevent="saveUser"
+        class="form-container"
+        v-if="editingUser"
+      >
         <div class="form-group-inline">
           <div class="form-group">
-            <input type="text" v-model="editingUser.firstName" placeholder="Họ và đệm" required />
+            <input
+              type="text"
+              v-model="editingUser.firstName"
+              placeholder="Họ và đệm"
+              required
+            />
           </div>
           <div class="form-group">
-            <input type="text" v-model="editingUser.lastName" placeholder="Tên" required />
+            <input
+              type="text"
+              v-model="editingUser.lastName"
+              placeholder="Tên"
+              required
+            />
           </div>
         </div>
         <div class="form-group">
-          <input type="email" v-model="editingUser.email" placeholder="Email" required />
+          <input
+            type="email"
+            v-model="editingUser.email"
+            placeholder="Email"
+            required
+          />
         </div>
         <div class="form-group">
-          <input type="text" v-model="editingUser.phoneNumber" placeholder="Số điện thoại" required />
+          <input
+            type="text"
+            v-model="editingUser.phoneNumber"
+            placeholder="Số điện thoại"
+            required
+          />
         </div>
         <div class="form-group-button">
           <button type="submit" class="edit-button">Lưu</button>
-          <button type="button" @click="cancelEdit" class="cancel-button">Hủy</button>
+          <button type="button" @click="cancelEdit" class="cancel-button">
+            Hủy
+          </button>
         </div>
       </form>
-      <div v-else class="loading-message">
-        Đang tải dữ liệu người dùng...
-      </div>
+      <div v-else class="loading-message">Đang tải dữ liệu người dùng...</div>
     </div>
   </div>
 </template>
 
 <script>
-import { updateUser, fetchUserById } from '../api/account';
+import { updateUser, fetchUserById } from "../../api/account";
 
 export default {
-  name: 'EditUserPage',
-  props: ['id'],
+  name: "EditUserPage",
+  props: ["id"],
   data() {
     return {
       editingUser: null,
@@ -66,30 +122,33 @@ export default {
       const response = await fetchUserById(this.id);
       this.editingUser = response;
     } catch (error) {
-      console.error('Error fetching user:', error);
-      alert('Failed to fetch user data: ' + (error.response ? error.response.data.message : error.message));
+      console.error("Error fetching user:", error);
+      alert(
+        "Failed to fetch user data: " +
+          (error.response ? error.response.data.message : error.message)
+      );
     }
   },
   methods: {
     async saveUser() {
       try {
         await updateUser(this.editingUser);
-        alert('User updated successfully!');
-        this.$router.push('/admin');
+        alert("User updated successfully!");
+        this.$router.push("/admin");
       } catch (error) {
-        console.error('Error saving user:', error);
-        alert('Failed to update user: ' + error.message);
+        console.error("Error saving user:", error);
+        alert("Failed to update user: " + error.message);
       }
     },
     cancelEdit() {
-      this.$router.push('/admin');
-    }
-  }
+      this.$router.push("/admin");
+    },
+  },
 };
 </script>
 
 <style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
 .admin-page {
   display: flex;
@@ -190,8 +249,7 @@ export default {
 .form-group-inline {
   display: flex;
   gap: 20px;
-   padding-bottom: 0px;
- 
+  padding-bottom: 0px;
 }
 .form-group-button {
   display: flex;
@@ -217,8 +275,8 @@ export default {
   outline: none;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
-a{
-  color:white;
+a {
+  color: white;
 }
 .edit-button {
   background-color: #28a745;
