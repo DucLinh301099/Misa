@@ -1,9 +1,6 @@
 <!-- src/components/ControlComponent/ComboboxComponent.vue -->
 <template>
   <div v-if="showComponent" class="expense-account-input-wrapper">
-    <label for="expense-account-input">
-      {{ label }} <span class="required" v-if="isRequired">*</span>
-    </label>
     <div class="input-container">
       <div class="input-with-button">
         <BaseInput
@@ -11,7 +8,7 @@
           :validator="inputValidator"
           class="base-input"
         />
-        <button @click="triggerModal" class="add-button">+</button>
+
         <multiselect
           v-bind="selectedOption"
           :options="filteredOptions"
@@ -23,18 +20,6 @@
           @close="showTable = false"
         />
       </div>
-      <BaseInput
-        v-if="showSecondInput"
-        v-model="secondInputValue"
-        class="base-input second-input"
-        placeholder="Chi nhánh"
-      />
-      <BaseInput
-        v-if="showSecondInput_employee"
-        v-model="secondInputValue"
-        class="base-input second-input-e"
-        placeholder="Chi nhánh"
-      />
     </div>
 
     <transition name="dropdown">
@@ -70,16 +55,12 @@ import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
 
 export default {
-  name: "ComboboxComponent",
+  name: "ComboboxGrid",
   components: {
     BaseInput,
     Multiselect,
   },
   props: {
-    label: {
-      type: String,
-      default: null,
-    },
     selectedOption: {
       type: Object,
       default: null,
@@ -100,19 +81,8 @@ export default {
       type: Boolean,
       default: false,
     },
-    triggerModal: {
-      type: Function,
-      required: true,
-    },
+
     showComponent: {
-      type: Boolean,
-      default: true,
-    },
-    showSecondInput: {
-      type: Boolean,
-      default: true,
-    },
-    showSecondInput_employee: {
       type: Boolean,
       default: true,
     },
@@ -167,6 +137,7 @@ label {
 .input-container {
   display: flex;
   align-items: center;
+  margin-top: 8px;
 }
 
 .input-with-button {
@@ -177,7 +148,7 @@ label {
   overflow: hidden;
   flex-grow: 2;
 
-  height: 35px;
+  height: 30px;
   position: relative;
 }
 
@@ -196,23 +167,10 @@ label {
   padding: 0 8px;
 }
 
-.add-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  border: none;
-  background-color: white;
-  cursor: pointer;
-  font-size: 24px;
-  color: green;
-}
-
 .multiselect {
   width: 40px;
   border: none;
-  border-left: 1px solid #999;
+  /* border-left: 1px solid #999; */
 }
 
 .second-input {
@@ -236,14 +194,14 @@ label {
 }
 .dropdown-table-wrapper {
   position: absolute;
-  z-index: 1000;
+  z-index: 500;
   background-color: white;
-  width: 80%;
-  margin-top: 65px;
+  width: 50%;
+  margin-top: 45px;
 }
 
 .dropdown-table {
-  width: 100%;
+  width: 70%;
   border-collapse: collapse;
   border: 1px solid #ddd;
 }

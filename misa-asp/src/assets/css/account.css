@@ -16,41 +16,7 @@
   width: 400px;
 }
 
-/* .logo-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-} */
 
-/* .main-logo {
-  height: 60px;
-} */
-
-/* h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
-  color: #333;
-} */
-
-/* .form-group {
-  margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
-}
-
-.form-group input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.form-group input[type="text"],
-.form-group input[type="password"] {
-  width: 100%;
-  margin: 0;
-} */
 
 .login-button {
   width: 100%;
@@ -63,24 +29,7 @@
   font-size: 16px;
 }
 
-/* .extra-links {
-  margin-top: 20px;
-}
 
-.extra-links p {
-  margin: 5px 0;
-}
-
-.extra-links a {
-  color: #1E90FF;
-  text-decoration: none;
-}
-
-.extra-links a:hover {
-  text-decoration: underline;
-} */
-
-/* register css */
 
 .error {
   color: red;

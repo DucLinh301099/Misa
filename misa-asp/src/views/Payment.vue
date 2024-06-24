@@ -48,6 +48,14 @@
           :showComponent="!hideCreateEmployeeInput"
           :showSecondInput="false"
         />
+        <div class="document">
+          <div class="document-content">
+            <label for="document-content">Tham chiếu chứng từ</label>
+          </div>
+          <div class="document-link">
+            <a href="#href"> ... </a>
+          </div>
+        </div>
       </div>
       <div class="input-information-center">
         <DateTimeComponent :voucherType="voucherType" />
@@ -56,7 +64,7 @@
         <SummaryComponent />
       </div>
     </div>
-    <AccountingComponent />
+    <AccountingGrid />
     <AttachFile />
     <FooterPayment />
 
@@ -98,13 +106,13 @@
 <script>
 import { ref, computed } from "vue";
 import HeaderPayment from "../components/PaymentPage/HeaderPayment.vue";
-import ComboboxInput from "../components/ControlPaymentComponent/ComboboxInput.vue";
+import ComboboxInput from "../components/ControlComponent/ComboboxInput.vue";
 import AccountReceive from "../components/PaymentPage/AccountReceive.vue";
 import BaseInputComponent from "../components/BaseComponent/BaseInputComponent.vue";
-import DateTimeComponent from "../components/ControlPaymentComponent/DateTimeComponent.vue";
+import DateTimeComponent from "../components/ControlComponent/DateTimeComponent.vue";
 import FooterPayment from "../components/PaymentPage/FooterPayment.vue";
-import SummaryComponent from "../components/ControlPaymentComponent/SummaryComponent.vue";
-import AccountingComponent from "../components/ControlPaymentComponent/AccountingComponent.vue";
+import SummaryComponent from "../components/ControlComponent/SummaryComponent.vue";
+import AccountingGrid from "../components/ControlComponent/AccountingGrid.vue";
 import AttachFile from "../components/PaymentPage/AttachFile.vue";
 import InformationInput from "../components/PaymentPage/InformationInput.vue";
 import CreateBankAccount from "../components/PaymentPage/CreateBankAccount.vue";
@@ -122,7 +130,7 @@ export default {
     DateTimeComponent,
     FooterPayment,
     SummaryComponent,
-    AccountingComponent,
+    AccountingGrid,
     AttachFile,
     InformationInput,
     CreateBankAccount,
@@ -293,6 +301,8 @@ export default {
 .input-information {
   display: flex;
   font-size: 15px;
+  margin-top: 20px;
+  margin-bottom: 15px;
 }
 .input-information-right {
   width: 50%;
@@ -320,6 +330,18 @@ label {
   display: flex;
   align-items: center;
 }
+.document {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  display: flex;
+}
+.document-link {
+  color: inherit; /* Inherit color from parent div */
+
+  margin-left: 10px;
+  font-weight: bold;
+}
+
 .input-with-button-1 {
   display: flex;
   align-items: center;

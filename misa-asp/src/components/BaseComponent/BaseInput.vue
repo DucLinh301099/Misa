@@ -1,13 +1,10 @@
-<!-- src/components/BaseInput.vue -->
 <template>
   <div class="input-wrapper">
-    <label v-if="label">{{ label }}</label>
     <input
       class="base-input"
       :type="type"
-      :value="value"
-      :placeholder="placeholder"
-      @input="updateValue"
+      :value="displayValue"
+      @input="updateInternalValue($event.target.value)"
     />
   </div>
 </template>
@@ -24,18 +21,29 @@ export default {
       type: String,
       default: "text",
     },
-    placeholder: {
-      type: String,
-      default: "",
+    // Thêm một prop mới để đánh dấu dữ liệu đã được chọn từ selectOption
+    selectedData: {
+      type: Object,
+      default: null,
     },
-    label: {
-      type: String,
-      default: "",
+  },
+  computed: {
+    // Hiển thị giá trị từ selectedData vào BaseInput
+    displayValue() {
+      if (this.selectedData) {
+        return this.selectedData.accountNumber;
+      }
+      if (this.selectedData) {
+        return this.selectedData.bankName;
+      } else {
+        return this.value;
+      }
     },
   },
   methods: {
-    updateValue(event) {
-      this.$emit("input", event.target.value);
+    // Sử dụng phương thức này để cập nhật giá trị nội bộ, không phát ra sự kiện input
+    updateInternalValue(value) {
+      this.$emit("update", value);
     },
   },
 };
@@ -44,17 +52,15 @@ export default {
 <style scoped>
 .input-wrapper {
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .base-input {
   width: 100%;
-  height: 30px; /* Adjust if needed */
+  height: 30px; /* Bạn có thể thay đổi giá trị này nếu cần */
   border: none;
   padding: 0 8px;
   box-sizing: border-box;
-  margin-top: 4px; /* Space between label and input */
 }
 </style>

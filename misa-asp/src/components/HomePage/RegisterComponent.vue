@@ -145,6 +145,48 @@ export default {
 };
 </script>
 <style>
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #0a2540;
+}
+
+.register-container {
+  background-color: #fff;
+  padding: 20px 40px 40px 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px;
+}
+.error-message {
+  display: none;
+  color: #f45d48;
+  bottom: 8px;
+  font-size: 12px;
+}
+.logo-section-register {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.main-logo1 {
+  height: 50px;
+}
+.register-button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
 .bold {
   font-weight: 550;
 }
@@ -181,70 +223,7 @@ img {
   vertical-align: middle;
   border-style: none;
 }
-.form-group select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background: url("data:image/svg+xml;base64,...") no-repeat right 10px center; /* add a down arrow icon */
-  background-size: 12px;
-  padding-right: 30px; /* adjust padding to fit the icon */
-}
 
-.form-group select:focus {
-  border-color: #00a65a;
-}
-.form-group select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 14px;
-}
-.contact-component {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 50px 20px;
-  background-image: linear-gradient(45.52deg, #00c15b 0%, #00aba3 100%);
-  color: white;
-  font-family: AvertaStdCY, Helvetica, Arial, sans-serif;
-}
-.contact-info {
-  max-width: 26%;
-  margin-right: 0px;
-  margin-left: 180px;
-}
-textarea.form-control {
-  resize: none;
-}
-textarea.form-control {
-  height: auto;
-}
-.contact-info h2 {
-  font-size: 28px;
-  margin-bottom: 20px;
-  text-align: left;
-  color: #fff;
-}
-.contact-info p {
-  font-size: 18px;
-  text-align: justify;
-}
-.contact-form {
-  background-color: white;
-  color: #333;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 450px;
-  margin: 0 auto; /* Center the form */
-}
-.contact-form h3 {
-  font-size: 25px;
-  margin-bottom: 20px;
-  text-align: center;
-}
 .form-group {
   margin-bottom: 15px;
   position: relative;
@@ -264,58 +243,7 @@ textarea.form-control {
   font-weight: bold;
   width: 100%; /* Make the label take full width */
 }
-.form-group input,
-.form-group textarea {
-  width: 100%; /* Make input and textarea take full width */
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
-}
-.radio-group {
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Center align radio buttons */
-  width: 100%; /* Make the radio group take full width */
-}
-.radio-group input[type="radio"] {
-  display: none;
-}
-.radio-group label {
-  position: relative;
-  padding-left: 30px;
-  margin-right: 20px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #333;
-}
-.radio-group label::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  border: 2px solid #ccc;
-  border-radius: 50%;
-  background: #fff;
-}
-.radio-group input[type="radio"]:checked + label::before {
-  border-color: #00a65a;
-  background-color: #00a65a;
-}
-.radio-group input[type="radio"]:checked + label::after {
-  content: "";
-  position: absolute;
-  left: 5px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 10px;
-  height: 10px;
-  background: #fff;
-  border-radius: 50%;
-}
+
 .disclaimer {
   font-size: 12px;
   color: #666;
@@ -324,38 +252,7 @@ textarea.form-control {
 .disclaimer a {
   color: #00a65a;
 }
-.layout-free-consultation .form-control {
-  border: 1px solid rgba(143, 155, 179, 0.4);
-}
-.form-control {
-  height: auto;
-  line-height: inherit;
-  font-size: 14px !important;
-  border-radius: 3.5px;
-  color: #212121;
-  border-color: #e4e9f2;
-  padding: 6px 12px;
-  height: 32px;
-  box-shadow: none;
-}
-.form-control {
-  display: block;
-  width: 100%;
-  height: 34px;
-  padding: 6px 12px;
-  font-size: 14px;
-  line-height: 1.428571429;
-  color: #555;
-  vertical-align: middle;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -webkit-transition: border-color ease-in-out 0.15s,
-    box-shadow ease-in-out 0.15s;
-  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-}
+
 input {
   line-height: normal;
 }
@@ -369,26 +266,7 @@ input {
   cursor: pointer;
   font-size: 16px;
 }
-.primary {
-  background-color: #31a035;
-  border-radius: 4px;
-  overflow: hidden;
-  width: 100%;
-  height: 40px;
-  border: none;
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
-  position: relative;
-  z-index: 3;
-}
-button,
-html input[type="button"],
-input[type="reset"],
-input[type="submit"] {
-  -webkit-appearance: button;
-  cursor: pointer;
-}
+
 button,
 select {
   text-transform: none;
