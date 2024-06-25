@@ -3,21 +3,16 @@
     <div class="input-container">
       <div
         class="input-with-button"
-        :class="{
-          tooltip: isInputFocused && !inputValue,
-          'invalid-input': isInputFocused && !isValidInput,
-          'valid-input': isValidInput && !isInputFocused,
-        }"
+        :class="{ invalid: isInputFocused && !inputValue, valid: inputValue }"
       >
-        <BaseInput
+        <input
           v-model="inputValue"
-          :validator="inputValidator"
+          @input="updateValue($event.target.value)"
+          @focus="handleFocus"
+          @blur="handleBlur"
           class="base-input"
-          :class="{ invalid: !isValidInput }"
-          @focus="isInputFocused = true"
-          @blur="isInputFocused = false"
         />
-
+        <span class="input-status" v-if="isInputFocused && !inputValue">!</span>
         <multiselect
           v-bind:selected="selectedOption"
           :options="filteredOptions"
@@ -29,7 +24,6 @@
           @open="showTable = true"
           @close="showTable = false"
         />
-        <span class="input-status" v-if="!isValidInput">!</span>
       </div>
     </div>
 
@@ -61,14 +55,12 @@
 </template>
 
 <script>
-import BaseInput from "../BaseComponent/BaseInputComponent.vue";
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
 
 export default {
   name: "ComboboxGrid",
   components: {
-    BaseInput,
     Multiselect,
   },
   props: {
@@ -85,9 +77,8 @@ export default {
     return {
       inputValue: "",
       showTable: false,
-      isValidInput: true,
-      isInputFocused: false,
       selectedOption: null,
+      isInputFocused: false,
     };
   },
   computed: {
@@ -105,23 +96,21 @@ export default {
     },
   },
   methods: {
-    inputValidator(value) {
-      if (!value) {
-        this.isValidInput = false;
-        return "This field is required";
-      }
-      if (value.length < 3) {
-        this.isValidInput = false;
-        return "Must be at least 3 characters";
-      }
-      this.isValidInput = true;
-      return "";
+    updateValue(value) {
+      this.inputValue = value;
+      this.$emit("input", value);
+    },
+    handleFocus() {
+      this.isInputFocused = true;
+    },
+    handleBlur() {
+      this.isInputFocused = false;
     },
     handleSelectOption(option) {
       this.selectedOption = option;
-      this.inputValue = option.name; // Đảm bảo hiển thị thông tin thích hợp trong BaseInput
-      this.showTable = false; // Đóng dropdown table sau khi chọn
-      this.$emit("input", option); // Thêm dòng này để cập nhật v-model
+      this.inputValue = option.name;
+      this.showTable = false;
+      this.$emit("input", option);
     },
   },
 };
@@ -156,30 +145,38 @@ export default {
   padding: 8px;
   box-sizing: border-box;
   height: 30px;
+  width: calc(100% - 40px);
 }
 
-.base-input input {
-  width: 100%;
-  height: 100%;
-  border: none;
+.base-input:focus {
+  border: none; /* Đảm bảo không hiển thị viền đen khi được chọn */
   outline: none;
-  padding: 0 8px;
+}
+
+.invalid {
+  border-color: red;
+}
+
+.valid {
+  border-color: #68c75b;
 }
 
 .input-status {
   color: red;
-}
-
-.invalid-input {
-  border-color: red;
-}
-
-.valid-input {
-  border-color: #68c75b;
-}
-
-.tooltip {
-  border-color: red;
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: bold;
+  background: white;
+  border: 1px solid red;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
 }
 
 .multiselect {

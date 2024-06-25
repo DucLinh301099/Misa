@@ -1,4 +1,3 @@
-<!-- src/components/ControlComponent/ComboboxComponent.vue -->
 <template>
   <div v-if="showComponent" class="expense-account-input-wrapper">
     <label for="expense-account-input">
@@ -8,12 +7,13 @@
       <div class="input-with-button">
         <BaseInput
           v-model="inputValue"
-          :validator="inputValidator"
           class="base-input"
+          :selectedOption="selectedOption"
         />
         <button @click="triggerModal" class="add-button">+</button>
         <multiselect
-          :value="selectRow"
+          :value="selectedOption"
+          @input="updateSelectedOption"
           :options="filteredOptions"
           :searchable="true"
           :close-on-select="true"
@@ -27,12 +27,13 @@
         v-if="showSecondInput"
         v-model="secondInputValue"
         class="base-input second-input"
+        :selectedOption="selectedOption"
       />
       <BaseInput
         v-if="showSecondInput_employee"
-        v-bind="secondInputValue"
+        v-model="secondInputValue"
         class="base-input second-input-e"
-        @input="updateSecondInputValue"
+        :selectedOption="selectedOption"
       />
     </div>
 
@@ -87,10 +88,6 @@ export default {
       type: Array,
       default: null,
     },
-    selectRow: {
-      type: Object,
-      default: () => ({}),
-    },
     columnConfig: {
       type: Array,
       default: null,
@@ -116,13 +113,21 @@ export default {
       default: true,
     },
   },
-
   data() {
     return {
       inputValue: "",
       secondInputValue: "",
       showTable: false,
+      internalSelectedOption: this.selectedOption,
     };
+  },
+  watch: {
+    selectedOption(newVal) {
+      this.internalSelectedOption = newVal;
+    },
+    internalSelectedOption(newVal) {
+      this.$emit("update:selectedOption", newVal);
+    },
   },
   computed: {
     filteredOptions() {
@@ -139,6 +144,13 @@ export default {
     },
   },
   methods: {
+    updateSelectedOption(value) {
+      this.internalSelectedOption = value;
+      if (value) {
+        this.inputValue = value.accountNumber || value.id || value.code;
+        this.secondInputValue = value.branch || value.address || "";
+      }
+    },
     inputValidator(value) {
       if (!value) {
         return "This field is required";
@@ -149,8 +161,6 @@ export default {
       return "";
     },
     selectRow(item) {
-      console.log("Item selected:", item); // Debug log
-
       this.$emit("update:selectedRow", item);
       this.showTable = false; // close the dropdown table
     },

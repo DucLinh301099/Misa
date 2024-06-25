@@ -177,9 +177,6 @@ export default {
     clearRows() {
       this.rows = [];
     },
-    // updateDropdownField(rowIndex, fieldName, value) {
-    //   this.rows[rowIndex][fieldName] = value;
-    // },
   },
 };
 </script>

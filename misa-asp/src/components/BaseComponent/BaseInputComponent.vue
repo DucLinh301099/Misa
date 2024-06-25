@@ -21,6 +21,10 @@ export default {
       type: String,
       default: "text",
     },
+    selectedOption: {
+      type: Object, // Kiểu dữ liệu của option đã chọn từ multiselect
+      default: null,
+    },
   },
   methods: {
     updateValue(event) {

@@ -1,11 +1,15 @@
 <template>
-  <div class="input-wrapper">
+  <div
+    class="base-input"
+    :class="{ invalid: isInputFocused && !internalValue, valid: internalValue }"
+  >
     <input
-      class="base-input"
-      :type="type"
-      :value="displayValue"
-      @input="updateInternalValue($event.target.value)"
+      v-model="internalValue"
+      @input="updateValue($event.target.value)"
+      @focus="handleFocus"
+      @blur="handleBlur"
     />
+    <span class="input-status" v-if="isInputFocused && !internalValue">!</span>
   </div>
 </template>
 
@@ -13,54 +17,74 @@
 export default {
   name: "BaseInput",
   props: {
-    value: {
-      type: String,
-      default: "",
-    },
-    type: {
-      type: String,
-      default: "text",
-    },
-    // Thêm một prop mới để đánh dấu dữ liệu đã được chọn từ selectOption
-    selectedData: {
-      type: Object,
-      default: null,
-    },
+    value: String,
   },
-  computed: {
-    // Hiển thị giá trị từ selectedData vào BaseInput
-    displayValue() {
-      if (this.selectedData) {
-        return this.selectedData.accountNumber;
-      }
-      if (this.selectedData) {
-        return this.selectedData.bankName;
-      } else {
-        return this.value;
-      }
+  data() {
+    return {
+      internalValue: this.value || "",
+      isInputFocused: false,
+    };
+  },
+  watch: {
+    value(newValue) {
+      this.internalValue = newValue;
     },
   },
   methods: {
-    // Sử dụng phương thức này để cập nhật giá trị nội bộ, không phát ra sự kiện input
-    updateInternalValue(value) {
-      this.$emit("update", value);
+    updateValue(value) {
+      this.internalValue = value;
+      this.$emit("input", value);
+    },
+    handleFocus() {
+      this.isInputFocused = true;
+    },
+    handleBlur() {
+      this.isInputFocused = false;
     },
   },
 };
 </script>
 
 <style scoped>
-.input-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.base-input {
+  border: 1px solid #999;
+  border-radius: 2px;
+  overflow: hidden;
+  height: 30px;
+  position: relative;
 }
 
-.base-input {
+.base-input input {
   width: 100%;
-  height: 30px; /* Bạn có thể thay đổi giá trị này nếu cần */
+  height: 100%;
   border: none;
+  outline: none;
   padding: 0 8px;
-  box-sizing: border-box;
+}
+
+.invalid {
+  border-color: red;
+}
+
+.valid {
+  border-color: #68c75b;
+}
+
+.input-status {
+  color: red;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: bold;
+  background: white;
+  border: 1px solid red;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
 }
 </style>

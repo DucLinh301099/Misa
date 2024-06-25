@@ -14,7 +14,7 @@
           :columnConfig="extendResources.columnConfig"
           :triggerModal="openCreateBankAccountModal"
           :show-second-input_employee="false"
-          :selectedRow="selectedBankAccount"
+          :selectedOption="selectedBankAccount"
           @update:selectedRow="updateSelectedRow('bankAccount', $event)"
         />
         <ComboboxInput
@@ -23,7 +23,7 @@
           :columnConfig="supplier.columnConfig"
           :triggerModal="openCreateSupplierModal"
           :show-second-input_employee="false"
-          :selectedRow="selectedSupplier"
+          :selectedOption="selectedSupplier"
           @update:selectedRow="updateSelectedRow('supplier', $event)"
         />
 
@@ -34,7 +34,7 @@
           <label for="bill-content-input">Nội dung thanh toán</label>
           <div class="input-container">
             <div class="input-with-button-1">
-              <BaseInputComponent
+              <BaseInput
                 v-model:value="inputValue"
                 :validator="inputValidator"
                 class="base-input-1"
@@ -50,7 +50,7 @@
           :triggerModal="openCreateEmployeeModal"
           :showComponent="!hideCreateEmployeeInput"
           :showSecondInput="false"
-          :selectedRow="selectedEmployee"
+          :selectedOption="selectedEmployee"
           @update:selectedRow="updateSelectedRow('employee', $event)"
         />
         <div class="document">
@@ -113,7 +113,7 @@ import { ref, computed } from "vue";
 import HeaderPayment from "../components/PaymentPage/HeaderPayment.vue";
 import ComboboxInput from "../components/ControlComponent/ComboboxInput.vue";
 import AccountReceive from "../components/PaymentPage/AccountReceive.vue";
-import BaseInputComponent from "../components/BaseComponent/BaseInputComponent.vue";
+import BaseInput from "../components/BaseComponent/BaseInputComponent.vue";
 import DateTimeComponent from "../components/ControlComponent/DateTimeComponent.vue";
 import FooterPayment from "../components/PaymentPage/FooterPayment.vue";
 import SummaryComponent from "../components/ControlComponent/SummaryComponent.vue";
@@ -131,7 +131,7 @@ export default {
     HeaderPayment,
     ComboboxInput,
     AccountReceive,
-    BaseInputComponent,
+    BaseInput,
     DateTimeComponent,
     FooterPayment,
     SummaryComponent,
@@ -169,19 +169,31 @@ export default {
           {
             id: "KH00001",
             name: "LÊ THỊ NHÀN 72M 0353",
-            taxCode: "350010005...",
-            address: "Long điền, Huyện Long Điền, Tỉnh Bà Rịa - V...",
+            taxCode: "350010005",
+            address: "Long điền, Long Điền, Bà Rịa",
             phone: "0982635679",
           },
           {
             id: "KH00002",
             name: "Nguyễn Thị Dung",
-            taxCode: "",
+            taxCode: "350010005",
             address: "số 85 ngõ 120 vĩnh tuy",
             phone: "0982635679",
           },
-          { id: "NV00001", name: "A", taxCode: "", address: "", phone: "" },
-          { id: "NV00002", name: "Linh", taxCode: "", address: "", phone: "" },
+          {
+            id: "NV00001",
+            name: "Anh",
+            taxCode: "350010005",
+            address: "Hải Dương",
+            phone: "0975684324",
+          },
+          {
+            id: "NV00002",
+            name: "Linh",
+            taxCode: "350010005",
+            address: "Hà Nội",
+            phone: "0988654124",
+          },
         ],
         columnConfig: [
           { columnName: "Đối tượng", fieldName: "id" },
