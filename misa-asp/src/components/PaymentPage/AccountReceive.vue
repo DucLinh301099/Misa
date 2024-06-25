@@ -7,7 +7,6 @@
           v-model="inputValue"
           :placeholder="'Số tài khoản'"
           class="base-input"
-          track-by="accountNumber"
         />
         <button @click="showModal" class="add-button"></button>
         <multiselect
@@ -41,12 +40,12 @@
           </thead>
           <tbody>
             <tr
-              v-for="(account, index) in options"
+              v-for="(item, index) in options"
               :key="index"
-              @click="selectOption(account)"
+              @click="selectOption(item)"
             >
               <td v-for="(column, colIndex) in columnConfig" :key="colIndex">
-                {{ account[column.fieldName] }}
+                {{ item[column.fieldName] }}
               </td>
             </tr>
           </tbody>
@@ -106,10 +105,10 @@ export default {
     showModal() {
       // Xử lý logic để hiển thị modal
     },
-    selectOption(option) {
-      this.selectedOption = option;
-      this.inputValue = option.accountNumber;
-      this.secondInputValue = option.branch;
+    selectOption(item) {
+      this.selectedOption = item;
+      this.inputValue = item.accountNumber;
+      this.secondInputValue = item.branch;
       this.showTable = false;
     },
   },

@@ -1,4 +1,3 @@
-<!-- src/components/AccountingComponent.vue -->
 <template>
   <div class="accounting-component">
     <label for="accounting" class="accounting">Hạch toán</label>
@@ -16,7 +15,12 @@
         <tr v-for="(row, rowIndex) in rows" :key="rowIndex">
           <td>{{ rowIndex + 1 }}</td>
           <td v-for="(column, colIndex) in columnConfig" :key="colIndex">
-            <div v-if="column.dataType === 'dropdown'">
+            <div
+              v-if="
+                column.dataType === 'dropdown' &&
+                shouldDisplayCombobox(column.fieldName, row)
+              "
+            >
               <ComboboxGrid
                 v-model="row[column.fieldName]"
                 :options="getOptionsForField(column.fieldName)"
@@ -51,10 +55,10 @@ export default {
       rows: [
         {
           description: "",
-          debitAccount: [],
-          creditAccount: [],
+          debitAccount: null,
+          creditAccount: null,
           amount: 0,
-          object: [],
+          object: null,
           objectName: "",
         },
       ],
@@ -81,22 +85,8 @@ export default {
       resources: {
         debitAccount: {
           options: [
-            {
-              accountNumber: "1111",
-              accountName: "Tiền Việt Nam",
-            },
-            {
-              accountNumber: "1112",
-              accountName: "Ngoại Tệ",
-            },
-            {
-              accountNumber: "121",
-              accountName: "Chứng khoán kinh doanh",
-            },
-            {
-              accountNumber: "1281",
-              accountName: "Tiền gửi có thời hạn",
-            },
+            { accountNumber: "1111", accountName: "Tiền Việt Nam" },
+            { accountNumber: "1112", accountName: "Ngoại Tệ" },
           ],
           columnConfig: [
             { columnName: "Số tài khoản", fieldName: "accountNumber" },
@@ -105,14 +95,8 @@ export default {
         },
         creditAccount: {
           options: [
-            {
-              accountNumber: "1111",
-              accountName: "Tiền Việt Nam",
-            },
-            {
-              accountNumber: "1112",
-              accountName: "Ngoại Tệ",
-            },
+            { accountNumber: "1111", accountName: "Tiền Việt Nam" },
+            { accountNumber: "1112", accountName: "Ngoại Tệ" },
           ],
           columnConfig: [
             { columnName: "Số tài khoản", fieldName: "accountNumber" },
@@ -168,20 +152,22 @@ export default {
     getDropdownColumnConfig(field) {
       if (field === "debitAccount" || field === "creditAccount") {
         return this.resources.debitAccount.columnConfig;
-      } else if (field === "creditAccount") {
-        return this.resources.creditAccount.columnConfig;
       } else if (field === "object") {
         return this.resources.object.columnConfig;
       }
       return [];
     },
+    shouldDisplayCombobox(field, row) {
+      const value = row[field];
+      return !Array.isArray(value) && value !== null;
+    },
     addRow() {
       this.rows.push({
         description: "",
-        debitAccount: [],
-        creditAccount: [],
+        debitAccount: null,
+        creditAccount: null,
         amount: 0,
-        object: [],
+        object: null,
         objectName: "",
       });
     },
@@ -191,6 +177,9 @@ export default {
     clearRows() {
       this.rows = [];
     },
+    // updateDropdownField(rowIndex, fieldName, value) {
+    //   this.rows[rowIndex][fieldName] = value;
+    // },
   },
 };
 </script>

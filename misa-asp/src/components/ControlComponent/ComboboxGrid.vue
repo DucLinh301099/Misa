@@ -1,24 +1,35 @@
-<!-- src/components/ControlComponent/ComboboxComponent.vue -->
 <template>
-  <div v-if="showComponent" class="expense-account-input-wrapper">
+  <div class="combobox-grid">
     <div class="input-container">
-      <div class="input-with-button">
+      <div
+        class="input-with-button"
+        :class="{
+          tooltip: isInputFocused && !inputValue,
+          'invalid-input': isInputFocused && !isValidInput,
+          'valid-input': isValidInput && !isInputFocused,
+        }"
+      >
         <BaseInput
           v-model="inputValue"
           :validator="inputValidator"
           class="base-input"
+          :class="{ invalid: !isValidInput }"
+          @focus="isInputFocused = true"
+          @blur="isInputFocused = false"
         />
 
         <multiselect
-          v-bind="selectedOption"
+          v-bind:selected="selectedOption"
           :options="filteredOptions"
           :searchable="true"
           :close-on-select="true"
           placeholder=""
           class="multiselect"
+          @update:selected="handleSelectOption"
           @open="showTable = true"
           @close="showTable = false"
         />
+        <span class="input-status" v-if="!isValidInput">!</span>
       </div>
     </div>
 
@@ -36,7 +47,7 @@
             <tr
               v-for="(item, index) in filteredOptions"
               :key="index"
-              @click="selectRow(item)"
+              @click="handleSelectOption(item)"
             >
               <td v-for="(column, colIndex) in columnConfig" :key="colIndex">
                 {{ item[column.fieldName] }}
@@ -61,37 +72,22 @@ export default {
     Multiselect,
   },
   props: {
-    selectedOption: {
-      type: Object,
-      default: null,
-    },
     options: {
       type: Array,
-      default: null,
-    },
-    selectRow: {
-      type: Function,
-      default: null,
+      required: true,
     },
     columnConfig: {
       type: Array,
-      default: null,
-    },
-    isRequired: {
-      type: Boolean,
-      default: false,
-    },
-
-    showComponent: {
-      type: Boolean,
-      default: true,
+      required: true,
     },
   },
   data() {
     return {
       inputValue: "",
-      secondInputValue: "",
       showTable: false,
+      isValidInput: true,
+      isInputFocused: false,
+      selectedOption: null,
     };
   },
   computed: {
@@ -111,27 +107,31 @@ export default {
   methods: {
     inputValidator(value) {
       if (!value) {
+        this.isValidInput = false;
         return "This field is required";
       }
       if (value.length < 3) {
+        this.isValidInput = false;
         return "Must be at least 3 characters";
       }
+      this.isValidInput = true;
       return "";
+    },
+    handleSelectOption(option) {
+      this.selectedOption = option;
+      this.inputValue = option.name; // Đảm bảo hiển thị thông tin thích hợp trong BaseInput
+      this.showTable = false; // Đóng dropdown table sau khi chọn
+      this.$emit("input", option); // Thêm dòng này để cập nhật v-model
     },
   },
 };
 </script>
 
 <style scoped>
-.expense-account-input-wrapper {
+.combobox-grid {
   display: flex;
   flex-direction: column;
   margin-bottom: 8px;
-}
-
-label {
-  margin-bottom: 8px;
-  font-weight: bold;
 }
 
 .input-container {
@@ -147,7 +147,6 @@ label {
   border-radius: 2px;
   overflow: hidden;
   flex-grow: 2;
-
   height: 30px;
   position: relative;
 }
@@ -167,31 +166,27 @@ label {
   padding: 0 8px;
 }
 
+.input-status {
+  color: red;
+}
+
+.invalid-input {
+  border-color: red;
+}
+
+.valid-input {
+  border-color: #68c75b;
+}
+
+.tooltip {
+  border-color: red;
+}
+
 .multiselect {
   width: 40px;
   border: none;
-  /* border-left: 1px solid #999; */
 }
 
-.second-input {
-  border: 1px solid #999;
-  border-radius: 2px;
-  padding: 8px;
-  box-sizing: border-box;
-  height: 37px;
-  flex-grow: 1;
-  width: 50%;
-  margin-left: 15px;
-}
-.second-input-e {
-  border-radius: 2px;
-  padding: 8px;
-  box-sizing: border-box;
-  height: 37px;
-  flex-grow: 1;
-  width: 50%;
-  margin-left: 15px;
-}
 .dropdown-table-wrapper {
   position: absolute;
   z-index: 500;

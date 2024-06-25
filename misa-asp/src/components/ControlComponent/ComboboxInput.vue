@@ -13,7 +13,7 @@
         />
         <button @click="triggerModal" class="add-button">+</button>
         <multiselect
-          v-bind="selectedOption"
+          :value="selectRow"
           :options="filteredOptions"
           :searchable="true"
           :close-on-select="true"
@@ -27,13 +27,12 @@
         v-if="showSecondInput"
         v-model="secondInputValue"
         class="base-input second-input"
-        placeholder="Chi nhánh"
       />
       <BaseInput
         v-if="showSecondInput_employee"
-        v-model="secondInputValue"
+        v-bind="secondInputValue"
         class="base-input second-input-e"
-        placeholder="Chi nhánh"
+        @input="updateSecondInputValue"
       />
     </div>
 
@@ -89,8 +88,8 @@ export default {
       default: null,
     },
     selectRow: {
-      type: Function,
-      default: null,
+      type: Object,
+      default: () => ({}),
     },
     columnConfig: {
       type: Array,
@@ -117,6 +116,7 @@ export default {
       default: true,
     },
   },
+
   data() {
     return {
       inputValue: "",
@@ -147,6 +147,12 @@ export default {
         return "Must be at least 3 characters";
       }
       return "";
+    },
+    selectRow(item) {
+      console.log("Item selected:", item); // Debug log
+
+      this.$emit("update:selectedRow", item);
+      this.showTable = false; // close the dropdown table
     },
   },
 };

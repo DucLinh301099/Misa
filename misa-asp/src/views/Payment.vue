@@ -13,8 +13,9 @@
           :options="extendResources.options"
           :columnConfig="extendResources.columnConfig"
           :triggerModal="openCreateBankAccountModal"
-          isRequired="true"
           :show-second-input_employee="false"
+          :selectedRow="selectedBankAccount"
+          @update:selectedRow="updateSelectedRow('bankAccount', $event)"
         />
         <ComboboxInput
           label="Đối Tượng"
@@ -22,6 +23,8 @@
           :columnConfig="supplier.columnConfig"
           :triggerModal="openCreateSupplierModal"
           :show-second-input_employee="false"
+          :selectedRow="selectedSupplier"
+          @update:selectedRow="updateSelectedRow('supplier', $event)"
         />
 
         <component
@@ -47,6 +50,8 @@
           :triggerModal="openCreateEmployeeModal"
           :showComponent="!hideCreateEmployeeInput"
           :showSecondInput="false"
+          :selectedRow="selectedEmployee"
+          @update:selectedRow="updateSelectedRow('employee', $event)"
         />
         <div class="document">
           <div class="document-content">
@@ -150,7 +155,7 @@ export default {
           {
             accountNumber: "0344039457",
             bankName: "Ngân hàng TMCP An Bình",
-            branch: "",
+            branch: "Thanh Xuân",
           },
         ],
         columnConfig: [
@@ -203,10 +208,32 @@ export default {
           { columnName: "ĐT di động", fieldName: "phone" },
         ],
       },
+      selectedBankAccount: null,
+      selectedSupplier: null,
+      selectedEmployee: null,
+      inputValue: "",
+      secondInputValue: "",
       isCreateBankAccountModalVisible: false,
       isCreateSupplierModalVisible: false,
       isCreateEmployeeModalVisible: false,
     };
+  },
+  methods: {
+    updateSelectedRow(type, item) {
+      if (type === "bankAccount") {
+        this.selectedBankAccount = item;
+        this.inputValue = item.accountNumber;
+        this.secondInputValue = item.branch;
+      } else if (type === "supplier") {
+        this.selectedSupplier = item;
+        this.inputValue = item.id;
+        this.secondInputValue = item.address;
+      } else if (type === "employee") {
+        this.selectedEmployee = item;
+        this.inputValue = item.code;
+      }
+    },
+    // ... existing methods ...
   },
   setup() {
     const voucherType = ref("1.Trả tiền nhà cung cấp");
