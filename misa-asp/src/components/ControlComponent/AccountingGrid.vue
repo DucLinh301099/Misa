@@ -25,6 +25,9 @@
                 v-model="row[column.fieldName]"
                 :options="getOptionsForField(column.fieldName)"
                 :columnConfig="getDropdownColumnConfig(column.fieldName)"
+                @update:selectedRow="
+                  updateRowField(rowIndex, column.fieldName, $event)
+                "
               />
             </div>
             <div v-else>
@@ -89,7 +92,12 @@ export default {
             { accountNumber: "1112", accountName: "Ngoại Tệ" },
           ],
           columnConfig: [
-            { columnName: "Số tài khoản", fieldName: "accountNumber" },
+            {
+              columnName: "Số tài khoản",
+              fieldName: "accountNumber",
+              isDisplay: true,
+              isValue: true,
+            },
             { columnName: "Tên tài khoản", fieldName: "accountName" },
           ],
         },
@@ -99,7 +107,12 @@ export default {
             { accountNumber: "1112", accountName: "Ngoại Tệ" },
           ],
           columnConfig: [
-            { columnName: "Số tài khoản", fieldName: "accountNumber" },
+            {
+              columnName: "Số tài khoản",
+              fieldName: "accountNumber",
+              isDisplay: true,
+              isValue: true,
+            },
             { columnName: "Tên tài khoản", fieldName: "accountName" },
           ],
         },
@@ -128,7 +141,12 @@ export default {
             },
           ],
           columnConfig: [
-            { columnName: "Đối tượng", fieldName: "object" },
+            {
+              columnName: "Đối tượng",
+              fieldName: "object",
+              isDisplay: true,
+              isValue: true,
+            },
             { columnName: "Tên đối tượng", fieldName: "objectName" },
             { columnName: "Mã số thuế", fieldName: "code" },
             { columnName: "Địa chỉ", fieldName: "address" },
@@ -158,8 +176,7 @@ export default {
       return [];
     },
     shouldDisplayCombobox(field, row) {
-      const value = row[field];
-      return !Array.isArray(value) && value !== null;
+      return true;
     },
     addRow() {
       this.rows.push({
@@ -176,6 +193,12 @@ export default {
     },
     clearRows() {
       this.rows = [];
+    },
+    updateRowField(rowIndex, fieldName, selectedOption) {
+      this.rows[rowIndex][fieldName] = selectedOption[fieldName];
+      if (fieldName === "object") {
+        this.rows[rowIndex].objectName = selectedOption.objectName;
+      }
     },
   },
 };
@@ -231,7 +254,8 @@ export default {
   padding: 4px;
   box-sizing: border-box;
   height: 33px;
-  border-radius: 3px;
+  border-radius: 2px;
+  outline: none;
 }
 
 .dropdown-select-a {

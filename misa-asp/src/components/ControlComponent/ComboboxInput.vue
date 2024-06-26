@@ -6,11 +6,17 @@
     <div class="input-container">
       <div class="input-with-button">
         <BaseInput
-          v-model="inputValue"
           class="base-input"
-          :selectedOption="selectedOption"
+          :type="type"
+          :value="inputValue"
+          @focus="handleFocus"
+          @blur="handleBlur"
+          @onInput="handleOnInput"
         />
-        <button @click="triggerModal" class="add-button">+</button>
+        <button v-if="showButton_1" @click="triggerModal" class="add-button">
+          +
+        </button>
+        <button v-if="showButton_2" class="add-button"></button>
         <multiselect
           :value="selectedOption"
           @input="updateSelectedOption"
@@ -27,13 +33,21 @@
         v-if="showSecondInput"
         v-model="secondInputValue"
         class="base-input second-input"
-        :selectedOption="selectedOption"
+        :type="type"
+        :value="secondInputValue"
+        @input="updateSecondInputValue"
+        @focus="handleFocus"
+        @blur="handleBlur"
       />
       <BaseInput
         v-if="showSecondInput_employee"
         v-model="secondInputValue"
         class="base-input second-input-e"
-        :selectedOption="selectedOption"
+        :type="type"
+        :value="secondInputValue"
+        @input="updateSecondInputValue"
+        @focus="handleFocus"
+        @blur="handleBlur"
       />
     </div>
 
@@ -76,6 +90,18 @@ export default {
     Multiselect,
   },
   props: {
+    selectedRow: {
+      type: Object,
+      default: null,
+    },
+    showButton_1: {
+      type: Boolean,
+      default: true,
+    },
+    showButton_2: {
+      type: Boolean,
+      default: true,
+    },
     label: {
       type: String,
       default: null,
@@ -119,6 +145,7 @@ export default {
       secondInputValue: "",
       showTable: false,
       internalSelectedOption: this.selectedOption,
+      isInputFocused: false,
     };
   },
   watch: {
@@ -134,23 +161,17 @@ export default {
       if (this.inputValue === "") {
         return this.options;
       }
-      return this.options.filter(
-        (option) =>
-          option.bankName
-            ?.toLowerCase()
-            .includes(this.inputValue.toLowerCase()) ||
-          option.name?.toLowerCase().includes(this.inputValue.toLowerCase())
+
+      let displayField = this.columnConfig.find((_) => _.isDisplay)?.fieldName;
+
+      return this.options.filter((option) =>
+        option[displayField]
+          ?.toLowerCase()
+          .includes(this.inputValue.toLowerCase())
       );
     },
   },
   methods: {
-    updateSelectedOption(value) {
-      this.internalSelectedOption = value;
-      if (value) {
-        this.inputValue = value.accountNumber || value.id || value.code;
-        this.secondInputValue = value.branch || value.address || "";
-      }
-    },
     inputValidator(value) {
       if (!value) {
         return "This field is required";
@@ -161,8 +182,31 @@ export default {
       return "";
     },
     selectRow(item) {
+      let displayFirstValue = this.columnConfig.find(
+        (_) => _.isDisplay
+      )?.fieldName;
+      if (displayFirstValue) {
+        this.inputValue = item[displayFirstValue];
+      }
+      let displaySecondValue = this.columnConfig.find(
+        (_) => _.isDisplaySecond
+      )?.fieldName;
+      if (displaySecondValue) {
+        this.secondInputValue = item[displaySecondValue];
+      }
+
       this.$emit("update:selectedRow", item);
-      this.showTable = false; // close the dropdown table
+
+      this.showTable = false; // đóng table
+    },
+    handleFocus() {
+      this.isInputFocused = true;
+    },
+    handleBlur() {
+      this.isInputFocused = false;
+    },
+    handleOnInput(val) {
+      this.inputValue = val;
     },
   },
 };
@@ -192,7 +236,6 @@ label {
   border-radius: 2px;
   overflow: hidden;
   flex-grow: 2;
-
   height: 35px;
   position: relative;
 }
@@ -202,6 +245,11 @@ label {
   padding: 8px;
   box-sizing: border-box;
   height: 30px;
+  outline: none;
+}
+.base-input:focus {
+  outline: none; /* Ensure no outline appears on focus */
+  border: 2px solid #0075c0; /* Thêm viền màu xanh khi focus */
 }
 
 .base-input input {
@@ -241,6 +289,9 @@ label {
   width: 50%;
   margin-left: 15px;
 }
+.second-input:focus {
+  border: 2px solid #0075c0; /* Thêm viền màu xanh khi focus */
+}
 .second-input-e {
   border-radius: 2px;
   padding: 8px;
@@ -249,6 +300,9 @@ label {
   flex-grow: 1;
   width: 50%;
   margin-left: 15px;
+}
+.second-input-e:focus {
+  border: 2px solid #0075c0; /* Thêm viền màu xanh khi focus */
 }
 .dropdown-table-wrapper {
   position: absolute;

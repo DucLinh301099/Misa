@@ -181,6 +181,7 @@ label {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 2px;
+  outline: none;
 }
 
 .textarea-field {

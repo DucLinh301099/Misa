@@ -21,16 +21,18 @@ export default {
       type: String,
       default: "text",
     },
-    selectedOption: {
-      type: Object, // Kiểu dữ liệu của option đã chọn từ multiselect
-      default: null,
-    },
   },
   methods: {
     updateValue(event) {
-      this.$emit("input", event.target.value);
+      this.$emit("onInput", event.target.value);
     },
   },
+  data() {
+    return {
+      internalValue: "",
+    };
+  },
+  watch: {},
 };
 </script>
 
@@ -47,5 +49,15 @@ export default {
   border: none;
   padding: 0 8px;
   box-sizing: border-box;
+}
+.base-input {
+  border: none;
+  padding: 8px;
+  box-sizing: border-box;
+  height: 30px;
+  outline: none;
+}
+.base-input:focus {
+  outline: none; /* Ensure no outline appears on focus */
 }
 </style>

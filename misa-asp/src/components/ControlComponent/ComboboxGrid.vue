@@ -7,20 +7,29 @@
       >
         <input
           v-model="inputValue"
-          @input="updateValue($event.target.value)"
+          :value="inputValue"
+          :type="type"
+          @input="updateInputValue"
           @focus="handleFocus"
           @blur="handleBlur"
           class="base-input"
         />
-        <span class="input-status" v-if="isInputFocused && !inputValue">!</span>
+        <div
+          class="input-status-container"
+          v-if="isInputFocused && !inputValue"
+        >
+          <span class="input-status">!</span>
+          <span class="tooltip">Tài khoản không được để trống.</span>
+        </div>
         <multiselect
-          v-bind:selected="selectedOption"
+          v-show="isMultiselectVisible"
+          :value="selectedOption"
+          @input="updateSelectedOption"
           :options="filteredOptions"
           :searchable="true"
           :close-on-select="true"
           placeholder=""
           class="multiselect"
-          @update:selected="handleSelectOption"
           @open="showTable = true"
           @close="showTable = false"
         />
@@ -41,7 +50,7 @@
             <tr
               v-for="(item, index) in filteredOptions"
               :key="index"
-              @click="handleSelectOption(item)"
+              @click="selectRow(item)"
             >
               <td v-for="(column, colIndex) in columnConfig" :key="colIndex">
                 {{ item[column.fieldName] }}
@@ -68,6 +77,10 @@ export default {
       type: Array,
       required: true,
     },
+    selectedRow: {
+      type: Object,
+      default: null,
+    },
     columnConfig: {
       type: Array,
       required: true,
@@ -77,8 +90,8 @@ export default {
     return {
       inputValue: "",
       showTable: false,
-      selectedOption: null,
       isInputFocused: false,
+      isMultiselectVisible: false,
     };
   },
   computed: {
@@ -86,31 +99,41 @@ export default {
       if (this.inputValue === "") {
         return this.options;
       }
-      return this.options.filter(
-        (option) =>
-          option.bankName
-            ?.toLowerCase()
-            .includes(this.inputValue.toLowerCase()) ||
-          option.name?.toLowerCase().includes(this.inputValue.toLowerCase())
+
+      let displayField = this.columnConfig.find((_) => _.isDisplay)?.fieldName;
+
+      return this.options.filter((option) =>
+        option[displayField]
+          ?.toLowerCase()
+          .includes(this.inputValue.toLowerCase())
       );
     },
   },
   methods: {
-    updateValue(value) {
-      this.inputValue = value;
-      this.$emit("input", value);
-    },
     handleFocus() {
       this.isInputFocused = true;
+      this.isMultiselectVisible = true;
     },
     handleBlur() {
       this.isInputFocused = false;
+      // Sử dụng timeout để đảm bảo rằng multiselect không bị ẩn ngay lập tức
+      setTimeout(() => {
+        if (!this.isInputFocused) {
+          this.isMultiselectVisible = false;
+        }
+      }, 2000);
     },
-    handleSelectOption(option) {
-      this.selectedOption = option;
-      this.inputValue = option.name;
+
+    selectRow(item) {
+      let displayValue = this.columnConfig.find((_) => _.isDisplay)?.fieldName;
+      if (displayValue) {
+        this.inputValue = item[displayValue];
+      }
+
+      this.$emit("update:selectedRow", item);
+
       this.showTable = false;
-      this.$emit("input", option);
+      this.isMultiselectVisible = false;
     },
   },
 };
@@ -149,7 +172,7 @@ export default {
 }
 
 .base-input:focus {
-  border: none; /* Đảm bảo không hiển thị viền đen khi được chọn */
+  border: none;
   outline: none;
 }
 
@@ -161,12 +184,15 @@ export default {
   border-color: #68c75b;
 }
 
-.input-status {
-  color: red;
+.input-status-container {
   position: absolute;
   right: 50px;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.input-status {
+  color: red;
   font-weight: bold;
   background: white;
   border: 1px solid red;
@@ -177,6 +203,30 @@ export default {
   align-items: center;
   justify-content: center;
   font-size: 14px;
+  cursor: pointer;
+  position: relative;
+}
+
+.tooltip {
+  visibility: hidden;
+  background-color: #f44336;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  width: 160px;
+}
+
+.input-status-container:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 
 .multiselect {

@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import BaseInput from "../BaseComponent/BaseInput.vue";
+import BaseInput from "../BaseComponent/BaseInputComponent.vue";
 
 export default {
   name: "InformationInput",

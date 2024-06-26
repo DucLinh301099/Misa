@@ -14,6 +14,7 @@
           :columnConfig="extendResources.columnConfig"
           :triggerModal="openCreateBankAccountModal"
           :show-second-input_employee="false"
+          :showButton_2="false"
           :selectedOption="selectedBankAccount"
           @update:selectedRow="updateSelectedRow('bankAccount', $event)"
         />
@@ -23,19 +24,34 @@
           :columnConfig="supplier.columnConfig"
           :triggerModal="openCreateSupplierModal"
           :show-second-input_employee="false"
+          :showButton_2="false"
           :selectedOption="selectedSupplier"
           @update:selectedRow="updateSelectedRow('supplier', $event)"
         />
-
-        <component
-          :is="showInformationInput ? 'InformationInput' : 'AccountReceive'"
+        <ComboboxInput
+          v-if="!hideAccountReceive"
+          label="Tài Khoản Nhận"
+          :options="accountReceive.options"
+          :columnConfig="accountReceive.columnConfig"
+          :triggerModal="openCreateSupplierModal"
+          :show-second-input_employee="false"
+          :showComponent="!hideAccountReceive"
+          :showButton_1="false"
+          :selectedOption="selectedAccountReceive"
+          @update:selectedRow="updateSelectedRow('accountReceive', $event)"
         />
+
+        <InformationInput
+          v-if="!hideInformationInput"
+          :showComponent="!hideInformationInput"
+        />
+
         <div class="bill-content-input-wrapper">
           <label for="bill-content-input">Nội dung thanh toán</label>
           <div class="input-container">
             <div class="input-with-button-1">
               <BaseInput
-                v-model:value="inputValue"
+                v-model:value="paymentContent"
                 :validator="inputValidator"
                 class="base-input-1"
               />
@@ -50,6 +66,7 @@
           :triggerModal="openCreateEmployeeModal"
           :showComponent="!hideCreateEmployeeInput"
           :showSecondInput="false"
+          :showButton_2="false"
           :selectedOption="selectedEmployee"
           @update:selectedRow="updateSelectedRow('employee', $event)"
         />
@@ -112,25 +129,26 @@
 import { ref, computed } from "vue";
 import HeaderPayment from "../components/PaymentPage/HeaderPayment.vue";
 import ComboboxInput from "../components/ControlComponent/ComboboxInput.vue";
-import AccountReceive from "../components/PaymentPage/AccountReceive.vue";
+
 import BaseInput from "../components/BaseComponent/BaseInputComponent.vue";
 import DateTimeComponent from "../components/ControlComponent/DateTimeComponent.vue";
 import FooterPayment from "../components/PaymentPage/FooterPayment.vue";
 import SummaryComponent from "../components/ControlComponent/SummaryComponent.vue";
 import AccountingGrid from "../components/ControlComponent/AccountingGrid.vue";
 import AttachFile from "../components/PaymentPage/AttachFile.vue";
-import InformationInput from "../components/PaymentPage/InformationInput.vue";
+
 import CreateBankAccount from "../components/PaymentPage/CreateBankAccount.vue";
 import CreateSupplier from "../components/PaymentPage/CreateSupplier.vue";
 import CreateEmployee from "../components/PaymentPage/CreateEmployee.vue";
 import Modal from "../components/BaseComponent/Modal.vue";
+import InformationInput from "../components/PaymentPage/InformationInput.vue";
 
 export default {
   name: "Payment",
   components: {
     HeaderPayment,
     ComboboxInput,
-    AccountReceive,
+
     BaseInput,
     DateTimeComponent,
     FooterPayment,
@@ -159,8 +177,18 @@ export default {
           },
         ],
         columnConfig: [
-          { columnName: "Số tài khoản", fieldName: "accountNumber" },
-          { columnName: "Tên ngân hàng", fieldName: "bankName" },
+          {
+            columnName: "Số tài khoản",
+            fieldName: "accountNumber",
+            isValue: true,
+            isDisplay: true,
+          },
+          {
+            columnName: "Tên ngân hàng",
+            fieldName: "bankName",
+            isDisplaySecond: true,
+            isValue: true,
+          },
           { columnName: "Chi nhánh", fieldName: "branch" },
         ],
       },
@@ -168,7 +196,7 @@ export default {
         options: [
           {
             id: "KH00001",
-            name: "LÊ THỊ NHÀN 72M 0353",
+            name: "LÊ THỊ NHÀN ",
             taxCode: "350010005",
             address: "Long điền, Long Điền, Bà Rịa",
             phone: "0982635679",
@@ -182,14 +210,14 @@ export default {
           },
           {
             id: "NV00001",
-            name: "Anh",
+            name: "Minh Anh",
             taxCode: "350010005",
             address: "Hải Dương",
             phone: "0975684324",
           },
           {
             id: "NV00002",
-            name: "Linh",
+            name: "Đức Linh",
             taxCode: "350010005",
             address: "Hà Nội",
             phone: "0988654124",
@@ -197,9 +225,19 @@ export default {
         ],
         columnConfig: [
           { columnName: "Đối tượng", fieldName: "id" },
-          { columnName: "Tên đối tượng", fieldName: "name" },
+          {
+            columnName: "Tên đối tượng",
+            fieldName: "name",
+            isDisplay: true,
+            isValue: true,
+          },
           { columnName: "Mã số thuế", fieldName: "taxCode" },
-          { columnName: "Địa chỉ", fieldName: "address" },
+          {
+            columnName: "Địa chỉ",
+            fieldName: "address",
+            isDisplaySecond: true,
+            isValue: true,
+          },
           { columnName: "Điện thoại", fieldName: "phone" },
         ],
       },
@@ -214,15 +252,51 @@ export default {
           },
         ],
         columnConfig: [
-          { columnName: "Mã nhân viên", fieldName: "code" },
+          {
+            columnName: "Mã nhân viên",
+            fieldName: "code",
+            isDisplay: true,
+            isValue: true,
+          },
           { columnName: "Tên nhân viên", fieldName: "name" },
           { columnName: "Đơn vị", fieldName: "unit" },
           { columnName: "ĐT di động", fieldName: "phone" },
         ],
       },
+      accountReceive: {
+        options: [
+          {
+            accountNumber: "100871906534",
+            bankName: "Ngân hàng TMCP Ngoại thương Việt Nam",
+            branch: "Hai Bà Trưng",
+          },
+          {
+            accountNumber: "0344039457",
+            bankName: "Ngân hàng TMCP An Bình",
+            branch: "Thanh Xuân",
+          },
+        ],
+
+        columnConfig: [
+          {
+            columnName: "Số tài khoản",
+            fieldName: "accountNumber",
+            isDisplay: true,
+            isValue: true,
+          },
+          { columnName: "Tên ngân hàng", fieldName: "bankName" },
+          {
+            columnName: "Chi nhánh",
+            fieldName: "branch",
+            isDisplaySecond: true,
+            isValue: true,
+          },
+        ],
+      },
       selectedBankAccount: null,
       selectedSupplier: null,
       selectedEmployee: null,
+      selectedAccountReceive: null,
       inputValue: "",
       secondInputValue: "",
       isCreateBankAccountModalVisible: false,
@@ -232,17 +306,28 @@ export default {
   },
   methods: {
     updateSelectedRow(type, item) {
-      if (type === "bankAccount") {
-        this.selectedBankAccount = item;
-        this.inputValue = item.accountNumber;
-        this.secondInputValue = item.branch;
-      } else if (type === "supplier") {
-        this.selectedSupplier = item;
-        this.inputValue = item.id;
-        this.secondInputValue = item.address;
-      } else if (type === "employee") {
-        this.selectedEmployee = item;
-        this.inputValue = item.code;
+      switch (type) {
+        case "bankAccount":
+          this.selectedBankAccount = item;
+          this.inputValue = item.accountNumber;
+          this.secondInputValue = item.branch;
+          break;
+        case "supplier":
+          this.selectedSupplier = item;
+          this.inputValue = item.id;
+          this.paymentContent = `Chi tiền cho ${item.name}`;
+          this.secondInputValue = item.address;
+
+          break;
+        case "accountReceive":
+          this.selectedAccountReceive = item;
+          this.inputValue = item.accountNumber;
+          this.secondInputValue = item.branch;
+          break;
+        case "employee":
+          this.selectedEmployee = item;
+          this.inputValue = item.code;
+          break;
       }
     },
     // ... existing methods ...
@@ -251,7 +336,15 @@ export default {
     const voucherType = ref("1.Trả tiền nhà cung cấp");
     const paymentMethod = ref("Ủy nhiệm chi");
     const inputValue = ref(""); // Thêm ref cho inputValue
-    const showInformationInput = computed(
+    // const showInformationInput = computed(
+    //   () => paymentMethod.value === "Séc tiền mặt"
+    // );
+    const hideInformationInput = computed(
+      () =>
+        paymentMethod.value === "Ủy nhiệm chi" ||
+        paymentMethod.value === "Séc chuyển khoản"
+    );
+    const hideAccountReceive = computed(
       () => paymentMethod.value === "Séc tiền mặt"
     );
     const hideCreateEmployeeInput = computed(
@@ -317,7 +410,8 @@ export default {
       paymentMethod,
       inputValue,
       inputValidator,
-      showInformationInput,
+      hideAccountReceive,
+      hideInformationInput,
       hideCreateEmployeeInput,
       isCreateBankAccountModalVisible,
       isCreateSupplierModalVisible,
