@@ -22,6 +22,8 @@ namespace MisaAsp.Services
         Task<AuthResult> AuthenticateUserAsync(LoginRequest request);
         Task<IEnumerable<UserRequest>> GetAllUsersAsync();
         Task<bool> ForgotPasswordAsync(ForgotPasswordRequest request);
+        Task<IEnumerable<Employee>> GetAllEmployeeAsync();
+        Task<int> CreateEmployeeAsync(CreateEmployee request);
         Task<bool> DeleteUserAsync(int userId);
         Task<bool> UpdateUserAsync(UpdateUser user);
         Task<string> GetRoleAsync(string token);
@@ -55,6 +57,10 @@ namespace MisaAsp.Services
         public async Task<IEnumerable<UserRequest>> GetAllUsersAsync()
         {
             return await _accountRepo.GetAllUsersAsync();
+        }
+        public async Task<IEnumerable<Employee>> GetAllEmployeeAsync()
+        {
+            return await _accountRepo.GetAllEmployeeAsync();
         }
         public async Task<UpdateUser> GetUserByIdAsync(int id)
         {
@@ -92,6 +98,10 @@ namespace MisaAsp.Services
             request.Password = GetMd5Hash(request.Password);
 
             return await _accountRepo.RegisterUserAsync(request);
+        }
+        public async Task<int> CreateEmployeeAsync(CreateEmployee request)
+        {
+             return await _accountRepo.CreateEmployeeAsync(request);
         }
 
         public async Task<AuthResult> AuthenticateUserAsync(LoginRequest request)

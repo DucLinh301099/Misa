@@ -32,12 +32,14 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAccountantService, AccountantService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 #endregion
 
 #region Đăng kí Repo
 builder.Services.AddScoped<IBaseRepository, BaseRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountantRepository, AccountantRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 #endregion
 
 

@@ -103,8 +103,8 @@ export default {
         },
         creditAccount: {
           options: [
-            { accountNumber: "1111", accountName: "Tiền Việt Nam" },
-            { accountNumber: "1112", accountName: "Ngoại Tệ" },
+            { accountNumber: "1121", accountName: "Tiền Việt Nam" },
+            { accountNumber: "1122", accountName: "Ngoại Tệ" },
           ],
           columnConfig: [
             {
@@ -253,7 +253,7 @@ export default {
   border: 1px solid #999;
   padding: 4px;
   box-sizing: border-box;
-  height: 33px;
+  height: 30px;
   border-radius: 2px;
   outline: none;
 }

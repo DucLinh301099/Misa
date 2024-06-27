@@ -12,7 +12,10 @@ namespace MisaAsp.Repositories
         Task<bool> UpdateUserAsync(UpdateUser user);
         Task<bool> DeleteUserAsync(int userId);
         Task<IEnumerable<UserRequest>> GetAllUsersAsync();
+        
+        Task<IEnumerable<Employee>> GetAllEmployeeAsync();
         Task<int> RegisterUserAsync(RegistrationRequest request);
+        Task<int> CreateEmployeeAsync(CreateEmployee request);
         Task<bool> IsEmailUniqueAsync(string email);
         Task<bool> IsPhoneUniqueAsync(string phoneNumber);
         Task<bool> AuthenticateUserAsync(LoginRequest request);
@@ -79,7 +82,24 @@ namespace MisaAsp.Repositories
             };
             return await ExecuteProcScalarAsync<int>("registeruser", parameters);
         }
-    
+        public async Task<int> CreateEmployeeAsync(CreateEmployee request)
+        {
+            var parameters = new
+            {
+                EmployeeCode = request.EmployeeCode,
+                EmployeeName = request.EmployeeName,
+                Department = request.Department,             
+                MobilePhone = request.MobilePhone,
+           
+            };
+            return await ExecuteProcScalarAsync<int>("createemployee", parameters);
+        }
+        public async Task<IEnumerable<Employee>> GetAllEmployeeAsync()
+        {
+            var sql = "SELECT * FROM getallemployees()";
+            return await QueryAsync<Employee>(sql);
+        }
+
 
         public async Task<bool> IsEmailUniqueAsync(string email)
         {

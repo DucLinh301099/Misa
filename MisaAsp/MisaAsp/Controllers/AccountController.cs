@@ -54,6 +54,59 @@ namespace MisaAsp.Controllers
                 return BadRequest(res);
             }
         }
+        [HttpPost("createEmployee")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateCustomer([FromBody] CreateEmployee request)
+        {
+            var res = new ResOutput();
+
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    res.HandleError("Thất bại");
+                }
+                else
+                {
+                    var employeeId = await _accountService.CreateEmployeeAsync(request);
+
+                    if (employeeId > 0)
+                    {
+                        res.HandleSuccess("Tạo mới thành công", new { EmployeeId = employeeId });
+                    }
+                    else
+                    {
+                        res.HandleError("Tạo mới thất bại", new { EmployeeId = employeeId });
+                    }
+                }
+
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                res.HandleError(ex.Message);
+                return BadRequest(res);
+            }
+        }
+        [HttpGet("customer")]
+        //[Authorize(Roles = "Admin")] // Chỉ admin mới có quyền truy cập
+        [AllowAnonymous] // toàn quyền truy cập
+        public async Task<IActionResult> GetEmployee()
+        {
+            var employees = await _accountService.GetAllEmployeeAsync();
+            var res = new ResOutput();
+
+            if (employees != null && employees.Any())
+            {
+                res.HandleSuccess("Lấy thông tin Customer thành công", employees);
+                return Ok(res);
+            }
+            else
+            {
+                res.HandleError("Lấy thông tin Customer thất bại");
+                return BadRequest(res);
+            }
+        }
 
         [HttpPost("login")]
         [AllowAnonymous]

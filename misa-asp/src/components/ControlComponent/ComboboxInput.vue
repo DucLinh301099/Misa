@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showComponent" class="expense-account-input-wrapper">
+  <div v-if="showComponent" class="combobox-account-input-wrapper">
     <label for="expense-account-input">
       {{ label }} <span class="required" v-if="isRequired">*</span>
     </label>
@@ -13,10 +13,10 @@
           @blur="handleBlur"
           @onInput="handleOnInput"
         />
-        <button v-if="showButton_1" @click="triggerModal" class="add-button">
+        <button v-if="showButton" @click="triggerModal" class="add-button">
           +
         </button>
-        <button v-if="showButton_2" class="add-button"></button>
+
         <multiselect
           :value="selectedOption"
           @input="updateSelectedOption"
@@ -29,26 +29,6 @@
           @close="showTable = false"
         />
       </div>
-      <BaseInput
-        v-if="showSecondInput"
-        v-model="secondInputValue"
-        class="base-input second-input"
-        :type="type"
-        :value="secondInputValue"
-        @input="updateSecondInputValue"
-        @focus="handleFocus"
-        @blur="handleBlur"
-      />
-      <BaseInput
-        v-if="showSecondInput_employee"
-        v-model="secondInputValue"
-        class="base-input second-input-e"
-        :type="type"
-        :value="secondInputValue"
-        @input="updateSecondInputValue"
-        @focus="handleFocus"
-        @blur="handleBlur"
-      />
     </div>
 
     <transition name="dropdown">
@@ -94,14 +74,7 @@ export default {
       type: Object,
       default: null,
     },
-    showButton_1: {
-      type: Boolean,
-      default: true,
-    },
-    showButton_2: {
-      type: Boolean,
-      default: true,
-    },
+
     label: {
       type: String,
       default: null,
@@ -109,6 +82,10 @@ export default {
     selectedOption: {
       type: Object,
       default: null,
+    },
+    showButton: {
+      type: Boolean,
+      default: true,
     },
     options: {
       type: Array,
@@ -127,14 +104,6 @@ export default {
       required: true,
     },
     showComponent: {
-      type: Boolean,
-      default: true,
-    },
-    showSecondInput: {
-      type: Boolean,
-      default: true,
-    },
-    showSecondInput_employee: {
       type: Boolean,
       default: true,
     },
@@ -213,10 +182,11 @@ export default {
 </script>
 
 <style scoped>
-.expense-account-input-wrapper {
+.combobox-account-input-wrapper {
   display: flex;
   flex-direction: column;
   margin-bottom: 8px;
+  width: 45%;
 }
 
 label {

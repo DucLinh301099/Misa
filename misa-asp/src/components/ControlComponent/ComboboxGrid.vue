@@ -161,6 +161,7 @@ export default {
   flex-grow: 2;
   height: 30px;
   position: relative;
+  box-sizing: border-box;
 }
 
 .base-input {
@@ -169,6 +170,7 @@ export default {
   box-sizing: border-box;
   height: 30px;
   width: calc(100% - 40px);
+  box-sizing: border-box;
 }
 
 .base-input:focus {

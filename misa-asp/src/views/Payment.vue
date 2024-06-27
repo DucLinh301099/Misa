@@ -5,71 +5,107 @@
       :paymentMethod="paymentMethod"
       @update:voucherType="voucherType = $event"
       @update:paymentMethod="paymentMethod = $event"
+      class="header-payment"
     />
     <div class="input-information">
       <div class="input-information-right">
-        <ComboboxInput
-          label="Tài khoản chi"
-          :options="extendResources.options"
-          :columnConfig="extendResources.columnConfig"
-          :triggerModal="openCreateBankAccountModal"
-          :show-second-input_employee="false"
-          :showButton_2="false"
-          :selectedOption="selectedBankAccount"
-          @update:selectedRow="updateSelectedRow('bankAccount', $event)"
-        />
-        <ComboboxInput
-          label="Đối Tượng"
-          :options="supplier.options"
-          :columnConfig="supplier.columnConfig"
-          :triggerModal="openCreateSupplierModal"
-          :show-second-input_employee="false"
-          :showButton_2="false"
-          :selectedOption="selectedSupplier"
-          @update:selectedRow="updateSelectedRow('supplier', $event)"
-        />
-        <ComboboxInput
-          v-if="!hideAccountReceive"
-          label="Tài Khoản Nhận"
-          :options="accountReceive.options"
-          :columnConfig="accountReceive.columnConfig"
-          :triggerModal="openCreateSupplierModal"
-          :show-second-input_employee="false"
-          :showComponent="!hideAccountReceive"
-          :showButton_1="false"
-          :selectedOption="selectedAccountReceive"
-          @update:selectedRow="updateSelectedRow('accountReceive', $event)"
-        />
+        <div class="account-input-container">
+          <div class="account-input-wrapper">
+            <ComboboxInput
+              label="Tài khoản chi"
+              :options="extendResources.options"
+              :columnConfig="extendResources.columnConfig"
+              :triggerModal="openCreateBankAccountModal"
+              :showButto="true"
+              :selectedOption="selectedBankAccount"
+              @update:selectedRow="updateSelectedRow('bankAccount', $event)"
+            />
 
-        <InformationInput
-          v-if="!hideInformationInput"
-          :showComponent="!hideInformationInput"
-        />
+            <BaseInput
+              v-model="bankNameInput"
+              class="base-input second-input"
+              :type="type"
+              :value="bankNameInput"
+              @input="updateSecondInputValue"
+              @focus="handleFocus"
+              @blur="handleBlur"
+            />
+          </div>
+          <div class="account-input-wrapper">
+            <ComboboxInput
+              label="Đối Tượng"
+              :options="supplier.options"
+              :columnConfig="supplier.columnConfig"
+              :triggerModal="openCreateSupplierModal"
+              :showButton="true"
+              :selectedOption="selectedSupplier"
+              @update:selectedRow="updateSelectedRow('supplier', $event)"
+            />
+            <BaseInput
+              v-model="addressValue"
+              class="base-input second-input"
+              :type="type"
+              :value="addressValue"
+              @input="updateSecondInputValue"
+              @focus="handleFocus"
+              @blur="handleBlur"
+            />
+          </div>
 
-        <div class="bill-content-input-wrapper">
-          <label for="bill-content-input">Nội dung thanh toán</label>
-          <div class="input-container">
-            <div class="input-with-button-1">
-              <BaseInput
-                v-model:value="paymentContent"
-                :validator="inputValidator"
-                class="base-input-1"
-              />
+          <div class="account-input-wrapper">
+            <ComboboxInput
+              v-if="!hideAccountReceive"
+              label="Tài Khoản Nhận"
+              :options="accountReceive.options"
+              :columnConfig="accountReceive.columnConfig"
+              :triggerModal="openCreateSupplierModal"
+              :showComponent="!hideAccountReceive"
+              :showButton="false"
+              :selectedOption="selectedAccountReceive"
+              @update:selectedRow="updateSelectedRow('accountReceive', $event)"
+            />
+            <BaseInput
+              v-if="!hideAccountReceive"
+              v-model="accountReceiveValue"
+              class="base-input second-input"
+              :type="type"
+              :value="accountReceiveValue"
+              @input="updateSecondInputValue"
+              @focus="handleFocus"
+              @blur="handleBlur"
+            />
+          </div>
+          <InformationInput
+            v-if="!hideInformationInput"
+            :showComponent="!hideInformationInput"
+          />
+          <div class="bill-content-input-wrapper">
+            <label for="bill-content-input">Nội dung thanh toán</label>
+            <div class="input-container">
+              <div class="input-with-button-1">
+                <BaseInput
+                  v-model:value="paymentContent"
+                  :validator="inputValidator"
+                  class="base-input-1"
+                />
+              </div>
             </div>
           </div>
+          <div class="account-input-wrapper">
+            <ComboboxInput
+              v-if="!hideCreateEmployeeInput"
+              label="Nhân viên"
+              :options="employeeResources.options"
+              :columnConfig="employeeResources.columnConfig"
+              :triggerModal="openCreateEmployeeModal"
+              :showComponent="!hideCreateEmployeeInput"
+              :showButton="true"
+              :selectedOption="selectedEmployee"
+              @update:selectedRow="updateSelectedRow('employee', $event)"
+            />
+          </div>
         </div>
-        <ComboboxInput
-          v-if="!hideCreateEmployeeInput"
-          label="Nhân viên"
-          :options="employeeResources.options"
-          :columnConfig="employeeResources.columnConfig"
-          :triggerModal="openCreateEmployeeModal"
-          :showComponent="!hideCreateEmployeeInput"
-          :showSecondInput="false"
-          :showButton_2="false"
-          :selectedOption="selectedEmployee"
-          @update:selectedRow="updateSelectedRow('employee', $event)"
-        />
+
         <div class="document">
           <div class="document-content">
             <label for="document-content">Tham chiếu chứng từ</label>
@@ -86,8 +122,12 @@
         <SummaryComponent />
       </div>
     </div>
-    <AccountingGrid />
+    <div class="  ">
+      <AccountingGrid />
+    </div>
+
     <AttachFile />
+
     <FooterPayment />
 
     <!-- Create Bank Account Modal -->
@@ -310,19 +350,19 @@ export default {
         case "bankAccount":
           this.selectedBankAccount = item;
           this.inputValue = item.accountNumber;
-          this.secondInputValue = item.branch;
+          this.bankNameInput = item.bankName;
           break;
         case "supplier":
           this.selectedSupplier = item;
           this.inputValue = item.id;
           this.paymentContent = `Chi tiền cho ${item.name}`;
-          this.secondInputValue = item.address;
+          this.addressValue = item.address;
 
           break;
         case "accountReceive":
           this.selectedAccountReceive = item;
           this.inputValue = item.accountNumber;
-          this.secondInputValue = item.branch;
+          this.accountReceiveValue = item.bankName;
           break;
         case "employee":
           this.selectedEmployee = item;
@@ -431,6 +471,58 @@ export default {
 </script>
 
 <style scoped>
+.accountingGrid {
+  margin-bottom: 50px;
+}
+.payment {
+  padding-top: 60px; /* Đảm bảo nội dung không bị chèn lên header cố định */
+}
+
+.header-payment {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #fff; /* Đảm bảo header có nền trắng */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Thêm đổ bóng để phân biệt với nội dung */
+}
+
+.account-input-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.account-input-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.base-input {
+  border: 1px solid #999;
+  padding: 8px;
+  box-sizing: border-box;
+  height: 35px;
+  margin-left: 15px;
+  width: 100%; /* Adjust the width as needed */
+}
+
+.second-input {
+  border: 1px solid #999;
+  border-radius: 2px;
+  padding: 8px;
+  box-sizing: border-box;
+  height: 37px;
+  flex-grow: 1;
+  width: 50%;
+  margin-top: 17px;
+}
+
+label {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
 .input-information {
   display: flex;
   font-size: 15px;
@@ -489,6 +581,7 @@ label {
   padding: 8px;
   box-sizing: border-box;
   height: 40px;
+  width: 300px;
 }
 .base-input input {
   width: 100%;
