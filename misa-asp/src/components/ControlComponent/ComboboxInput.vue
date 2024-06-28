@@ -11,15 +11,13 @@
           :value="inputValue"
           @focus="handleFocus"
           @blur="handleBlur"
-          @onInput="handleOnInput"
+          @input="handleOnInput"
         />
         <button v-if="showButton" @click="triggerModal" class="add-button">
           +
         </button>
 
         <multiselect
-          :value="selectedOption"
-          @input="updateSelectedOption"
           :options="filteredOptions"
           :searchable="true"
           :close-on-select="true"
@@ -62,6 +60,7 @@
 import BaseInput from "../BaseComponent/BaseInputComponent.vue";
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
+import { apiClient } from "../../api/base";
 
 export default {
   name: "ComboboxInput",
@@ -74,7 +73,6 @@ export default {
       type: Object,
       default: null,
     },
-
     label: {
       type: String,
       default: null,
@@ -89,11 +87,11 @@ export default {
     },
     options: {
       type: Array,
-      default: null,
+      default: () => [],
     },
     columnConfig: {
       type: Array,
-      default: null,
+      default: () => [],
     },
     isRequired: {
       type: Boolean,
@@ -107,6 +105,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    apiEndpoint: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -115,6 +117,7 @@ export default {
       showTable: false,
       internalSelectedOption: this.selectedOption,
       isInputFocused: false,
+      optionsData: this.options,
     };
   },
   watch: {
@@ -128,12 +131,14 @@ export default {
   computed: {
     filteredOptions() {
       if (this.inputValue === "") {
-        return this.options;
+        return this.optionsData;
       }
 
-      let displayField = this.columnConfig.find((_) => _.isDisplay)?.fieldName;
+      let displayField = this.columnConfig.find(
+        (col) => col.isDisplay
+      )?.fieldName;
 
-      return this.options.filter((option) =>
+      return this.optionsData.filter((option) =>
         option[displayField]
           ?.toLowerCase()
           .includes(this.inputValue.toLowerCase())
@@ -141,32 +146,30 @@ export default {
     },
   },
   methods: {
-    inputValidator(value) {
-      if (!value) {
-        return "This field is required";
+    async fetchData() {
+      try {
+        const response = await apiClient.get(this.apiEndpoint);
+        this.optionsData = response.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-      if (value.length < 3) {
-        return "Must be at least 3 characters";
-      }
-      return "";
     },
     selectRow(item) {
       let displayFirstValue = this.columnConfig.find(
-        (_) => _.isDisplay
+        (col) => col.isDisplay
       )?.fieldName;
       if (displayFirstValue) {
         this.inputValue = item[displayFirstValue];
       }
       let displaySecondValue = this.columnConfig.find(
-        (_) => _.isDisplaySecond
+        (col) => col.isDisplaySecond
       )?.fieldName;
       if (displaySecondValue) {
         this.secondInputValue = item[displaySecondValue];
       }
 
       this.$emit("update:selectedRow", item);
-
-      this.showTable = false; // đóng table
+      this.showTable = false;
     },
     handleFocus() {
       this.isInputFocused = true;
@@ -177,6 +180,9 @@ export default {
     handleOnInput(val) {
       this.inputValue = val;
     },
+  },
+  mounted() {
+    this.fetchData();
   },
 };
 </script>

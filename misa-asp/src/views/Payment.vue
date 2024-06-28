@@ -16,7 +16,7 @@
               :options="extendResources.options"
               :columnConfig="extendResources.columnConfig"
               :triggerModal="openCreateBankAccountModal"
-              :showButto="true"
+              :showButton="true"
               :selectedOption="selectedBankAccount"
               @update:selectedRow="updateSelectedRow('bankAccount', $event)"
             />
@@ -40,6 +40,7 @@
               :showButton="true"
               :selectedOption="selectedCustomer"
               @update:selectedRow="updateSelectedRow('customer', $event)"
+              apiEndpoint="Customer/customer"
             />
             <BaseInput
               v-model="addressValue"
@@ -51,7 +52,6 @@
               @blur="handleBlur"
             />
           </div>
-
           <div class="account-input-wrapper">
             <ComboboxInput
               v-if="!hideAccountReceive"
@@ -165,10 +165,9 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import HeaderPayment from "../components/PaymentPage/HeaderPayment.vue";
 import ComboboxInput from "../components/ControlComponent/ComboboxInput.vue";
-
 import BaseInput from "../components/BaseComponent/BaseInputComponent.vue";
 import DateTimeComponent from "../components/ControlComponent/DateTimeComponent.vue";
 import FooterPayment from "../components/PaymentPage/FooterPayment.vue";
@@ -187,7 +186,6 @@ export default {
   components: {
     HeaderPayment,
     ComboboxInput,
-
     BaseInput,
     DateTimeComponent,
     FooterPayment,
@@ -202,6 +200,30 @@ export default {
   },
   data() {
     return {
+      voucherType: ref("1.Trả tiền nhà cung cấp"),
+      paymentMethod: ref("Ủy nhiệm chi"),
+
+      errorMessage: ref(""),
+      customer: {
+        options: [],
+        columnConfig: [
+          { columnName: "Đối tượng", fieldName: "objectId" },
+          {
+            columnName: "Tên đối tượng",
+            fieldName: "objectName",
+            isDisplay: true,
+            isValue: true,
+          },
+          { columnName: "Mã số thuế", fieldName: "taxCode" },
+          {
+            columnName: "Địa chỉ",
+            fieldName: "address",
+            isDisplaySecond: true,
+            isValue: true,
+          },
+          { columnName: "Điện thoại", fieldName: "phoneNumber" },
+        ],
+      },
       extendResources: {
         options: [
           {
@@ -229,55 +251,6 @@ export default {
             isValue: true,
           },
           { columnName: "Chi nhánh", fieldName: "branch" },
-        ],
-      },
-      customer: {
-        options: [
-          {
-            id: "KH00001",
-            name: "LÊ THỊ NHÀN ",
-            taxCode: "350010005",
-            address: "Long điền, Long Điền, Bà Rịa",
-            phone: "0982635679",
-          },
-          {
-            id: "KH00002",
-            name: "Nguyễn Thị Dung",
-            taxCode: "350010005",
-            address: "số 85 ngõ 120 vĩnh tuy",
-            phone: "0982635679",
-          },
-          {
-            id: "NV00001",
-            name: "Minh Anh",
-            taxCode: "350010005",
-            address: "Hải Dương",
-            phone: "0975684324",
-          },
-          {
-            id: "NV00002",
-            name: "Đức Linh",
-            taxCode: "350010005",
-            address: "Hà Nội",
-            phone: "0988654124",
-          },
-        ],
-        columnConfig: [
-          { columnName: "Đối tượng", fieldName: "id" },
-          {
-            columnName: "Tên đối tượng",
-            fieldName: "name",
-            isDisplay: true,
-            isValue: true,
-          },
-          { columnName: "Mã số thuế", fieldName: "taxCode" },
-          {
-            columnName: "Địa chỉ",
-            fieldName: "address",
-            isDisplaySecond: true,
-            isValue: true,
-          },
-          { columnName: "Điện thoại", fieldName: "phone" },
         ],
       },
       employeeResources: {
@@ -315,7 +288,6 @@ export default {
             branch: "Thanh Xuân",
           },
         ],
-
         columnConfig: [
           {
             columnName: "Số tài khoản",
@@ -332,18 +304,64 @@ export default {
           },
         ],
       },
-      selectedBankAccount: null,
-      selectedCustomer: null,
-      selectedEmployee: null,
-      selectedAccountReceive: null,
-      inputValue: "",
-      secondInputValue: "",
-      isCreateBankAccountModalVisible: false,
-      isCreateCustomerModalVisible: false,
-      isCreateEmployeeModalVisible: false,
+      selectedBankAccount: ref(null),
+      selectedEmployee: ref(null),
+      selectedAccountReceive: ref(null),
+      inputValue: ref(""),
+      secondInputValue: ref(""),
+      isCreateBankAccountModalVisible: ref(false),
+      isCreateCustomerModalVisible: ref(false),
+      isCreateEmployeeModalVisible: ref(false),
     };
   },
+  computed: {
+    hideInformationInput() {
+      return (
+        this.paymentMethod === "Ủy nhiệm chi" ||
+        this.paymentMethod === "Séc chuyển khoản"
+      );
+    },
+    hideAccountReceive() {
+      return this.paymentMethod === "Séc tiền mặt";
+    },
+    hideCreateEmployeeInput() {
+      return (
+        this.voucherType === "2.Trả các khoản vay" ||
+        this.voucherType === "3.Tạm ứng cho nhân viên"
+      );
+    },
+  },
   methods: {
+    openCreateBankAccountModal() {
+      this.isCreateBankAccountModalVisible = true;
+    },
+    closeCreateBankAccountModal() {
+      this.isCreateBankAccountModalVisible = false;
+    },
+    handleCreateBankAccountSubmit(formData) {
+      console.log("Bank account data received:", formData);
+      this.closeCreateBankAccountModal();
+    },
+    openCreateCustomerModal() {
+      this.isCreateCustomerModalVisible = true;
+    },
+    closeCreateCustomerModal() {
+      this.isCreateCustomerModalVisible = false;
+    },
+    handleCreateCustomerSubmit(formData) {
+      console.log("Customer data received:", formData);
+      this.closeCreateCustomerModal();
+    },
+    openCreateEmployeeModal() {
+      this.isCreateEmployeeModalVisible = true;
+    },
+    closeCreateEmployeeModal() {
+      this.isCreateEmployeeModalVisible = false;
+    },
+    handleCreateEmployeeSubmit(formData) {
+      console.log("Employee data received:", formData);
+      this.closeCreateEmployeeModal();
+    },
     updateSelectedRow(type, item) {
       switch (type) {
         case "bankAccount":
@@ -352,11 +370,9 @@ export default {
           this.bankNameInput = item.bankName;
           break;
         case "customer":
-          this.selectedSupplier = item;
-          this.inputValue = item.id;
-          this.paymentContent = `Chi tiền cho ${item.name}`;
+          this.selectedCustomer = item;
+          this.inputValue = item.objectName;
           this.addressValue = item.address;
-
           break;
         case "accountReceive":
           this.selectedAccountReceive = item;
@@ -369,103 +385,11 @@ export default {
           break;
       }
     },
-    // ... existing methods ...
   },
-  setup() {
-    const voucherType = ref("1.Trả tiền nhà cung cấp");
-    const paymentMethod = ref("Ủy nhiệm chi");
-    const inputValue = ref(""); // Thêm ref cho inputValue
-    // const showInformationInput = computed(
-    //   () => paymentMethod.value === "Séc tiền mặt"
-    // );
-    const hideInformationInput = computed(
-      () =>
-        paymentMethod.value === "Ủy nhiệm chi" ||
-        paymentMethod.value === "Séc chuyển khoản"
-    );
-    const hideAccountReceive = computed(
-      () => paymentMethod.value === "Séc tiền mặt"
-    );
-    const hideCreateEmployeeInput = computed(
-      () =>
-        voucherType.value === "2.Trả các khoản vay" ||
-        voucherType.value === "3.Tạm ứng cho nhân viên"
-    );
-    const inputValidator = (value) => {
-      if (!value) {
-        return "This field is required";
-      }
-      if (value.length < 3) {
-        return "Must be at least 3 characters";
-      }
-      return "";
-    };
 
-    const isCreateBankAccountModalVisible = ref(false);
-    const isCreateCustomerModalVisible = ref(false);
-    const isCreateEmployeeModalVisible = ref(false);
-
-    const openCreateBankAccountModal = () => {
-      isCreateBankAccountModalVisible.value = true;
-    };
-
-    const closeCreateBankAccountModal = () => {
-      isCreateBankAccountModalVisible.value = false;
-    };
-
-    const handleCreateBankAccountSubmit = (formData) => {
-      console.log("Bank account data received:", formData);
-      closeCreateBankAccountModal();
-    };
-
-    const openCreateCustomerModal = () => {
-      isCreateCustomerModalVisible.value = true;
-    };
-
-    const closeCreateCustomerModal = () => {
-      isCreateCustomerModalVisible.value = false;
-    };
-
-    const handleCreateCustomerSubmit = (formData) => {
-      console.log("Customer data received:", formData);
-      closeCreateCustomerModal();
-    };
-
-    const openCreateEmployeeModal = () => {
-      isCreateEmployeeModalVisible.value = true;
-    };
-
-    const closeCreateEmployeeModal = () => {
-      isCreateEmployeeModalVisible.value = false;
-    };
-
-    const handleCreateEmployeeSubmit = (formData) => {
-      console.log("Employee data received:", formData);
-      closeCreateEmployeeModal();
-    };
-
-    return {
-      voucherType,
-      paymentMethod,
-      inputValue,
-      inputValidator,
-      hideAccountReceive,
-      hideInformationInput,
-      hideCreateEmployeeInput,
-      isCreateBankAccountModalVisible,
-      isCreateCustomerModalVisible,
-      isCreateEmployeeModalVisible,
-      openCreateBankAccountModal,
-      closeCreateBankAccountModal,
-      handleCreateBankAccountSubmit,
-      openCreateCustomerModal,
-      closeCreateCustomerModal,
-      handleCreateCustomerSubmit,
-      openCreateEmployeeModal,
-      closeCreateEmployeeModal,
-      handleCreateEmployeeSubmit,
-    };
-  },
+  // mounted() {
+  //   this.fetchCustomerData();
+  // },
 };
 </script>
 
