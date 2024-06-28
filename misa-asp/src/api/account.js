@@ -66,7 +66,7 @@ export const fetchProtectedData = async () => {
 
 export const register = async (firstName, lastName, email, phoneNumber, password, roleId) => {
   console.log('Attempting to register user...');
-  const response = await apiClient.post('Account/register', {
+  const response = await apiClient.post('Account/createEmployee', {
     FirstName: firstName,
     LastName: lastName,
     Email: email,
@@ -77,6 +77,19 @@ export const register = async (firstName, lastName, email, phoneNumber, password
   console.log('User registered successfully:', response.data);
   return response.data;
 };
+export const createEmployee = async (employeeCode, employeeName, department, mobilePhone) => {
+  console.log('Attempting to create employee...');
+  const response = await apiClient.post('Account/createEmployee', {
+    EmployeeCode: employeeCode,
+    EmployeeName: employeeName,
+    Department: department,
+    MobilePhone: mobilePhone,
+   
+  });
+  console.log('User create employee successfully:', response.data);
+  return response.data;
+};
+
 
 export const createUser = async (firstName, lastName, email, phoneNumber, password, roleId) => {
   console.log('Attempting to create user...');

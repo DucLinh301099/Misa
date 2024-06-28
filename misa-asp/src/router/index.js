@@ -10,7 +10,7 @@ import CreateUserComponent from '../components/AdminPage/CreateUserComponent.vue
 import UserAccount from '../views/UserAccount.vue';
 import Payment from '../views/Payment.vue';
 import CreateBankAccount from '../components/PaymentPage/CreateBankAccount.vue';
-import CreateSupplier from '../components/PaymentPage/CreateSupplier.vue';
+import CreateCustomer from '../components/PaymentPage/CreateCustomer.vue';
 import CreateEmployee from '../components/PaymentPage/CreateEmployee.vue';
 
 const routes = [
@@ -24,7 +24,7 @@ const routes = [
   { path: '/forgot-password', component: ForgotPasswordComponent },
   { path: '/create-user', component: CreateUserComponent, meta: { requiresAuth: true, role: 'Admin' } },
   { path: '/create-bank-account', component: CreateBankAccount, meta: { requiresAuth: true, role: 'Admin' } },
-  { path: '/create-supplier', component: CreateSupplier, meta: { requiresAuth: true, role: 'Admin' } },
+  { path: '/create-customer', component: CreateCustomer, meta: { requiresAuth: true, role: 'Admin' } },
   { path: '/create-employee', component: CreateEmployee, meta: { requiresAuth: true, role: 'Admin' } },
 
 ];

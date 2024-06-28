@@ -1,43 +1,55 @@
+<!-- src/components/CreateCustomer.vue -->
 <template>
-  <div class="create-employee">
-    <h2 class="form-title">Thông tin nhân viên</h2>
-    <form @submit.prevent="createEmployee">
+  <div class="create-customer">
+    <h2 class="form-title">Thông tin nhà cung cấp</h2>
+    <form @submit.prevent="createCustomer">
       <div class="form-row">
         <div class="input-container">
-          <label for="employee-code">Mã nhân viên</label>
+          <label for="object-id">Đối tượng</label>
           <input
             type="text"
-            id="employee-code"
-            v-model="employeeCode"
+            id="object-id"
+            v-model="objectId"
             class="input-field"
           />
         </div>
         <div class="input-container">
-          <label for="employee-name">Tên nhân viên</label>
+          <label for="object-name">Tên đối tượng</label>
           <input
             type="text"
-            id="employee-name"
-            v-model="employeeName"
+            id="object-name"
+            v-model="objectName"
             class="input-field"
           />
         </div>
         <div class="input-container">
-          <label for="department">Đơn vị</label>
+          <label for="tax-code">Mã số thuế</label>
           <input
             type="text"
-            id="department"
-            v-model="department"
+            id="tax-code"
+            v-model="taxCode"
             class="input-field"
           />
         </div>
       </div>
       <div class="form-row">
         <div class="input-container full-width">
-          <label for="mobile-phone">ĐT di động</label>
+          <label for="address">Địa chỉ</label>
           <input
             type="text"
-            id="mobile-phone"
-            v-model="mobilePhone"
+            id="address"
+            v-model="address"
+            class="input-field"
+          />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-container full-width">
+          <label for="phone">Điện thoại</label>
+          <input
+            type="text"
+            id="phone"
+            v-model="phoneNumber"
             class="input-field"
           />
         </div>
@@ -54,34 +66,36 @@
 </template>
 
 <script>
-import { createEmployee } from "../../api/account"; // Import hàm tạo nhân viên từ file account.js
+import { CreateCustomer } from "../../api/customer";
 
 export default {
-  name: "CreateEmployee",
+  name: "CreateCustomer",
   data() {
     return {
-      employeeCode: "",
-      employeeName: "",
-      department: "",
-      mobilePhone: "",
+      objectId: "",
+      objectName: "",
+      taxCode: "",
+      address: "",
+      phoneNumber: "",
       generalError: "",
     };
   },
   methods: {
-    async createEmployee() {
+    async createCustomer() {
       try {
-        console.log("Attempting to create employee...");
-        const data = await createEmployee(
-          this.employeeCode,
-          this.employeeName,
-          this.department,
-          this.mobilePhone
+        console.log("Attempting to create customer...");
+        const data = await CreateCustomer(
+          this.objectId,
+          this.objectName,
+          this.taxCode,
+          this.address,
+          this.phoneNumber
         );
-        console.log("Tạo mới nhân viên thành công:", data);
-        alert("Tạo mới nhân viên thành công!");
-        this.$router.push("/payment"); // Điều hướng đến trang danh sách nhân viên sau khi tạo thành công
+        console.log("Tạo mới Customer thành công:", data);
+        alert("Tạo mới Customer thành công!");
+        this.$router.push("/payment");
       } catch (error) {
-        console.error("Lỗi khi tạo mới nhân viên:", error);
+        console.error("Lỗi khi tạo mới Customer:", error);
         this.generalError = error.message;
       }
     },
@@ -90,7 +104,7 @@ export default {
 </script>
 
 <style scoped>
-.create-employee {
+.create-customer {
   background-color: #fff;
   padding: 30px;
   border-radius: 10px;

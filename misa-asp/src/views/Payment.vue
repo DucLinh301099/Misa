@@ -34,12 +34,12 @@
           <div class="account-input-wrapper">
             <ComboboxInput
               label="Đối Tượng"
-              :options="supplier.options"
-              :columnConfig="supplier.columnConfig"
-              :triggerModal="openCreateSupplierModal"
+              :options="customer.options"
+              :columnConfig="customer.columnConfig"
+              :triggerModal="openCreateCustomerModal"
               :showButton="true"
-              :selectedOption="selectedSupplier"
-              @update:selectedRow="updateSelectedRow('supplier', $event)"
+              :selectedOption="selectedCustomer"
+              @update:selectedRow="updateSelectedRow('customer', $event)"
             />
             <BaseInput
               v-model="addressValue"
@@ -58,7 +58,6 @@
               label="Tài Khoản Nhận"
               :options="accountReceive.options"
               :columnConfig="accountReceive.columnConfig"
-              :triggerModal="openCreateSupplierModal"
               :showComponent="!hideAccountReceive"
               :showButton="false"
               :selectedOption="selectedAccountReceive"
@@ -141,14 +140,14 @@
       />
     </Modal>
 
-    <!-- Create Supplier Modal -->
+    <!-- Create Customer Modal -->
     <Modal
-      :visible="isCreateSupplierModalVisible"
-      @close="closeCreateSupplierModal"
+      :visible="isCreateCustomerModalVisible"
+      @close="closeCreateCustomerModal"
     >
-      <CreateSupplier
-        @submit="handleCreateSupplierSubmit"
-        @close="closeCreateSupplierModal"
+      <CreateCustomer
+        @submit="handleCreateCustomerSubmit"
+        @close="closeCreateCustomerModal"
       />
     </Modal>
 
@@ -178,7 +177,7 @@ import AccountingGrid from "../components/ControlComponent/AccountingGrid.vue";
 import AttachFile from "../components/PaymentPage/AttachFile.vue";
 
 import CreateBankAccount from "../components/PaymentPage/CreateBankAccount.vue";
-import CreateSupplier from "../components/PaymentPage/CreateSupplier.vue";
+import CreateCustomer from "../components/PaymentPage/CreateCustomer.vue";
 import CreateEmployee from "../components/PaymentPage/CreateEmployee.vue";
 import Modal from "../components/BaseComponent/Modal.vue";
 import InformationInput from "../components/PaymentPage/InformationInput.vue";
@@ -197,7 +196,7 @@ export default {
     AttachFile,
     InformationInput,
     CreateBankAccount,
-    CreateSupplier,
+    CreateCustomer,
     CreateEmployee,
     Modal,
   },
@@ -232,7 +231,7 @@ export default {
           { columnName: "Chi nhánh", fieldName: "branch" },
         ],
       },
-      supplier: {
+      customer: {
         options: [
           {
             id: "KH00001",
@@ -334,13 +333,13 @@ export default {
         ],
       },
       selectedBankAccount: null,
-      selectedSupplier: null,
+      selectedCustomer: null,
       selectedEmployee: null,
       selectedAccountReceive: null,
       inputValue: "",
       secondInputValue: "",
       isCreateBankAccountModalVisible: false,
-      isCreateSupplierModalVisible: false,
+      isCreateCustomerModalVisible: false,
       isCreateEmployeeModalVisible: false,
     };
   },
@@ -352,7 +351,7 @@ export default {
           this.inputValue = item.accountNumber;
           this.bankNameInput = item.bankName;
           break;
-        case "supplier":
+        case "customer":
           this.selectedSupplier = item;
           this.inputValue = item.id;
           this.paymentContent = `Chi tiền cho ${item.name}`;
@@ -403,7 +402,7 @@ export default {
     };
 
     const isCreateBankAccountModalVisible = ref(false);
-    const isCreateSupplierModalVisible = ref(false);
+    const isCreateCustomerModalVisible = ref(false);
     const isCreateEmployeeModalVisible = ref(false);
 
     const openCreateBankAccountModal = () => {
@@ -419,17 +418,17 @@ export default {
       closeCreateBankAccountModal();
     };
 
-    const openCreateSupplierModal = () => {
-      isCreateSupplierModalVisible.value = true;
+    const openCreateCustomerModal = () => {
+      isCreateCustomerModalVisible.value = true;
     };
 
-    const closeCreateSupplierModal = () => {
-      isCreateSupplierModalVisible.value = false;
+    const closeCreateCustomerModal = () => {
+      isCreateCustomerModalVisible.value = false;
     };
 
-    const handleCreateSupplierSubmit = (formData) => {
-      console.log("Supplier data received:", formData);
-      closeCreateSupplierModal();
+    const handleCreateCustomerSubmit = (formData) => {
+      console.log("Customer data received:", formData);
+      closeCreateCustomerModal();
     };
 
     const openCreateEmployeeModal = () => {
@@ -454,14 +453,14 @@ export default {
       hideInformationInput,
       hideCreateEmployeeInput,
       isCreateBankAccountModalVisible,
-      isCreateSupplierModalVisible,
+      isCreateCustomerModalVisible,
       isCreateEmployeeModalVisible,
       openCreateBankAccountModal,
       closeCreateBankAccountModal,
       handleCreateBankAccountSubmit,
-      openCreateSupplierModal,
-      closeCreateSupplierModal,
-      handleCreateSupplierSubmit,
+      openCreateCustomerModal,
+      closeCreateCustomerModal,
+      handleCreateCustomerSubmit,
       openCreateEmployeeModal,
       closeCreateEmployeeModal,
       handleCreateEmployeeSubmit,

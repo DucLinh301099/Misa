@@ -88,7 +88,7 @@ namespace MisaAsp.Controllers
                 return BadRequest(res);
             }
         }
-        [HttpGet("customer")]
+        [HttpGet("employee")]
         //[Authorize(Roles = "Admin")] // Chỉ admin mới có quyền truy cập
         [AllowAnonymous] // toàn quyền truy cập
         public async Task<IActionResult> GetEmployee()

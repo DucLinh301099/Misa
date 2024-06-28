@@ -1,12 +1,12 @@
 <template>
   <div class="create-bank-account">
     <h2 class="form-title">Thêm Tài khoản ngân hàng</h2>
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="createBankAccount">
       <div class="form-row">
-        <div class="input-container-bank1">
-          <label for="account-number"
-            >Số tài khoản <span class="required">*</span></label
-          >
+        <div class="input-container">
+          <label for="account-number">
+            Số tài khoản <span class="required">*</span>
+          </label>
           <input
             type="text"
             id="account-number"
@@ -15,112 +15,84 @@
             required
           />
         </div>
-        <div class="input-container-bank2">
-          <label for="bank-name"
-            >Tên ngân hàng <span class="required">*</span></label
-          >
-          <select
+        <div class="input-container">
+          <label for="bank-name">
+            Tên ngân hàng <span class="required">*</span>
+          </label>
+          <input
+            type="text"
             id="bank-name"
             v-model="bankName"
             class="input-field"
             required
-          >
-            <option v-for="bank in bankOptions" :key="bank" :value="bank">
-              {{ bank }}
-            </option>
+          />
+        </div>
+        <div class="input-container">
+          <label for="branch">
+            Chi nhánh <span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="branch"
+            v-model="branch"
+            class="input-field"
+            required
+          />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-container full-width">
+          <label for="account-type">Loại tài khoản</label>
+          <select id="account-type" v-model="roleId" class="input-field">
+            <option value="1">Tài khoản chi</option>
+            <option value="2">Tài khoản nhận</option>
           </select>
         </div>
       </div>
-      <div class="form-row">
-        <div class="input-container">
-          <label for="city">Tỉnh/Thành phố</label>
-          <input type="text" id="city" v-model="city" class="input-field" />
-        </div>
-        <div class="input-container">
-          <label for="branch">Chi nhánh</label>
-          <input type="text" id="branch" v-model="branch" class="input-field" />
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="input-container">
-          <label for="branch-address">Địa chỉ chi nhánh</label>
-          <input
-            type="text"
-            id="branch-address"
-            v-model="branchAddress"
-            class="input-field"
-          />
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="input-container">
-          <label for="account-holder">Chủ tài khoản</label>
-          <input
-            type="text"
-            id="account-holder"
-            v-model="accountHolder"
-            class="input-field"
-          />
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="input-container">
-          <label for="description">Diễn giải</label>
-          <textarea
-            id="description"
-            v-model="description"
-            class="input-field textarea-field"
-          ></textarea>
-        </div>
-      </div>
+      <div v-if="generalError" class="error-message">{{ generalError }}</div>
       <div class="form-actions">
-        <button type="button" class="btn cancel-btn" @click="cancelForm">
+        <button type="button" class="btn cancel-btn" @click="$emit('close')">
           Hủy
         </button>
-
         <button type="submit" class="btn submit-btn">Cất và Thêm</button>
       </div>
     </form>
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script>
+import { createBankAccount } from "../../api/bank"; // Import hàm tạo tài khoản ngân hàng từ file account.js
 
-const accountNumber = ref("");
-const bankName = ref("");
-const city = ref("");
-const branch = ref("");
-const branchAddress = ref("");
-const accountHolder = ref("");
-const description = ref("");
-
-const bankOptions = [
-  "Ngân hàng TMCP An Bình",
-  "Ngân hàng TMCP Công Thương Việt Nam",
-  "Ngân hàng TMCP Ngoại Thương Việt Nam",
-  // Add more bank options here
-];
-
-const submitForm = () => {
-  // Emit event to parent component with form data
-  const formData = {
-    accountNumber: accountNumber.value,
-    bankName: bankName.value,
-    city: city.value,
-    branch: branch.value,
-    branchAddress: branchAddress.value,
-    accountHolder: accountHolder.value,
-    description: description.value,
-  };
-  console.log(formData);
-  alert("Form submitted");
-  this.$emit("submit", formData); // Emit the submit event with form data
-};
-
-const cancelForm = () => {
-  // Emit event to close the form
-  this.$emit("close");
+export default {
+  name: "CreateBankAccount",
+  data() {
+    return {
+      accountNumber: "",
+      bankName: "",
+      branch: "",
+      roleId: "",
+      generalError: "",
+    };
+  },
+  methods: {
+    async createBankAccount() {
+      try {
+        console.log("Attempting to create bank account...");
+        const data = await createBankAccount(
+          this.accountNumber,
+          this.bankName,
+          this.branch,
+          this.roleId
+        );
+        console.log("Tạo mới tài khoản ngân hàng thành công:", data);
+        alert("Tạo mới tài khoản ngân hàng thành công!");
+        this.$router.push("/payment"); // Điều hướng đến trang danh sách tài khoản ngân hàng sau khi tạo thành công
+      } catch (error) {
+        console.error("Lỗi khi tạo mới tài khoản ngân hàng:", error);
+        this.generalError = error.message;
+      }
+    },
+  },
 };
 </script>
 
@@ -151,17 +123,9 @@ const cancelForm = () => {
   margin-right: 20px;
 }
 
-.input-container-bank1 {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  margin-right: 15px;
-}
-
-.input-container-bank2 {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+.input-container.full-width {
+  flex: 0 0 100%;
+  margin-right: 0;
 }
 
 .input-container:last-child {
@@ -180,13 +144,8 @@ label {
 .input-field {
   padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 2px;
+  border-radius: 4px;
   outline: none;
-}
-
-.textarea-field {
-  height: 50px; /* Adjust the height as needed */
-  resize: none; /* Allow users to resize the textarea vertically */
 }
 
 .form-actions {
@@ -214,5 +173,10 @@ label {
 
 .submit-btn:hover {
   background-color: #218838;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 20px;
 }
 </style>

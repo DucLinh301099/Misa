@@ -8,7 +8,7 @@ namespace MisaAsp.Repositories
 {
     public interface IBankAccountRepository : IBaseRepository
     {
-        //Task<IEnumerable<BankAccount>> GetAllBankAccountAsync();
+        Task<BankAccount> GetBankAccountByRoleAsync(int roleId);
         Task<int> CreateBankAccountAsync(CreateBankAccount request);
 
     }
@@ -26,6 +26,11 @@ namespace MisaAsp.Repositories
                 RoleId = request.RoleId,
             };
             return await ExecuteProcScalarAsync<int>("createbankaccount", parameters);
+        }
+        public async Task<BankAccount> GetBankAccountByRoleAsync(int roleId)
+        {
+            var sql = "SELECT * FROM getbankaccountbyrole(@RoleId)";
+            return await QueryFirstOrDefaultAsync<BankAccount>(sql, new { RoleId = roleId });
         }
 
     }
