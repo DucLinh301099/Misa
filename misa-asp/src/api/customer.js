@@ -14,12 +14,3 @@ export const CreateCustomer = async (objectId, objectName, taxCode, address, pho
   return response.data;
 };
 
-export const getCustomer = async () => {
-  try {
-    const response = await apiClient.get('Customer/customer');
-    return response.data;
-  } catch (error) {
-    console.error('Lỗi xảy ra khi hiển thị Customer:', error);
-    throw error;
-  }
-};

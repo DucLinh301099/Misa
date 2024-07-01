@@ -9,9 +9,7 @@
           class="base-input"
           :type="type"
           :value="inputValue"
-          @focus="handleFocus"
-          @blur="handleBlur"
-          @input="handleOnInput"
+          @onInput="handleOnInput"
         />
         <button v-if="showButton" @click="triggerModal" class="add-button">
           +
@@ -23,7 +21,7 @@
           :close-on-select="true"
           placeholder=""
           class="multiselect"
-          @open="showTable = true"
+          @open="onExpandCombox"
           @close="showTable = false"
         />
       </div>
@@ -61,6 +59,7 @@ import BaseInput from "../BaseComponent/BaseInputComponent.vue";
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
 import { apiClient } from "../../api/base";
+import { type } from "jquery";
 
 export default {
   name: "ComboboxInput",
@@ -109,6 +108,10 @@ export default {
       type: String,
       required: true,
     },
+    roleId: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -117,9 +120,10 @@ export default {
       showTable: false,
       internalSelectedOption: this.selectedOption,
       isInputFocused: false,
-      optionsData: this.options,
+      optionsData: this.options != null ? this.options : null, // Đảm bảo optionsData là mảng rỗng ban đầu
     };
   },
+
   watch: {
     selectedOption(newVal) {
       this.internalSelectedOption = newVal;
@@ -130,6 +134,10 @@ export default {
   },
   computed: {
     filteredOptions() {
+      if (!Array.isArray(this.optionsData)) {
+        console.warn("optionsData is not an array:", this.optionsData);
+        return [];
+      }
       if (this.inputValue === "") {
         return this.optionsData;
       }
@@ -147,12 +155,28 @@ export default {
   },
   methods: {
     async fetchData() {
+      if (!this.apiEndpoint) return;
       try {
+        console.log("Fetching data from:", this.apiEndpoint);
         const response = await apiClient.get(this.apiEndpoint);
-        this.optionsData = response.data;
+        if (
+          response.data &&
+          response.data.data &&
+          Array.isArray(response.data.data)
+        ) {
+          let dataResult = response.data.data;
+          this.optionsData = dataResult && dataResult.length ? dataResult : [];
+          console.log("optionsData:", this.optionsData); // Thêm log để kiểm tra dữ liệu
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
+        this.optionsData = []; // Đảm bảo optionsData là mảng khi có lỗi
       }
+    },
+    async onExpandCombox() {
+      debugger;
+      await this.fetchData();
+      this.showTable = true;
     },
     selectRow(item) {
       let displayFirstValue = this.columnConfig.find(
@@ -171,18 +195,13 @@ export default {
       this.$emit("update:selectedRow", item);
       this.showTable = false;
     },
-    handleFocus() {
-      this.isInputFocused = true;
-    },
-    handleBlur() {
-      this.isInputFocused = false;
-    },
+
     handleOnInput(val) {
       this.inputValue = val;
     },
-  },
-  mounted() {
-    this.fetchData();
+    handleInputChange(value) {
+      this.internalSelectedOption = value;
+    },
   },
 };
 </script>

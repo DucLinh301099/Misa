@@ -13,12 +13,13 @@
           <div class="account-input-wrapper">
             <ComboboxInput
               label="Tài khoản chi"
-              :options="extendResources.options"
-              :columnConfig="extendResources.columnConfig"
+              :columnConfig="bankAccount.bankAccountColumnConfig"
               :triggerModal="openCreateBankAccountModal"
               :showButton="true"
+              :roleId="roleId"
               :selectedOption="selectedBankAccount"
               @update:selectedRow="updateSelectedRow('bankAccount', $event)"
+              apiEndpoint="BankAccount/bankAccount"
             />
 
             <BaseInput
@@ -27,15 +28,12 @@
               :type="type"
               :value="bankNameInput"
               @input="updateSecondInputValue"
-              @focus="handleFocus"
-              @blur="handleBlur"
             />
           </div>
           <div class="account-input-wrapper">
             <ComboboxInput
               label="Đối Tượng"
-              :options="customer.options"
-              :columnConfig="customer.columnConfig"
+              :columnConfig="customer.customerColumnConfig"
               :triggerModal="openCreateCustomerModal"
               :showButton="true"
               :selectedOption="selectedCustomer"
@@ -48,8 +46,6 @@
               :type="type"
               :value="addressValue"
               @input="updateSecondInputValue"
-              @focus="handleFocus"
-              @blur="handleBlur"
             />
           </div>
           <div class="account-input-wrapper">
@@ -70,8 +66,6 @@
               :type="type"
               :value="accountReceiveValue"
               @input="updateSecondInputValue"
-              @focus="handleFocus"
-              @blur="handleBlur"
             />
           </div>
           <InformationInput
@@ -94,13 +88,13 @@
             <ComboboxInput
               v-if="!hideCreateEmployeeInput"
               label="Nhân viên"
-              :options="employeeResources.options"
-              :columnConfig="employeeResources.columnConfig"
+              :columnConfig="employeeResources.employeeColumnConfig"
               :triggerModal="openCreateEmployeeModal"
               :showComponent="!hideCreateEmployeeInput"
               :showButton="true"
               :selectedOption="selectedEmployee"
               @update:selectedRow="updateSelectedRow('employee', $event)"
+              apiEndpoint="Account/employee"
             />
           </div>
         </div>
@@ -121,7 +115,7 @@
         <SummaryComponent />
       </div>
     </div>
-    <div class="  ">
+    <div class=" ">
       <AccountingGrid />
     </div>
 
@@ -165,7 +159,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from "vue";
+import { ref } from "vue";
 import HeaderPayment from "../components/PaymentPage/HeaderPayment.vue";
 import ComboboxInput from "../components/ControlComponent/ComboboxInput.vue";
 import BaseInput from "../components/BaseComponent/BaseInputComponent.vue";
@@ -202,11 +196,9 @@ export default {
     return {
       voucherType: ref("1.Trả tiền nhà cung cấp"),
       paymentMethod: ref("Ủy nhiệm chi"),
-
       errorMessage: ref(""),
       customer: {
-        options: [],
-        columnConfig: [
+        customerColumnConfig: [
           { columnName: "Đối tượng", fieldName: "objectId" },
           {
             columnName: "Tên đối tượng",
@@ -224,20 +216,8 @@ export default {
           { columnName: "Điện thoại", fieldName: "phoneNumber" },
         ],
       },
-      extendResources: {
-        options: [
-          {
-            accountNumber: "100871906534",
-            bankName: "Ngân hàng TMCP Ngoại thương Việt Nam",
-            branch: "Hai Bà Trưng",
-          },
-          {
-            accountNumber: "0344039457",
-            bankName: "Ngân hàng TMCP An Bình",
-            branch: "Thanh Xuân",
-          },
-        ],
-        columnConfig: [
+      bankAccount: {
+        bankAccountColumnConfig: [
           {
             columnName: "Số tài khoản",
             fieldName: "accountNumber",
@@ -254,25 +234,16 @@ export default {
         ],
       },
       employeeResources: {
-        options: [
-          { code: "NV00001", name: "A", unit: "PKT", phone: "123456789" },
-          {
-            code: "NV00002",
-            name: "Linh",
-            unit: "CÔNG TY TNHH ĐỒNG PHÚ",
-            phone: "987654321",
-          },
-        ],
-        columnConfig: [
+        employeeColumnConfig: [
           {
             columnName: "Mã nhân viên",
-            fieldName: "code",
+            fieldName: "employeeCode",
             isDisplay: true,
             isValue: true,
           },
-          { columnName: "Tên nhân viên", fieldName: "name" },
-          { columnName: "Đơn vị", fieldName: "unit" },
-          { columnName: "ĐT di động", fieldName: "phone" },
+          { columnName: "Tên nhân viên", fieldName: "employeeName" },
+          { columnName: "Đơn vị", fieldName: "department" },
+          { columnName: "ĐT di động", fieldName: "mobilePhone" },
         ],
       },
       accountReceive: {
@@ -304,6 +275,7 @@ export default {
           },
         ],
       },
+      selectedCustomer: ref(null),
       selectedBankAccount: ref(null),
       selectedEmployee: ref(null),
       selectedAccountReceive: ref(null),
@@ -386,10 +358,6 @@ export default {
       }
     },
   },
-
-  // mounted() {
-  //   this.fetchCustomerData();
-  // },
 };
 </script>
 

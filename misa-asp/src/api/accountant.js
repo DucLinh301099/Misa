@@ -1,7 +1,7 @@
 // src/api/service.js
 import { apiClient } from './base.js';
 
-const API_URL = 'Accountant/list'; // Adjust this endpoint based on your API's address
+const API_URL = '/Accountant/list'; // Adjust this endpoint based on your API's address
 
 export const getServices = async () => {
   try {

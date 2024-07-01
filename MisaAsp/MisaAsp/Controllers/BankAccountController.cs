@@ -51,7 +51,7 @@ namespace MisaAsp.Controllers
             }
         }
         [HttpGet("bankAccount/{roleId}")]
-        public async Task<IActionResult> GetUserById(int roleId)
+        public async Task<IActionResult> GetBankAccountByRoleAsync(int roleId)
         {
             var res = new ResOutput();
             var bankAccount = await _bankaccountService.GetBankAccountByRoleAsync(roleId);
