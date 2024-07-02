@@ -1,3 +1,4 @@
+<!-- ComboboxInput.vue -->
 <template>
   <div v-if="showComponent" class="combobox-account-input-wrapper">
     <label for="expense-account-input">
@@ -59,7 +60,7 @@ import BaseInput from "../BaseComponent/BaseInputComponent.vue";
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
 import { apiClient } from "../../api/base";
-import { type } from "jquery";
+import apiConfig from "../../config/apiConfig";
 
 export default {
   name: "ComboboxInput",
@@ -88,10 +89,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    columnConfig: {
-      type: Array,
-      default: () => [],
-    },
     isRequired: {
       type: Boolean,
       default: false,
@@ -104,11 +101,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    apiEndpoint: {
-      type: String,
-      required: true,
-    },
-    roleId: {
+    apiEndpointKey: {
       type: String,
       required: true,
     },
@@ -120,10 +113,9 @@ export default {
       showTable: false,
       internalSelectedOption: this.selectedOption,
       isInputFocused: false,
-      optionsData: this.options != null ? this.options : null, // Đảm bảo optionsData là mảng rỗng ban đầu
+      optionsData: this.options != null ? this.options : [], // Đảm bảo optionsData là mảng rỗng ban đầu
     };
   },
-
   watch: {
     selectedOption(newVal) {
       this.internalSelectedOption = newVal;
@@ -133,6 +125,16 @@ export default {
     },
   },
   computed: {
+    config() {
+      const config = apiConfig[this.apiEndpointKey];
+      if (!config) {
+        console.error(`Configuration for ${this.apiEndpointKey} is not found.`);
+      }
+      return config || {};
+    },
+    endpoint() {
+      return this.config.endpoint;
+    },
     filteredOptions() {
       if (!Array.isArray(this.optionsData)) {
         console.warn("optionsData is not an array:", this.optionsData);
@@ -142,7 +144,7 @@ export default {
         return this.optionsData;
       }
 
-      let displayField = this.columnConfig.find(
+      let displayField = this.config.columnConfig?.find(
         (col) => col.isDisplay
       )?.fieldName;
 
@@ -152,25 +154,45 @@ export default {
           .includes(this.inputValue.toLowerCase())
       );
     },
+    columnConfig() {
+      return this.config.columnConfig || [];
+    },
   },
   methods: {
     async fetchData() {
-      if (!this.apiEndpoint) return;
+      if (!this.config) {
+        console.error(`Configuration for ${this.apiEndpointKey} is not found.`);
+        return;
+      }
+      if (!this.config.endpoint) {
+        console.error(`Endpoint is not defined for ${this.apiEndpointKey}.`);
+        return;
+      }
       try {
-        console.log("Fetching data from:", this.apiEndpoint);
-        const response = await apiClient.get(this.apiEndpoint);
+        console.log("Fetching data from:", this.config.endpoint);
+        const response = await apiClient[this.config.method](
+          this.config.endpoint
+        );
         if (
+          response.data &&
+          Array.isArray(response.data) // Giả định API trả về danh sách các đối tượng
+        ) {
+          this.optionsData = response.data;
+          console.log("optionsData:", this.optionsData);
+        } else if (
           response.data &&
           response.data.data &&
           Array.isArray(response.data.data)
         ) {
-          let dataResult = response.data.data;
-          this.optionsData = dataResult && dataResult.length ? dataResult : [];
-          console.log("optionsData:", this.optionsData); // Thêm log để kiểm tra dữ liệu
+          this.optionsData = response.data.data;
+          console.log("optionsData:", this.optionsData);
+        } else {
+          console.warn("Unexpected response format:", response.data);
+          this.optionsData = [];
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        this.optionsData = []; // Đảm bảo optionsData là mảng khi có lỗi
+        this.optionsData = [];
       }
     },
     async onExpandCombox() {
@@ -179,13 +201,13 @@ export default {
       this.showTable = true;
     },
     selectRow(item) {
-      let displayFirstValue = this.columnConfig.find(
+      let displayFirstValue = this.config.columnConfig?.find(
         (col) => col.isDisplay
       )?.fieldName;
       if (displayFirstValue) {
         this.inputValue = item[displayFirstValue];
       }
-      let displaySecondValue = this.columnConfig.find(
+      let displaySecondValue = this.config.columnConfig?.find(
         (col) => col.isDisplaySecond
       )?.fieldName;
       if (displaySecondValue) {

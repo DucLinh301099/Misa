@@ -13,13 +13,12 @@
           <div class="account-input-wrapper">
             <ComboboxInput
               label="Tài khoản chi"
-              :columnConfig="bankAccount.bankAccountColumnConfig"
+              :columnConfig="bankExpense.bankExpenseColumnConfig"
               :triggerModal="openCreateBankAccountModal"
               :showButton="true"
-              :roleId="roleId"
-              :selectedOption="selectedBankAccount"
-              @update:selectedRow="updateSelectedRow('bankAccount', $event)"
-              apiEndpoint="BankAccount/bankAccount"
+              :selectedOption="selectedBankExpense"
+              @update:selectedRow="updateSelectedRow('bankExpense', $event)"
+              apiEndpointKey="bankExpense"
             />
 
             <BaseInput
@@ -38,7 +37,7 @@
               :showButton="true"
               :selectedOption="selectedCustomer"
               @update:selectedRow="updateSelectedRow('customer', $event)"
-              apiEndpoint="Customer/customer"
+              apiEndpointKey="customer"
             />
             <BaseInput
               v-model="addressValue"
@@ -52,12 +51,12 @@
             <ComboboxInput
               v-if="!hideAccountReceive"
               label="Tài Khoản Nhận"
-              :options="accountReceive.options"
-              :columnConfig="accountReceive.columnConfig"
+              :columnConfig="bankReceive.bankReceiveColumnConfig"
               :showComponent="!hideAccountReceive"
               :showButton="false"
-              :selectedOption="selectedAccountReceive"
-              @update:selectedRow="updateSelectedRow('accountReceive', $event)"
+              :selectedOption="selectedBankReceive"
+              @update:selectedRow="updateSelectedRow('bankReceive', $event)"
+              apiEndpointKey="bankReceive"
             />
             <BaseInput
               v-if="!hideAccountReceive"
@@ -77,9 +76,11 @@
             <div class="input-container">
               <div class="input-with-button-1">
                 <BaseInput
-                  v-model:value="paymentContent"
+                  v-model="inputValueCustomer"
+                  :value="defaultBillContent"
                   :validator="inputValidator"
                   class="base-input-1"
+                  @input="updateBillContent"
                 />
               </div>
             </div>
@@ -94,7 +95,7 @@
               :showButton="true"
               :selectedOption="selectedEmployee"
               @update:selectedRow="updateSelectedRow('employee', $event)"
-              apiEndpoint="Account/employee"
+              apiEndpointKey="employee"
             />
           </div>
         </div>
@@ -159,7 +160,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import HeaderPayment from "../components/PaymentPage/HeaderPayment.vue";
 import ComboboxInput from "../components/ControlComponent/ComboboxInput.vue";
 import BaseInput from "../components/BaseComponent/BaseInputComponent.vue";
@@ -174,6 +175,8 @@ import CreateCustomer from "../components/PaymentPage/CreateCustomer.vue";
 import CreateEmployee from "../components/PaymentPage/CreateEmployee.vue";
 import Modal from "../components/BaseComponent/Modal.vue";
 import InformationInput from "../components/PaymentPage/InformationInput.vue";
+
+import apiConfig from "../config/apiConfig";
 
 export default {
   name: "Payment",
@@ -194,96 +197,34 @@ export default {
   },
   data() {
     return {
-      voucherType: ref("1.Trả tiền nhà cung cấp"),
-      paymentMethod: ref("Ủy nhiệm chi"),
-      errorMessage: ref(""),
+      voucherType: "1.Trả tiền nhà cung cấp",
+      paymentMethod: "Ủy nhiệm chi",
+      errorMessage: "",
       customer: {
-        customerColumnConfig: [
-          { columnName: "Đối tượng", fieldName: "objectId" },
-          {
-            columnName: "Tên đối tượng",
-            fieldName: "objectName",
-            isDisplay: true,
-            isValue: true,
-          },
-          { columnName: "Mã số thuế", fieldName: "taxCode" },
-          {
-            columnName: "Địa chỉ",
-            fieldName: "address",
-            isDisplaySecond: true,
-            isValue: true,
-          },
-          { columnName: "Điện thoại", fieldName: "phoneNumber" },
-        ],
+        customerColumnConfig: apiConfig.customer.columnConfig,
       },
-      bankAccount: {
-        bankAccountColumnConfig: [
-          {
-            columnName: "Số tài khoản",
-            fieldName: "accountNumber",
-            isValue: true,
-            isDisplay: true,
-          },
-          {
-            columnName: "Tên ngân hàng",
-            fieldName: "bankName",
-            isDisplaySecond: true,
-            isValue: true,
-          },
-          { columnName: "Chi nhánh", fieldName: "branch" },
-        ],
+      bankExpense: {
+        bankExpenseColumnConfig: apiConfig.bankExpense.columnConfig,
       },
       employeeResources: {
-        employeeColumnConfig: [
-          {
-            columnName: "Mã nhân viên",
-            fieldName: "employeeCode",
-            isDisplay: true,
-            isValue: true,
-          },
-          { columnName: "Tên nhân viên", fieldName: "employeeName" },
-          { columnName: "Đơn vị", fieldName: "department" },
-          { columnName: "ĐT di động", fieldName: "mobilePhone" },
-        ],
+        employeeColumnConfig: apiConfig.employee.columnConfig,
       },
-      accountReceive: {
-        options: [
-          {
-            accountNumber: "100871906534",
-            bankName: "Ngân hàng TMCP Ngoại thương Việt Nam",
-            branch: "Hai Bà Trưng",
-          },
-          {
-            accountNumber: "0344039457",
-            bankName: "Ngân hàng TMCP An Bình",
-            branch: "Thanh Xuân",
-          },
-        ],
-        columnConfig: [
-          {
-            columnName: "Số tài khoản",
-            fieldName: "accountNumber",
-            isDisplay: true,
-            isValue: true,
-          },
-          { columnName: "Tên ngân hàng", fieldName: "bankName" },
-          {
-            columnName: "Chi nhánh",
-            fieldName: "branch",
-            isDisplaySecond: true,
-            isValue: true,
-          },
-        ],
+      bankReceive: {
+        bankReceiveColumnConfig: apiConfig.bankReceive.columnConfig,
       },
-      selectedCustomer: ref(null),
-      selectedBankAccount: ref(null),
-      selectedEmployee: ref(null),
-      selectedAccountReceive: ref(null),
-      inputValue: ref(""),
-      secondInputValue: ref(""),
-      isCreateBankAccountModalVisible: ref(false),
-      isCreateCustomerModalVisible: ref(false),
-      isCreateEmployeeModalVisible: ref(false),
+      selectedCustomer: null,
+      selectedBankExpense: null,
+      selectedEmployee: null,
+      selectedBankReceive: null,
+      inputValue: "",
+      secondInputValue: "",
+      inputValueCustomer: "",
+      addressValue: "",
+      bankNameInput: "",
+      accountReceiveValue: "",
+      isCreateBankAccountModalVisible: false,
+      isCreateCustomerModalVisible: false,
+      isCreateEmployeeModalVisible: false,
     };
   },
   computed: {
@@ -301,6 +242,9 @@ export default {
         this.voucherType === "2.Trả các khoản vay" ||
         this.voucherType === "3.Tạm ứng cho nhân viên"
       );
+    },
+    defaultBillContent() {
+      return `Chi tiền cho ${this.inputValueCustomer}`;
     },
   },
   methods: {
@@ -336,18 +280,18 @@ export default {
     },
     updateSelectedRow(type, item) {
       switch (type) {
-        case "bankAccount":
-          this.selectedBankAccount = item;
+        case "bankExpense":
+          this.selectedBankExpense = item;
           this.inputValue = item.accountNumber;
           this.bankNameInput = item.bankName;
           break;
         case "customer":
           this.selectedCustomer = item;
-          this.inputValue = item.objectName;
+          this.inputValueCustomer = item.objectName;
           this.addressValue = item.address;
           break;
-        case "accountReceive":
-          this.selectedAccountReceive = item;
+        case "bankReceive":
+          this.selectedBankReceive = item;
           this.inputValue = item.accountNumber;
           this.accountReceiveValue = item.bankName;
           break;
@@ -356,6 +300,9 @@ export default {
           this.inputValue = item.code;
           break;
       }
+    },
+    updateBillContent(newValue) {
+      this.inputValueCustomer = newValue.replace("Chi tiền cho ", "");
     },
   },
 };
