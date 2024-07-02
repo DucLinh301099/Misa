@@ -30,7 +30,7 @@
           :close-on-select="true"
           placeholder=""
           class="multiselect"
-          @open="showTable = true"
+          @open="onExpandCombox"
           @close="showTable = false"
         />
       </div>
@@ -66,6 +66,8 @@
 <script>
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
+import apiConfig from "../../config/apiConfig";
+import { apiClient } from "../../api/base";
 
 export default {
   name: "ComboboxGrid",
@@ -73,9 +75,13 @@ export default {
     Multiselect,
   },
   props: {
+    apiEndpointKey: {
+      type: String,
+      required: true,
+    },
     options: {
       type: Array,
-      required: true,
+      default: () => [],
     },
     selectedRow: {
       type: Object,
@@ -92,17 +98,27 @@ export default {
       showTable: false,
       isInputFocused: false,
       isMultiselectVisible: false,
+      optionsData: this.options != null ? this.options : [],
     };
   },
   computed: {
+    config() {
+      const config = apiConfig[this.apiEndpointKey];
+      if (!config) {
+        console.error(`Configuration for ${this.apiEndpointKey} is not found.`);
+      }
+      return config || {};
+    },
     filteredOptions() {
       if (this.inputValue === "") {
-        return this.options;
+        return this.optionsData;
       }
 
-      let displayField = this.columnConfig.find((_) => _.isDisplay)?.fieldName;
+      let displayField = this.columnConfig.find(
+        (col) => col.isDisplay
+      )?.fieldName;
 
-      return this.options.filter((option) =>
+      return this.optionsData.filter((option) =>
         option[displayField]
           ?.toLowerCase()
           .includes(this.inputValue.toLowerCase())
@@ -110,6 +126,46 @@ export default {
     },
   },
   methods: {
+    async fetchData() {
+      if (!this.config) {
+        console.error(`Configuration for ${this.apiEndpointKey} is not found.`);
+        return;
+      }
+      if (!this.config.endpoint) {
+        console.error(`Endpoint is not defined for ${this.apiEndpointKey}.`);
+        return;
+      }
+      try {
+        console.log("Fetching data from:", this.config.endpoint);
+        const response = await apiClient[this.config.method](
+          this.config.endpoint
+        );
+        if (
+          response.data &&
+          Array.isArray(response.data) // Giả định API trả về danh sách các objects
+        ) {
+          this.optionsData = response.data;
+          console.log("optionsData:", this.optionsData);
+        } else if (
+          response.data &&
+          response.data.data && // Giả định API trả về danh sách arrays
+          Array.isArray(response.data.data)
+        ) {
+          this.optionsData = response.data.data;
+          console.log("optionsData:", this.optionsData);
+        } else {
+          console.warn("Unexpected response format:", response.data);
+          this.optionsData = [];
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        this.optionsData = [];
+      }
+    },
+    async onExpandCombox() {
+      await this.fetchData();
+      this.showTable = true;
+    },
     handleFocus() {
       this.isInputFocused = true;
       this.isMultiselectVisible = true;
@@ -121,7 +177,7 @@ export default {
         if (!this.isInputFocused) {
           this.isMultiselectVisible = false;
         }
-      }, 2000);
+      }, 3000);
     },
 
     selectRow(item) {
@@ -240,12 +296,14 @@ export default {
   position: absolute;
   z-index: 500;
   background-color: white;
-  width: 50%;
-  margin-top: 45px;
+  margin-top: 40px;
+  margin-left: 35px;
+  transform: translateX(-40px); /* Shift to the left */
+  max-height: 200px; /* Set maximum height for the dropdown */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .dropdown-table {
-  width: 70%;
   border-collapse: collapse;
   border: 1px solid #ddd;
 }

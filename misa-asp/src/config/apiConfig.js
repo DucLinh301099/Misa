@@ -76,7 +76,39 @@ const apiConfig = {
           },
           { columnName: "Điện thoại", fieldName: "phoneNumber" },
     ],
-  }
+  },
+  debitAccount: {
+    endpoint: null,
+    method: null,
+    options: [
+      { accountNumber: "1111", accountName: "Tiền Việt Nam" },
+      { accountNumber: "1112", accountName: "Ngoại Tệ" },
+    ],
+    columnConfig: [
+      {
+        columnName: "Số tài khoản",
+        fieldName: "accountNumber",
+        isDisplay: true,
+        isValue: true,
+      },
+      { columnName: "Tên tài khoản", fieldName: "accountName" },
+    ],
+  },
+  creditAccount: {
+    options: [
+      { accountNumber: "1121", accountName: "Tiền Việt Nam" },
+      { accountNumber: "1122", accountName: "Ngoại Tệ" },
+    ],
+    columnConfig: [
+      {
+        columnName: "Số tài khoản",
+        fieldName: "accountNumber",
+        isDisplay: true,
+        isValue: true,
+      },
+      { columnName: "Tên tài khoản", fieldName: "accountName" },
+    ],
+  },
   // Thêm các cấu hình khác nếu cần
 };
 

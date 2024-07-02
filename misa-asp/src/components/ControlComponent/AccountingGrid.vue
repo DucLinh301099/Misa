@@ -23,6 +23,7 @@
             >
               <ComboboxGrid
                 v-model="row[column.fieldName]"
+                :apiEndpointKey="getEndpointKeyForField(column.fieldName)"
                 :options="getOptionsForField(column.fieldName)"
                 :columnConfig="getDropdownColumnConfig(column.fieldName)"
                 @update:selectedRow="
@@ -47,6 +48,7 @@
 
 <script>
 import ComboboxGrid from "../ControlComponent/ComboboxGrid.vue";
+import apiConfig from "../../config/apiConfig";
 
 export default {
   name: "AccountingGrid",
@@ -61,7 +63,7 @@ export default {
           debitAccount: null,
           creditAccount: null,
           amount: 0,
-          object: null,
+          customer: null,
           objectName: "",
         },
       ],
@@ -78,102 +80,45 @@ export default {
           dataType: "dropdown",
         },
         { columnName: "Số tiền", fieldName: "amount", dataType: "currency" },
-        { columnName: "Đối tượng", fieldName: "object", dataType: "dropdown" },
+        {
+          columnName: "Đối tượng",
+          fieldName: "customer",
+          dataType: "dropdown",
+        },
         {
           columnName: "Tên đối tượng",
           fieldName: "objectName",
           dataType: "text",
         },
       ],
-      resources: {
-        debitAccount: {
-          options: [
-            { accountNumber: "1111", accountName: "Tiền Việt Nam" },
-            { accountNumber: "1112", accountName: "Ngoại Tệ" },
-          ],
-          columnConfig: [
-            {
-              columnName: "Số tài khoản",
-              fieldName: "accountNumber",
-              isDisplay: true,
-              isValue: true,
-            },
-            { columnName: "Tên tài khoản", fieldName: "accountName" },
-          ],
-        },
-        creditAccount: {
-          options: [
-            { accountNumber: "1121", accountName: "Tiền Việt Nam" },
-            { accountNumber: "1122", accountName: "Ngoại Tệ" },
-          ],
-          columnConfig: [
-            {
-              columnName: "Số tài khoản",
-              fieldName: "accountNumber",
-              isDisplay: true,
-              isValue: true,
-            },
-            { columnName: "Tên tài khoản", fieldName: "accountName" },
-          ],
-        },
-        object: {
-          options: [
-            {
-              object: "KH0001",
-              objectName: "Dung",
-              code: "0303562",
-              address: "Hà Nội",
-              phoneNumber: "0388309341",
-            },
-            {
-              object: "KH0002",
-              objectName: "Linh",
-              code: "0303512",
-              address: "Hải Dương",
-              phoneNumber: "0977961844",
-            },
-            {
-              object: "KH0003",
-              objectName: "Tùng",
-              code: "0303582",
-              address: "Hà Nội",
-              phoneNumber: "0982635679",
-            },
-          ],
-          columnConfig: [
-            {
-              columnName: "Đối tượng",
-              fieldName: "object",
-              isDisplay: true,
-              isValue: true,
-            },
-            { columnName: "Tên đối tượng", fieldName: "objectName" },
-            { columnName: "Mã số thuế", fieldName: "code" },
-            { columnName: "Địa chỉ", fieldName: "address" },
-            { columnName: "Điện thoại", fieldName: "phoneNumber" },
-          ],
-        },
-      },
     };
   },
   methods: {
     getOptionsForField(field) {
       if (field === "debitAccount") {
-        return this.resources.debitAccount.options;
+        return apiConfig.debitAccount.options;
       } else if (field === "creditAccount") {
-        return this.resources.creditAccount.options;
-      } else if (field === "object") {
-        return this.resources.object.options;
+        return apiConfig.creditAccount.options;
+      } else if (field === "customer") {
+        return [];
       }
       return [];
     },
     getDropdownColumnConfig(field) {
-      if (field === "debitAccount" || field === "creditAccount") {
-        return this.resources.debitAccount.columnConfig;
-      } else if (field === "object") {
-        return this.resources.object.columnConfig;
+      if (field === "debitAccount") {
+        return apiConfig.debitAccount.columnConfig;
+      } else if (field === "creditAccount") {
+        return apiConfig.creditAccount.columnConfig;
+      } else if (field === "customer") {
+        return apiConfig.customer.columnConfig;
       }
       return [];
+    },
+    getEndpointKeyForField(field) {
+      if (field === "customer") {
+        return "customer";
+      }
+      return null;
     },
     shouldDisplayCombobox(field, row) {
       return true;
@@ -184,7 +129,7 @@ export default {
         debitAccount: null,
         creditAccount: null,
         amount: 0,
-        object: null,
+        customer: null,
         objectName: "",
       });
     },
@@ -196,8 +141,11 @@ export default {
     },
     updateRowField(rowIndex, fieldName, selectedOption) {
       this.rows[rowIndex][fieldName] = selectedOption[fieldName];
-      if (fieldName === "object") {
+      if (fieldName === "customer") {
         this.rows[rowIndex].objectName = selectedOption.objectName;
+        this.rows[
+          rowIndex
+        ].description = `chi tiền cho ${selectedOption.objectName}`;
       }
     },
   },

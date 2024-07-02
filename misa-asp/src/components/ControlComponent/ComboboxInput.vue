@@ -173,30 +173,25 @@ export default {
         const response = await apiClient[this.config.method](
           this.config.endpoint
         );
-        if (
-          response.data &&
-          Array.isArray(response.data) // Giả định API trả về danh sách các đối tượng
-        ) {
-          this.optionsData = response.data;
-          console.log("optionsData:", this.optionsData);
-        } else if (
-          response.data &&
-          response.data.data &&
-          Array.isArray(response.data.data)
-        ) {
-          this.optionsData = response.data.data;
-          console.log("optionsData:", this.optionsData);
-        } else {
-          console.warn("Unexpected response format:", response.data);
-          this.optionsData = [];
-        }
+        this.optionsData = this.extractData(response);
+        console.log("optionsData:", this.optionsData);
       } catch (error) {
         console.error("Error fetching data:", error);
         this.optionsData = [];
       }
     },
+    extractData(response) {
+      if (response.data) {
+        if (Array.isArray(response.data)) {
+          return response.data;
+        } else if (Array.isArray(response.data.data)) {
+          return response.data.data;
+        }
+      }
+      console.warn("Unexpected response format:", response.data);
+      return [];
+    },
     async onExpandCombox() {
-      debugger;
       await this.fetchData();
       this.showTable = true;
     },
@@ -217,7 +212,6 @@ export default {
       this.$emit("update:selectedRow", item);
       this.showTable = false;
     },
-
     handleOnInput(val) {
       this.inputValue = val;
     },
@@ -323,16 +317,18 @@ label {
 }
 .dropdown-table-wrapper {
   position: absolute;
-  z-index: 1000;
+  z-index: 500;
   background-color: white;
-  width: 80%;
+  width: 60%;
   margin-top: 65px;
+  max-height: 130px; /* Set maximum height for the dropdown */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .dropdown-table {
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid #ddd;
+  border: 1px solid #808080;
 }
 
 .dropdown-table th,
