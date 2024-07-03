@@ -13,50 +13,43 @@
           <div class="account-input-wrapper">
             <ComboboxInput
               label="Tài khoản chi"
-              :columnConfig="bankExpense.bankExpenseColumnConfig"
-              :triggerModal="openCreateBankAccountModal"
-              :showButton="true"
               :selectedOption="selectedBankExpense"
               @update:selectedRow="updateSelectedRow('bankExpense', $event)"
-              apiEndpointKey="bankExpense"
+              :config="paymentConfigCombo.comboxConfig.bankExpense"
+              :ComponentAdd="createBankAccountComponent"
+              @createSubmit="handleCreateBankAccountSubmit"
             />
-
             <BaseInput
               v-model="bankNameInput"
               class="base-input second-input"
               :type="type"
               :value="bankNameInput"
-              @input="updateSecondInputValue"
             />
           </div>
           <div class="account-input-wrapper">
             <ComboboxInput
               label="Đối Tượng"
-              :columnConfig="customer.customerColumnConfig"
-              :triggerModal="openCreateCustomerModal"
-              :showButton="true"
               :selectedOption="selectedCustomer"
               @update:selectedRow="updateSelectedRow('customer', $event)"
-              apiEndpointKey="customer"
+              :config="paymentConfigCombo.comboxConfig.customer"
+              :ComponentAdd="createCustomerComponent"
+              @createSubmit="handleCreateCustomerSubmit"
             />
             <BaseInput
               v-model="addressValue"
               class="base-input second-input"
               :type="type"
               :value="addressValue"
-              @input="updateSecondInputValue"
             />
           </div>
           <div class="account-input-wrapper">
             <ComboboxInput
               v-if="!hideAccountReceive"
               label="Tài Khoản Nhận"
-              :columnConfig="bankReceive.bankReceiveColumnConfig"
-              :showComponent="!hideAccountReceive"
               :showButton="false"
               :selectedOption="selectedBankReceive"
               @update:selectedRow="updateSelectedRow('bankReceive', $event)"
-              apiEndpointKey="bankReceive"
+              :config="paymentConfigCombo.comboxConfig.bankReceive"
             />
             <BaseInput
               v-if="!hideAccountReceive"
@@ -64,13 +57,9 @@
               class="base-input second-input"
               :type="type"
               :value="accountReceiveValue"
-              @input="updateSecondInputValue"
             />
           </div>
-          <InformationInput
-            v-if="!hideInformationInput"
-            :showComponent="!hideInformationInput"
-          />
+          <InformationInput v-if="!hideInformationInput" />
           <div class="bill-content-input-wrapper">
             <label for="bill-content-input">Nội dung thanh toán</label>
             <div class="input-container">
@@ -89,13 +78,11 @@
             <ComboboxInput
               v-if="!hideCreateEmployeeInput"
               label="Nhân viên"
-              :columnConfig="employeeResources.employeeColumnConfig"
-              :triggerModal="openCreateEmployeeModal"
-              :showComponent="!hideCreateEmployeeInput"
-              :showButton="true"
               :selectedOption="selectedEmployee"
               @update:selectedRow="updateSelectedRow('employee', $event)"
-              apiEndpointKey="employee"
+              :config="paymentConfigCombo.comboxConfig.employee"
+              :ComponentAdd="createEmployeeComponent"
+              @createSubmit="handleCreateEmployeeSubmit"
             />
           </div>
         </div>
@@ -117,50 +104,20 @@
       </div>
     </div>
     <div class=" ">
-      <AccountingGrid />
+      <AccountingGrid :config="paymentConfigCombo.gridConfig" />
+      <div>
+        <AttachFile />
+      </div>
     </div>
-
-    <AttachFile />
-
-    <FooterPayment />
-
-    <!-- Create Bank Account Modal -->
-    <Modal
-      :visible="isCreateBankAccountModalVisible"
-      @close="closeCreateBankAccountModal"
-    >
-      <CreateBankAccount
-        @submit="handleCreateBankAccountSubmit"
-        @close="closeCreateBankAccountModal"
-      />
-    </Modal>
-
-    <!-- Create Customer Modal -->
-    <Modal
-      :visible="isCreateCustomerModalVisible"
-      @close="closeCreateCustomerModal"
-    >
-      <CreateCustomer
-        @submit="handleCreateCustomerSubmit"
-        @close="closeCreateCustomerModal"
-      />
-    </Modal>
-
-    <!-- Create Employee Modal -->
-    <Modal
-      :visible="isCreateEmployeeModalVisible"
-      @close="closeCreateEmployeeModal"
-    >
-      <CreateEmployee
-        @submit="handleCreateEmployeeSubmit"
-        @close="closeCreateEmployeeModal"
-      />
-    </Modal>
+    <div>
+      <div>
+        <FooterPayment class="footer-payment-a" />
+      </div>
+    </div>
   </section>
 </template>
 
 <script>
-import { ref, computed } from "vue";
 import HeaderPayment from "../components/PaymentPage/HeaderPayment.vue";
 import ComboboxInput from "../components/ControlComponent/ComboboxInput.vue";
 import BaseInput from "../components/BaseComponent/BaseInputComponent.vue";
@@ -173,10 +130,9 @@ import AttachFile from "../components/PaymentPage/AttachFile.vue";
 import CreateBankAccount from "../components/PaymentPage/CreateBankAccount.vue";
 import CreateCustomer from "../components/PaymentPage/CreateCustomer.vue";
 import CreateEmployee from "../components/PaymentPage/CreateEmployee.vue";
-import Modal from "../components/BaseComponent/Modal.vue";
-import InformationInput from "../components/PaymentPage/InformationInput.vue";
 
-import apiConfig from "../config/apiConfig";
+import InformationInput from "../components/PaymentPage/InformationInput.vue";
+import paymentConfig from "../config/PaymentConfig";
 
 export default {
   name: "Payment",
@@ -193,38 +149,25 @@ export default {
     CreateBankAccount,
     CreateCustomer,
     CreateEmployee,
-    Modal,
   },
   data() {
     return {
       voucherType: "1.Trả tiền nhà cung cấp",
       paymentMethod: "Ủy nhiệm chi",
       errorMessage: "",
-      customer: {
-        customerColumnConfig: apiConfig.customer.columnConfig,
-      },
-      bankExpense: {
-        bankExpenseColumnConfig: apiConfig.bankExpense.columnConfig,
-      },
-      employeeResources: {
-        employeeColumnConfig: apiConfig.employee.columnConfig,
-      },
-      bankReceive: {
-        bankReceiveColumnConfig: apiConfig.bankReceive.columnConfig,
-      },
       selectedCustomer: null,
       selectedBankExpense: null,
       selectedEmployee: null,
       selectedBankReceive: null,
       inputValue: "",
-      secondInputValue: "",
       inputValueCustomer: "",
       addressValue: "",
       bankNameInput: "",
       accountReceiveValue: "",
-      isCreateBankAccountModalVisible: false,
-      isCreateCustomerModalVisible: false,
-      isCreateEmployeeModalVisible: false,
+      paymentConfigCombo: paymentConfig,
+      createCustomerComponent: CreateCustomer,
+      createBankAccountComponent: CreateBankAccount,
+      createEmployeeComponent: CreateEmployee,
     };
   },
   computed: {
@@ -248,41 +191,22 @@ export default {
     },
   },
   methods: {
-    openCreateBankAccountModal() {
-      this.isCreateBankAccountModalVisible = true;
-    },
-    closeCreateBankAccountModal() {
-      this.isCreateBankAccountModalVisible = false;
-    },
     handleCreateBankAccountSubmit(formData) {
       console.log("Bank account data received:", formData);
-      this.closeCreateBankAccountModal();
     },
-    openCreateCustomerModal() {
-      this.isCreateCustomerModalVisible = true;
-    },
-    closeCreateCustomerModal() {
-      this.isCreateCustomerModalVisible = false;
-    },
-    handleCreateCustomerSubmit(formData) {
-      console.log("Customer data received:", formData);
-      this.closeCreateCustomerModal();
-    },
-    openCreateEmployeeModal() {
-      this.isCreateEmployeeModalVisible = true;
-    },
-    closeCreateEmployeeModal() {
-      this.isCreateEmployeeModalVisible = false;
-    },
+
     handleCreateEmployeeSubmit(formData) {
       console.log("Employee data received:", formData);
-      this.closeCreateEmployeeModal();
     },
+
+    handleCreateCustomerSubmit(formData) {
+      console.log("Customer data received:", formData);
+    },
+
     updateSelectedRow(type, item) {
       switch (type) {
         case "bankExpense":
           this.selectedBankExpense = item;
-          this.inputValue = item.accountNumber;
           this.bankNameInput = item.bankName;
           break;
         case "customer":
@@ -292,12 +216,10 @@ export default {
           break;
         case "bankReceive":
           this.selectedBankReceive = item;
-          this.inputValue = item.accountNumber;
           this.accountReceiveValue = item.bankName;
           break;
         case "employee":
           this.selectedEmployee = item;
-          this.inputValue = item.code;
           break;
       }
     },
@@ -313,7 +235,7 @@ export default {
   margin-bottom: 50px;
 }
 .payment {
-  padding-top: 60px; /* Đảm bảo nội dung không bị chèn lên header cố định */
+  padding-top: 60px;
 }
 
 .header-payment {
@@ -322,10 +244,16 @@ export default {
   left: 0;
   width: 100%;
   z-index: 1000;
-  background-color: #fff; /* Đảm bảo header có nền trắng */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Thêm đổ bóng để phân biệt với nội dung */
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
+.footer-payment-a {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
 .account-input-container {
   display: flex;
   flex-direction: column;
@@ -335,6 +263,7 @@ export default {
 .account-input-wrapper {
   display: flex;
   align-items: center;
+  margin-bottom: 4px;
 }
 
 .base-input {
@@ -343,7 +272,7 @@ export default {
   box-sizing: border-box;
   height: 35px;
   margin-left: 15px;
-  width: 100%; /* Adjust the width as needed */
+  width: 100%;
 }
 
 .second-input {
@@ -371,11 +300,13 @@ label {
   width: 50%;
   margin-right: 25px;
   margin-left: 18px;
+  margin-top: 4px;
+}
+.input-information-center {
+  margin-bottom: auto;
 }
 .input-information-left {
   width: 30%;
-}
-.input-information-center {
 }
 .payment {
   font-family: AvertaStdCY, Helvetica, Arial, sans-serif;
@@ -399,8 +330,7 @@ label {
   display: flex;
 }
 .document-link {
-  color: inherit; /* Inherit color from parent div */
-
+  color: inherit;
   margin-left: 10px;
   font-weight: bold;
 }
@@ -442,7 +372,6 @@ label {
 }
 .app-container {
   padding-top: 80px;
-  /* Adjust this value based on the height of your header */
 }
 .main-contain {
   font-family: AvertaStdCY, Helvetica, Arial, sans-serif;

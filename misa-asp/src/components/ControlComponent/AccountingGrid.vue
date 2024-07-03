@@ -23,7 +23,7 @@
             >
               <ComboboxGrid
                 v-model="row[column.fieldName]"
-                :apiEndpointKey="getEndpointKeyForField(column.fieldName)"
+                :endpoint="getEndpointKeyForField(column.fieldName)"
                 :options="getOptionsForField(column.fieldName)"
                 :columnConfig="getDropdownColumnConfig(column.fieldName)"
                 @update:selectedRow="
@@ -48,7 +48,7 @@
 
 <script>
 import ComboboxGrid from "../ControlComponent/ComboboxGrid.vue";
-import apiConfig from "../../config/apiConfig";
+import paymentConfig from "../../config/PaymentConfig";
 
 export default {
   name: "AccountingGrid",
@@ -57,60 +57,28 @@ export default {
   },
   data() {
     return {
-      rows: [
-        {
-          description: "",
-          debitAccount: null,
-          creditAccount: null,
-          amount: 0,
-          customer: null,
-          objectName: "",
-        },
-      ],
-      columnConfig: [
-        { columnName: "Diễn giải", fieldName: "description", dataType: "text" },
-        {
-          columnName: "TK Nợ",
-          fieldName: "debitAccount",
-          dataType: "dropdown",
-        },
-        {
-          columnName: "TK Có",
-          fieldName: "creditAccount",
-          dataType: "dropdown",
-        },
-        { columnName: "Số tiền", fieldName: "amount", dataType: "currency" },
-        {
-          columnName: "Đối tượng",
-          fieldName: "customer",
-          dataType: "dropdown",
-        },
-        {
-          columnName: "Tên đối tượng",
-          fieldName: "objectName",
-          dataType: "text",
-        },
-      ],
+      rows: paymentConfig.gridConfig.rows,
+      columnConfig: paymentConfig.gridConfig.columnConfig,
     };
   },
   methods: {
     getOptionsForField(field) {
       if (field === "debitAccount") {
-        return apiConfig.debitAccount.options;
+        return paymentConfig.comboxConfig.debitAccount.options;
       } else if (field === "creditAccount") {
-        return apiConfig.creditAccount.options;
+        return paymentConfig.comboxConfig.creditAccount.options;
       } else if (field === "customer") {
-        return [];
+        return paymentConfig.comboxConfig.customer.options;
       }
       return [];
     },
     getDropdownColumnConfig(field) {
       if (field === "debitAccount") {
-        return apiConfig.debitAccount.columnConfig;
+        return paymentConfig.comboxConfig.debitAccount.columnConfig;
       } else if (field === "creditAccount") {
-        return apiConfig.creditAccount.columnConfig;
+        return paymentConfig.comboxConfig.creditAccount.columnConfig;
       } else if (field === "customer") {
-        return apiConfig.customer.columnConfig;
+        return paymentConfig.comboxConfig.customer.columnConfig;
       }
       return [];
     },

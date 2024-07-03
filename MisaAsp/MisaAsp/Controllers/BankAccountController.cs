@@ -50,7 +50,7 @@ namespace MisaAsp.Controllers
                 return BadRequest(res);
             }
         }
-        [HttpGet("bankAccount/{roleId}")]
+        [HttpGet("bankAccount")]
         public async Task<IActionResult> GetBankAccountByRoleAsync(int roleId)
         {
             var res = new ResOutput();

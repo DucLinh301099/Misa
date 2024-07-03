@@ -52,10 +52,15 @@ export default {
   position: relative;
   background: #ffffff;
   padding: 30px;
-  max-width: 800px;
-  width: 90%;
+  max-width: 600px;
+  max-height: 450px;
+  width: 100%;
+  height: 60%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  animation: slideIn 0.3s ease;
+  animation: slideIn-fc2a14a2 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .modal-close {

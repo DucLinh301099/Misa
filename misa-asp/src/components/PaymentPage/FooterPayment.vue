@@ -61,7 +61,7 @@ export default {
   background-color: #28a745; /* Màu nền thay đổi */
   color: white;
   border: none; /* Loại bỏ viền */
-  border-radius: 4px 0 0 4px;
+  border-radius: 2.5px 0 0 2.5px;
 }
 
 .dropdown {

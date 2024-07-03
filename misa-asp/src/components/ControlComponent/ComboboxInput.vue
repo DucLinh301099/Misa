@@ -1,6 +1,5 @@
-<!-- ComboboxInput.vue -->
 <template>
-  <div v-if="showComponent" class="combobox-account-input-wrapper">
+  <div class="combobox-account-input-wrapper">
     <label for="expense-account-input">
       {{ label }} <span class="required" v-if="isRequired">*</span>
     </label>
@@ -10,9 +9,9 @@
           class="base-input"
           :type="type"
           :value="inputValue"
-          @onInput="handleOnInput"
+          @input="handleOnInput"
         />
-        <button v-if="showButton" @click="triggerModal" class="add-button">
+        <button v-if="showButton" @click="openCreateModal" class="add-button">
           +
         </button>
 
@@ -52,6 +51,14 @@
         </table>
       </div>
     </transition>
+
+    <Modal :visible="isCreateModalVisible" @close="closeCreateModal">
+      <component
+        :is="ComponentAdd"
+        @submit="handleCreateSubmit"
+        @close="closeCreateModal"
+      />
+    </Modal>
   </div>
 </template>
 
@@ -59,14 +66,15 @@
 import BaseInput from "../BaseComponent/BaseInputComponent.vue";
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
+import Modal from "../BaseComponent/Modal.vue";
 import { apiClient } from "../../api/base";
-import apiConfig from "../../config/apiConfig";
 
 export default {
   name: "ComboboxInput",
   components: {
     BaseInput,
     Multiselect,
+    Modal,
   },
   props: {
     selectedRow: {
@@ -85,25 +93,17 @@ export default {
       type: Boolean,
       default: true,
     },
-    options: {
-      type: Array,
-      default: () => [],
-    },
     isRequired: {
       type: Boolean,
       default: false,
     },
-    triggerModal: {
-      type: Function,
+    config: {
+      type: Object,
       required: true,
     },
-    showComponent: {
-      type: Boolean,
-      default: true,
-    },
-    apiEndpointKey: {
-      type: String,
-      required: true,
+    ComponentAdd: {
+      type: Object,
+      default: null,
     },
   },
   data() {
@@ -113,7 +113,8 @@ export default {
       showTable: false,
       internalSelectedOption: this.selectedOption,
       isInputFocused: false,
-      optionsData: this.options != null ? this.options : [], // Đảm bảo optionsData là mảng rỗng ban đầu
+      isCreateModalVisible: false,
+      optionsData: this.options != null ? this.options : [],
     };
   },
   watch: {
@@ -125,22 +126,14 @@ export default {
     },
   },
   computed: {
-    config() {
-      const config = apiConfig[this.apiEndpointKey];
-      if (!config) {
-        console.error(`Configuration for ${this.apiEndpointKey} is not found.`);
-      }
-      return config || {};
-    },
     endpoint() {
       return this.config.endpoint;
     },
     filteredOptions() {
       if (!Array.isArray(this.optionsData)) {
-        console.warn("optionsData is not an array:", this.optionsData);
         return [];
       }
-      if (this.inputValue === "") {
+      if (typeof this.inputValue !== "string" || this.inputValue === "") {
         return this.optionsData;
       }
 
@@ -160,23 +153,15 @@ export default {
   },
   methods: {
     async fetchData() {
-      if (!this.config) {
-        console.error(`Configuration for ${this.apiEndpointKey} is not found.`);
+      if (!this.config || !this.config.endpoint) {
         return;
       }
-      if (!this.config.endpoint) {
-        console.error(`Endpoint is not defined for ${this.apiEndpointKey}.`);
-        return;
-      }
+
       try {
-        console.log("Fetching data from:", this.config.endpoint);
-        const response = await apiClient[this.config.method](
-          this.config.endpoint
-        );
+        this.buildUrlRequest(this.config);
+        const response = await apiClient[this.config.method](this.config.url);
         this.optionsData = this.extractData(response);
-        console.log("optionsData:", this.optionsData);
       } catch (error) {
-        console.error("Error fetching data:", error);
         this.optionsData = [];
       }
     },
@@ -188,7 +173,6 @@ export default {
           return response.data.data;
         }
       }
-      console.warn("Unexpected response format:", response.data);
       return [];
     },
     async onExpandCombox() {
@@ -212,11 +196,37 @@ export default {
       this.$emit("update:selectedRow", item);
       this.showTable = false;
     },
-    handleOnInput(val) {
-      this.inputValue = val;
+    handleOnInput(event) {
+      this.inputValue = event.target.value;
     },
     handleInputChange(value) {
       this.internalSelectedOption = value;
+    },
+    buildUrlRequest(config) {
+      config.url = `${config.endpoint}`;
+      if (config.params) {
+        if (config.method.toLowerCase() == "get") {
+          let urlParam = Object.entries(config.params)
+            .map(([key, value]) => `${key}=${value}`)
+            .join("&&");
+
+          config.url = urlParam
+            ? `${config.endpoint}?${urlParam}`
+            : `${config.endpoint}`;
+        } else {
+          config.body = config.params;
+        }
+      }
+    },
+    openCreateModal() {
+      this.isCreateModalVisible = true;
+    },
+    closeCreateModal() {
+      this.isCreateModalVisible = false;
+    },
+    handleCreateSubmit(formData) {
+      this.$emit("createSubmit", formData);
+      this.closeCreateModal();
     },
   },
 };
@@ -258,10 +268,6 @@ label {
   height: 30px;
   outline: none;
 }
-.base-input:focus {
-  outline: none; /* Ensure no outline appears on focus */
-  border: 2px solid #0075c0; /* Thêm viền màu xanh khi focus */
-}
 
 .base-input input {
   width: 100%;
@@ -301,7 +307,7 @@ label {
   margin-left: 15px;
 }
 .second-input:focus {
-  border: 2px solid #0075c0; /* Thêm viền màu xanh khi focus */
+  border: 2px solid #68c75b;
 }
 .second-input-e {
   border-radius: 2px;
@@ -313,7 +319,7 @@ label {
   margin-left: 15px;
 }
 .second-input-e:focus {
-  border: 2px solid #0075c0; /* Thêm viền màu xanh khi focus */
+  border: 2px solid #0075c0;
 }
 .dropdown-table-wrapper {
   position: absolute;
@@ -321,8 +327,8 @@ label {
   background-color: white;
   width: 60%;
   margin-top: 65px;
-  max-height: 130px; /* Set maximum height for the dropdown */
-  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 130px;
+  overflow-y: auto;
 }
 
 .dropdown-table {

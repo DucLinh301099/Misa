@@ -1,23 +1,41 @@
+<!-- src/components/CreateEmployee.vue -->
 <template>
   <div class="create-employee">
     <h2 class="form-title">Thông tin nhân viên</h2>
     <form @submit.prevent="createEmployee">
       <div class="form-row">
         <div class="input-container">
-          <label for="employee-code">Mã nhân viên</label>
+          <label for="employee-code"
+            >Mã nhân viên<span class="required">*</span></label
+          >
           <input
             type="text"
             id="employee-code"
             v-model="employeeCode"
             class="input-field"
+            required
           />
         </div>
         <div class="input-container">
-          <label for="employee-name">Tên nhân viên</label>
+          <label for="employee-name"
+            >Tên nhân viên<span class="required">*</span></label
+          >
           <input
             type="text"
             id="employee-name"
             v-model="employeeName"
+            class="input-field"
+            required
+          />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-container">
+          <label for="mobile-phone">ĐT di động</label>
+          <input
+            type="text"
+            id="mobile-phone"
+            v-model="mobilePhone"
             class="input-field"
           />
         </div>
@@ -31,23 +49,19 @@
           />
         </div>
       </div>
-      <div class="form-row">
-        <div class="input-container full-width">
-          <label for="mobile-phone">ĐT di động</label>
-          <input
-            type="text"
-            id="mobile-phone"
-            v-model="mobilePhone"
-            class="input-field"
-          />
-        </div>
-      </div>
+      <div class="divide"><!----></div>
       <div v-if="generalError" class="error-message">{{ generalError }}</div>
       <div class="form-actions">
-        <button type="button" class="btn cancel-btn" @click="$emit('close')">
-          Hủy
-        </button>
-        <button type="submit" class="btn submit-btn">Cất và Thêm</button>
+        <div class="btn-cancel-container">
+          <button type="button" class="btn cancel-btn" @click="$emit('close')">
+            Hủy
+          </button>
+        </div>
+        <div class="btn-container">
+          <button type="button" class="btn save-btn" @click="save">Cất</button>
+
+          <button type="submit" class="btn submit-btn">Cất và Thêm</button>
+        </div>
       </div>
     </form>
   </div>
@@ -62,8 +76,8 @@ export default {
     return {
       employeeCode: "",
       employeeName: "",
-      department: "",
       mobilePhone: "",
+      department: "",
       generalError: "",
     };
   },
@@ -74,8 +88,8 @@ export default {
         const data = await createEmployee(
           this.employeeCode,
           this.employeeName,
-          this.department,
-          this.mobilePhone
+          this.mobilePhone,
+          this.department
         );
         console.log("Tạo mới nhân viên thành công:", data);
         alert("Tạo mới nhân viên thành công!");
@@ -97,10 +111,15 @@ export default {
   max-width: 900px;
   margin: auto;
 }
-
+.divide {
+  width: 100%;
+  border-top: 1px solid #e0e0e0;
+  margin: 50px 0 10px;
+  position: relative;
+}
 .form-title {
   font-size: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   color: #333;
 }
 
@@ -114,30 +133,33 @@ export default {
   display: flex;
   flex-direction: column;
   flex: 1;
-  margin-right: 20px;
+  margin-right: 40px;
 }
 
 .input-container.full-width {
   flex: 0 0 100%;
   margin-right: 0;
 }
-
+.required {
+  color: red;
+}
 .input-container:last-child {
   margin-right: 0;
 }
 
 label {
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 8px;
-  color: #555;
 }
 
 .input-field {
   padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid #babec5;
+  border-radius: 2.5px;
   font-size: 14px;
   color: #333;
+  outline: none;
+  width: 200px;
 }
 
 .input-field:focus {
@@ -150,22 +172,35 @@ label {
   margin-top: 30px;
 }
 
+.btn-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  font-weight: bold;
+}
+
 .btn {
   padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
+  border: 1px solid #8d9096;
+  border-radius: 3px;
   cursor: pointer;
-  font-size: 14px;
+  background-color: white;
+  font-weight: 600;
 }
 
 .cancel-btn {
-  background-color: #ccc;
-  margin-right: 10px;
+  color: #000;
+}
+
+.save-btn {
+  color: #000;
+  margin-right: 13px;
 }
 
 .submit-btn {
   background-color: #28a745;
   color: white;
+  border: none;
 }
 
 .submit-btn:hover {

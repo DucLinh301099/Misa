@@ -22,7 +22,7 @@
           <span class="tooltip">Tài khoản không được để trống.</span>
         </div>
         <multiselect
-          v-show="isMultiselectVisible"
+          :style="{ visibility: isMultiselectVisible ? 'visible' : 'hidden' }"
           :value="selectedOption"
           @input="updateSelectedOption"
           :options="filteredOptions"
@@ -66,7 +66,7 @@
 <script>
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
-import apiConfig from "../../config/apiConfig";
+import paymentConfig from "../../config/PaymentConfig";
 import { apiClient } from "../../api/base";
 
 export default {
@@ -75,7 +75,7 @@ export default {
     Multiselect,
   },
   props: {
-    apiEndpointKey: {
+    endpoint: {
       type: String,
       required: true,
     },
@@ -103,9 +103,9 @@ export default {
   },
   computed: {
     config() {
-      const config = apiConfig[this.apiEndpointKey];
+      const config = paymentConfig.comboxConfig[this.endpoint];
       if (!config) {
-        console.error(`Configuration for ${this.apiEndpointKey} is not found.`);
+        console.error(`Configuration for ${this.endpoint} is not found.`);
       }
       return config || {};
     },
@@ -128,15 +128,12 @@ export default {
   methods: {
     async fetchData() {
       if (!this.config) {
-        console.error(`Configuration for ${this.apiEndpointKey} is not found.`);
         return;
       }
       if (!this.config.endpoint) {
-        console.error(`Endpoint is not defined for ${this.apiEndpointKey}.`);
         return;
       }
       try {
-        console.log("Fetching data from:", this.config.endpoint);
         const response = await apiClient[this.config.method](
           this.config.endpoint
         );
@@ -152,13 +149,10 @@ export default {
           Array.isArray(response.data.data)
         ) {
           this.optionsData = response.data.data;
-          console.log("optionsData:", this.optionsData);
         } else {
-          console.warn("Unexpected response format:", response.data);
           this.optionsData = [];
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
         this.optionsData = [];
       }
     },
@@ -177,7 +171,7 @@ export default {
         if (!this.isInputFocused) {
           this.isMultiselectVisible = false;
         }
-      }, 3000);
+      }, 5000);
     },
 
     selectRow(item) {
@@ -294,7 +288,7 @@ export default {
 
 .dropdown-table-wrapper {
   position: absolute;
-  z-index: 500;
+  z-index: 700;
   background-color: white;
   margin-top: 40px;
   margin-left: 35px;
