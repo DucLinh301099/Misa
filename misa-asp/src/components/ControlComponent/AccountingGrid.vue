@@ -32,7 +32,11 @@
               />
             </div>
             <div v-else>
-              <input v-model="row[column.fieldName]" />
+              <input
+                v-model="row[column.fieldName]"
+                @input="changeValueInput(rowIndex, column)"
+                class="right-align-input"
+              />
             </div>
           </td>
           <td><button @click="removeRow(rowIndex)">🗑️</button></td>
@@ -55,11 +59,24 @@ export default {
   components: {
     ComboboxGrid,
   },
+  props: {
+    submitTotal: Function,
+    changeInputRow: Function,
+  },
   data() {
     return {
       rows: paymentConfig.gridConfig.rows,
       columnConfig: paymentConfig.gridConfig.columnConfig,
+      currentTotal: 0,
     };
+  },
+  watch: {
+    rows: {
+      deep: true,
+      handler() {
+        this.updateCurrentTotal();
+      },
+    },
   },
   methods: {
     getOptionsForField(field) {
@@ -96,7 +113,7 @@ export default {
         description: "",
         debitAccount: null,
         creditAccount: null,
-        amount: 0,
+        amount: "",
         customer: null,
         objectName: "",
       });
@@ -115,6 +132,37 @@ export default {
           rowIndex
         ].description = `chi tiền cho ${selectedOption.objectName}`;
       }
+    },
+
+    changeValueInput(rowIndex, column) {
+      let record = this.rows[rowIndex];
+      if (record && column && column.dataType) {
+        let fieldName = column.fieldName;
+        switch (column.dataType) {
+          case "currency":
+            let value = this.rows[rowIndex][fieldName].replace(/[^\d]/g, "");
+            value = value.replace(/^0+/, "") || "0";
+            this.rows[rowIndex][fieldName] = value.replace(
+              /\B(?=(\d{3})+(?!\d))/g,
+              "."
+            );
+            break;
+        }
+      }
+
+      if (record) {
+        this.$emit("changeValueInput", record, column);
+      }
+    },
+    updateCurrentTotal() {
+      this.currentTotal = this.rows.reduce(
+        (sum, row) =>
+          sum + Number(row.amount.toString().replace(/\./g, "") || 0),
+        0
+      );
+    },
+    submitCurrentTotal() {
+      this.submitTotal(this.currentTotal);
     },
   },
 };
@@ -172,6 +220,7 @@ export default {
   height: 30px;
   border-radius: 2px;
   outline: none;
+  text-align: right; /* Align input text to the right */
 }
 
 .dropdown-select-a {

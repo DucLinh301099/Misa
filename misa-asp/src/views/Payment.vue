@@ -17,7 +17,6 @@
               @update:selectedRow="updateSelectedRow('bankExpense', $event)"
               :config="paymentConfigCombo.comboxConfig.bankExpense"
               :ComponentAdd="createBankAccountComponent"
-              @createSubmit="handleCreateBankAccountSubmit"
             />
             <BaseInput
               v-model="bankNameInput"
@@ -27,14 +26,16 @@
             />
           </div>
           <div class="account-input-wrapper">
+            <!-- <div class="customer-right"> -->
             <ComboboxInput
               label="Đối Tượng"
               :selectedOption="selectedCustomer"
               @update:selectedRow="updateSelectedRow('customer', $event)"
               :config="paymentConfigCombo.comboxConfig.customer"
               :ComponentAdd="createCustomerComponent"
-              @createSubmit="handleCreateCustomerSubmit"
             />
+            <!-- </div> -->
+
             <BaseInput
               v-model="addressValue"
               class="base-input second-input"
@@ -60,6 +61,7 @@
             />
           </div>
           <InformationInput v-if="!hideInformationInput" />
+
           <div class="bill-content-input-wrapper">
             <label for="bill-content-input">Nội dung thanh toán</label>
             <div class="input-container">
@@ -82,7 +84,6 @@
               @update:selectedRow="updateSelectedRow('employee', $event)"
               :config="paymentConfigCombo.comboxConfig.employee"
               :ComponentAdd="createEmployeeComponent"
-              @createSubmit="handleCreateEmployeeSubmit"
             />
           </div>
         </div>
@@ -100,11 +101,15 @@
         <DateTimeComponent :voucherType="voucherType" />
       </div>
       <div class="input-information-left">
-        <SummaryComponent />
+        <SummaryComponent :totalAmount="totalAmount" />
       </div>
     </div>
     <div class=" ">
-      <AccountingGrid :config="paymentConfigCombo.gridConfig" />
+      <AccountingGrid
+        :config="paymentConfigCombo.gridConfig"
+        :submitTotal="updateTotalAmount"
+        @changeValueInput="changeValueInput"
+      />
       <div>
         <AttachFile />
       </div>
@@ -162,6 +167,7 @@ export default {
       inputValue: "",
       inputValueCustomer: "",
       addressValue: "",
+      totalAmount: 0,
       bankNameInput: "",
       accountReceiveValue: "",
       paymentConfigCombo: paymentConfig,
@@ -191,16 +197,15 @@ export default {
     },
   },
   methods: {
-    handleCreateBankAccountSubmit(formData) {
-      console.log("Bank account data received:", formData);
+    changeValueInput(record, column) {
+      switch (column.fieldName) {
+        case "amount":
+          this.updateTotalAmount(record);
+          break;
+      }
     },
-
-    handleCreateEmployeeSubmit(formData) {
-      console.log("Employee data received:", formData);
-    },
-
-    handleCreateCustomerSubmit(formData) {
-      console.log("Customer data received:", formData);
+    updateTotalAmount(record) {
+      this.totalAmount = record.amount;
     },
 
     updateSelectedRow(type, item) {
@@ -231,6 +236,77 @@ export default {
 </script>
 
 <style scoped>
+.information-input-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.information-left {
+  display: flex;
+}
+.information-right {
+  width: 45%;
+}
+.customer-right {
+  width: 45%;
+}
+.input-field-cmnd,
+.input-field {
+  display: flex;
+  flex-direction: column;
+}
+.input-field-date {
+  display: flex;
+  flex-direction: column;
+  margin-right: 15px;
+}
+.input-field-address {
+  display: flex;
+  flex-direction: column;
+}
+.input-container {
+  display: flex;
+  align-items: center;
+}
+.input-container-infor {
+  display: flex;
+  outline: none;
+  align-items: center;
+  border: 1px solid #999;
+  height: 34px;
+}
+.base-input {
+  outline: none;
+  padding: 8px;
+  box-sizing: border-box;
+  border: none;
+  height: 35px;
+  width: 100%;
+}
+.base-input-infor {
+  width: 100%;
+  height: 30px; /* Bạn có thể thay đổi giá trị này nếu cần */
+  border: none;
+  padding: 0 8px;
+  box-sizing: border-box;
+  outline: none;
+}
+.input-information-right {
+  width: 50%;
+  margin-right: 25px;
+  margin-left: 18px;
+  margin-top: 4px;
+}
+.input-group {
+  display: flex;
+  gap: 16px;
+}
+
+label {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
 .accountingGrid {
   margin-bottom: 50px;
 }

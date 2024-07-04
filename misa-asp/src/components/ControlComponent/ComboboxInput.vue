@@ -1,6 +1,6 @@
 <template>
   <div class="combobox-account-input-wrapper">
-    <label for="expense-account-input">
+    <label for="combobox-label">
       {{ label }} <span class="required" v-if="isRequired">*</span>
     </label>
     <div class="input-container">

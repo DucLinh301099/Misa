@@ -21,6 +21,10 @@ export default {
       type: String,
       default: "text",
     },
+    label: {
+      type: String,
+      default: null,
+    },
   },
   methods: {
     updateValue(event) {
@@ -49,6 +53,10 @@ export default {
   border: none;
   padding: 0 8px;
   box-sizing: border-box;
+}
+.label {
+  margin-bottom: 8px;
+  font-weight: bold;
 }
 .base-input {
   border: none;

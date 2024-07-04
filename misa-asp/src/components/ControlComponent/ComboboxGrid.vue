@@ -212,6 +212,7 @@ export default {
   height: 30px;
   position: relative;
   box-sizing: border-box;
+  width: 120px;
 }
 
 .base-input {

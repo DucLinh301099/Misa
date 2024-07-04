@@ -1,18 +1,22 @@
-<!-- src/components/SummaryComponent.vue -->
 <template>
   <div class="summary-component">
     <div class="total-label">Tổng tiền</div>
-    <div class="total-amount">{{ totalAmount }}</div>
+    <div class="total-amount">{{ formattedTotalAmount }}</div>
   </div>
 </template>
 
 <script>
 export default {
   name: "SummaryComponent",
-  data() {
-    return {
-      totalAmount: 0,
-    };
+  props: {
+    totalAmount: {
+      type: Number,
+    },
+  },
+  computed: {
+    formattedTotalAmount() {
+      return new Intl.NumberFormat("de-DE").format(this.totalAmount);
+    },
   },
 };
 </script>

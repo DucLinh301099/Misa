@@ -14,8 +14,18 @@
     </div>
     <div class="form-group">
       <label for="so-chung-tu">Số chứng từ</label>
-      <div class="input-with-button">
-        <BaseInput v-model="soChungTu" />
+      <div
+        :class="{
+          'input-with-button': true,
+          'error-border': !isSoChungTuValid && soChungTuFocused,
+          'success-border': isSoChungTuValid && soChungTuFocused,
+        }"
+      >
+        <BaseInput
+          v-model="soChungTu"
+          @focus="soChungTuFocused = true"
+          @blur="soChungTuFocused = false"
+        />
       </div>
     </div>
     <div class="form-group" v-if="voucherType === '3.Tạm ứng cho nhân viên'">
@@ -51,7 +61,13 @@ export default {
       ngayChungTu: "2024-06-18",
       soChungTu: "UNC00001",
       hanQuyetToan: "",
+      soChungTuFocused: false,
     };
+  },
+  computed: {
+    isSoChungTuValid() {
+      return this.soChungTu.trim() !== "";
+    },
   },
 };
 </script>
@@ -121,5 +137,13 @@ label {
   height: 14px;
   width: 14px;
   cursor: pointer;
+}
+
+.error-border {
+  border: 2px solid red;
+}
+
+.success-border {
+  border: 2px solid green;
 }
 </style>

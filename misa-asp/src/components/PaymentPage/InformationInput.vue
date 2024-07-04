@@ -1,34 +1,30 @@
 <!-- src/components/InformationInput.vue -->
 <template>
   <div class="information-input-wrapper">
-    <div class="input-field">
+    <div class="input-container">
       <label for="so-cmnd">Số CMND</label>
-      <div class="input-container">
-        <BaseInput
-          v-model="soCMND"
-          placeholder="Số CMND"
-          class="base-input-1"
-        />
-      </div>
+      <BaseInput
+        v-model="soCMND"
+        placeholder="Số CMND"
+        class="base-input cmnd-input"
+      />
     </div>
-    <div class="input-field">
-      <label for="ngay-cap">Ngày cấp</label>
-      <div class="input-container">
+    <div class="input-container-2">
+      <div class="input-field">
+        <label for="ngay-cap">Ngày cấp</label>
         <BaseInput
           v-model="ngayCap"
           type="date"
           placeholder="dd/mm/yyyy"
-          class="base-input-1"
+          class="base-input date-input"
         />
       </div>
-    </div>
-    <div class="input-field">
-      <label for="noi-cap">Nơi cấp</label>
-      <div class="input-container">
+      <div class="input-field">
+        <label for="noi-cap">Nơi cấp</label>
         <BaseInput
           v-model="noiCap"
           placeholder="Nơi cấp"
-          class="base-input-1"
+          class="base-input place-input"
         />
       </div>
     </div>
@@ -56,10 +52,23 @@ export default {
 <style scoped>
 .information-input-wrapper {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
   gap: 20px;
   margin-bottom: 8px;
+}
+
+.input-container {
+  flex: 1;
+  max-width: 45%;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-container-2 {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  width: 45%;
 }
 
 .input-field {
@@ -73,12 +82,7 @@ label {
   font-weight: bold;
 }
 
-.input-container {
-  display: flex;
-  align-items: center;
-}
-
-.base-input-1 {
+.base-input {
   width: 100%;
   height: 37px;
   border: 1px solid #999;
@@ -87,11 +91,25 @@ label {
   box-sizing: border-box;
 }
 
-.base-input-1 input[type="date"] {
+.base-input input[type="date"] {
   width: 100%;
   height: 100%;
   border: none;
   outline: none;
   padding: 0 8px;
+}
+
+@media (max-width: 768px) {
+  .information-input-wrapper {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .input-container,
+  .input-container-2 {
+    width: 100%;
+  }
+  .input-container-2 {
+    flex-direction: column;
+  }
 }
 </style>
