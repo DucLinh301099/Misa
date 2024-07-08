@@ -4,8 +4,15 @@
 
     <div class="dropdown">
       <button class="save-btn">Cất</button>
-      <button class="btn save-add-btn">Cất và In</button>
-      <button class="dropdown-toggle">&#9660;</button>
+      <div class="dropdown-container">
+        <button class="btn save-add-btn">Cất và In</button>
+        <button class="dropdown-toggle" @click="toggleDropdown">&#9660;</button>
+        <div class="dropdown-menu" v-if="isDropdownVisible">
+          <button @click="handleAction('add')">Cất và Thêm</button>
+          <button @click="handleAction('close')">Cất và Đóng</button>
+          <button @click="handleAction('print')">Cất và In</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -13,6 +20,21 @@
 <script>
 export default {
   name: "FooterPayment",
+  data() {
+    return {
+      isDropdownVisible: false,
+    };
+  },
+  methods: {
+    toggleDropdown() {
+      this.isDropdownVisible = !this.isDropdownVisible;
+    },
+    handleAction(action) {
+      console.log(`Action selected: ${action}`);
+      this.isDropdownVisible = false;
+      // Add your logic for handling the actions here
+    },
+  },
 };
 </script>
 
@@ -37,30 +59,30 @@ export default {
 }
 
 .cancel-btn {
-  background-color: #38393d; /* Màu nền thay đổi */
+  background-color: #38393d;
   color: white;
   padding: 10px 20px;
-  border: 1px solid #6b6c72; /* Loại bỏ viền */
+  border: 1px solid #6b6c72;
   border-radius: 3px;
   font-size: 16px;
   cursor: pointer;
 }
 
 .save-btn {
-  background-color: #38393d; /* Màu nền thay đổi */
+  background-color: #38393d;
   color: white;
   margin-right: 10px;
   padding: 10px 20px;
-  border: 1px solid #6b6c72; /* Loại bỏ viền */
+  border: 1px solid #6b6c72;
   border-radius: 3px;
   font-size: 16px;
   cursor: pointer;
 }
 
 .save-add-btn {
-  background-color: #28a745; /* Màu nền thay đổi */
+  background-color: #28a745;
   color: white;
-  border: none; /* Loại bỏ viền */
+  border: none;
   border-radius: 2.5px 0 0 2.5px;
 }
 
@@ -70,16 +92,47 @@ export default {
   margin-right: 45px;
 }
 
+.dropdown-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .dropdown-toggle {
   padding: 10px;
   border: 1px solid #fff;
   border-top: none;
   border-right: none;
   border-bottom: none;
-  background-color: #28a745; /* Màu nền thay đổi */
+  background-color: #28a745;
   color: white;
   cursor: pointer;
-  border-radius: 0 4px 4px 0;
+  border-radius: 0 2.5px 2.5px 0;
   font-size: 16px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  bottom: 100%; /* Position above the dropdown container */
+  left: 0;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #babec5;
+}
+
+.dropdown-menu button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dropdown-menu button:hover {
+  background-color: #68c75b;
 }
 </style>

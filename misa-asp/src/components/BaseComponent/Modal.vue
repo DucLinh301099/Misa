@@ -51,11 +51,11 @@ export default {
 .modal-content {
   position: relative;
   background: #ffffff;
-  padding: 30px;
+  padding: 0px 5px 25px 5px;
   max-width: 600px;
   max-height: 450px;
   width: 100%;
-  height: 60%;
+
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   animation: slideIn-fc2a14a2 0.3s ease;
   display: flex;
@@ -71,6 +71,7 @@ export default {
   border: none;
   font-size: 24px;
   cursor: pointer;
+  scale: 1.7;
 }
 
 /* Animation keyframes */

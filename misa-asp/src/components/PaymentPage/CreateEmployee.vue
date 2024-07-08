@@ -106,27 +106,26 @@ export default {
 <style scoped>
 .create-employee {
   background-color: #fff;
-  padding: 30px;
+  padding-top: 8px;
   border-radius: 10px;
   max-width: 900px;
-  margin: auto;
 }
 .divide {
   width: 100%;
   border-top: 1px solid #e0e0e0;
-  margin: 50px 0 10px;
+  margin-top: 25px;
   position: relative;
 }
 .form-title {
   font-size: 24px;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
   color: #333;
 }
 
 .form-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .input-container {
@@ -153,7 +152,7 @@ label {
 }
 
 .input-field {
-  padding: 10px;
+  padding: 8px;
   border: 1px solid #babec5;
   border-radius: 2.5px;
   font-size: 14px;
@@ -169,7 +168,7 @@ label {
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .btn-container {

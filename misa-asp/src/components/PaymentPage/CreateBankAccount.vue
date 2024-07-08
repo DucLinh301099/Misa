@@ -115,15 +115,14 @@ export default {
 <style scoped>
 .create-bank-account {
   background-color: #fff;
-  padding: 20px;
+
   border-radius: 8px;
   max-width: 600px;
-  margin: auto;
 }
 .divide {
   width: 100%;
   border-top: 1px solid #e0e0e0;
-  margin: 50px 0 10px;
+  padding-bottom: 30px;
   position: relative;
 }
 .form-title {
@@ -134,7 +133,7 @@ export default {
 .form-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
 }
 
 .input-container {
@@ -162,7 +161,7 @@ label {
 }
 
 .input-field {
-  padding: 10px;
+  padding: 8px;
   border: 1px solid #babec5;
   border-radius: 2.5px;
   outline: none;
@@ -212,7 +211,6 @@ label {
 .form-actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 80px;
 }
 
 .btn-container {
