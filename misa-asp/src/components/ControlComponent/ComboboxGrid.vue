@@ -22,6 +22,7 @@
           <span class="tooltip">Tài khoản không được để trống.</span>
         </div>
         <multiselect
+          ref="multiselect"
           :style="{ visibility: isMultiselectVisible ? 'visible' : 'hidden' }"
           :value="selectedOption"
           @input="updateSelectedOption"
@@ -99,6 +100,7 @@ export default {
       isInputFocused: false,
       isMultiselectVisible: false,
       optionsData: this.options != null ? this.options : [],
+      optionSelected: false, // Thêm biến để kiểm tra xem có tùy chọn đã được chọn hay chưa
     };
   },
   computed: {
@@ -163,17 +165,28 @@ export default {
     handleFocus() {
       this.isInputFocused = true;
       this.isMultiselectVisible = true;
+      this.optionSelected = false; // Reset khi input nhận được focus
+
+      // Xóa bỏ sự kiện click ngoài khi input nhận được focus
+      document.removeEventListener("mousedown", this.handleClickOutside);
     },
     handleBlur() {
-      this.isInputFocused = false;
-      // Sử dụng timeout để đảm bảo rằng multiselect không bị ẩn ngay lập tức
       setTimeout(() => {
-        if (!this.isInputFocused) {
+        if (!this.optionSelected) {
           this.isMultiselectVisible = false;
         }
-      }, 5000);
+      }, 3000);
     },
-
+    handleClickOutside(event) {
+      const multiselect = this.$refs.multiselect.$el;
+      if (
+        !this.$el.contains(event.target) &&
+        !multiselect.contains(event.target)
+      ) {
+        this.isMultiselectVisible = false;
+        document.removeEventListener("mousedown", this.handleClickOutside);
+      }
+    },
     selectRow(item) {
       let displayValue = this.columnConfig.find((_) => _.isDisplay)?.fieldName;
       if (displayValue) {
@@ -184,6 +197,7 @@ export default {
 
       this.showTable = false;
       this.isMultiselectVisible = false;
+      this.optionSelected = true; // Đánh dấu tùy chọn đã được chọn
     },
   },
 };

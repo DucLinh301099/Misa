@@ -107,7 +107,6 @@
     <div class=" ">
       <AccountingGrid
         :config="paymentConfigCombo.gridConfig"
-        :submitTotal="updateTotalAmount"
         @changeValueInput="changeValueInput"
       />
       <div>

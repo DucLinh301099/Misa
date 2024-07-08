@@ -130,7 +130,7 @@ export default {
         this.rows[rowIndex].objectName = selectedOption.objectName;
         this.rows[
           rowIndex
-        ].description = `chi tiền cho ${selectedOption.objectName}`;
+        ].description = `Chi tiền cho ${selectedOption.objectName}`;
       }
     },
 
@@ -160,9 +160,6 @@ export default {
           sum + Number(row.amount.toString().replace(/\./g, "") || 0),
         0
       );
-    },
-    submitCurrentTotal() {
-      this.submitTotal(this.currentTotal);
     },
   },
 };
@@ -220,7 +217,6 @@ export default {
   height: 30px;
   border-radius: 2px;
   outline: none;
-  text-align: right; /* Align input text to the right */
 }
 
 .dropdown-select-a {

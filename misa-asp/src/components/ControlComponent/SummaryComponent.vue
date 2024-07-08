@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     formattedTotalAmount() {
-      return new Intl.NumberFormat("de-DE").format(this.totalAmount);
+      return this.totalAmount;
     },
   },
 };
