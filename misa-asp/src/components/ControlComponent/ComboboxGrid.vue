@@ -175,7 +175,7 @@ export default {
         if (!this.optionSelected) {
           this.isMultiselectVisible = false;
         }
-      }, 3000);
+      }, 5000);
     },
     handleClickOutside(event) {
       const multiselect = this.$refs.multiselect.$el;

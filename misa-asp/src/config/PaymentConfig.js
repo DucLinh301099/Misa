@@ -84,6 +84,11 @@ const paymentConfig = {
       options: [
         { accountNumber: "1111", accountName: "Tiền Việt Nam" },
         { accountNumber: "1112", accountName: "Ngoại Tệ" },
+        { accountNumber: "121", accountName: "Chứng khoán" },
+        { accountNumber: "1281", accountName: "Tiền gửi có kỳ hạn" },
+        { accountNumber: "141", accountName: "tạm ứng" },
+        { accountNumber: "153", accountName: "Công cụ, dung cụ" },
+        { accountNumber: "154", accountName: "Chi phí sản xuất" },
       ],
       columnConfig: [
         {
