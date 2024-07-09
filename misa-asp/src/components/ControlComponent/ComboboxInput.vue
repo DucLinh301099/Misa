@@ -105,6 +105,10 @@ export default {
       type: Object,
       default: null,
     },
+    value: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -257,7 +261,7 @@ label {
   border-radius: 2px;
   overflow: hidden;
   flex-grow: 2;
-  height: 35px;
+  height: 30px;
   position: relative;
 }
 
@@ -301,7 +305,7 @@ label {
   border-radius: 2px;
   padding: 8px;
   box-sizing: border-box;
-  height: 37px;
+  height: 33px;
   flex-grow: 1;
   width: 50%;
   margin-left: 15px;

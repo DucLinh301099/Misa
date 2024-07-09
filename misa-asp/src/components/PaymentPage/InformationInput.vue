@@ -84,7 +84,7 @@ label {
 
 .base-input {
   width: 100%;
-  height: 37px;
+  height: 32px;
   border: 1px solid #999;
   border-radius: 2px;
   padding: 0 8px;

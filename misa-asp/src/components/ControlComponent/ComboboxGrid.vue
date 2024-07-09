@@ -117,7 +117,7 @@ export default {
       }
 
       let displayField = this.columnConfig.find(
-        (col) => col.isDisplay
+        (col) => col.isDisplayGrid
       )?.fieldName;
 
       return this.optionsData.filter((option) =>
@@ -188,9 +188,17 @@ export default {
       }
     },
     selectRow(item) {
-      let displayValue = this.columnConfig.find((_) => _.isDisplay)?.fieldName;
-      if (displayValue) {
-        this.inputValue = item[displayValue];
+      let displayFirstValue = this.columnConfig?.find(
+        (col) => col.isDisplayGrid
+      )?.fieldName;
+      if (displayFirstValue) {
+        this.inputValue = item[displayFirstValue];
+      }
+      let displaySecondValue = this.columnConfig?.find(
+        (col) => col.isDisplaySecondGrid
+      )?.fieldName;
+      if (displaySecondValue) {
+        this.secondInputValue = item[displaySecondValue];
       }
 
       this.$emit("update:selectedRow", item);
@@ -219,7 +227,7 @@ export default {
 .input-with-button {
   display: flex;
   align-items: center;
-  border: 1px solid #999;
+  border: 1px solid #ccc;
   border-radius: 2px;
   overflow: hidden;
   flex-grow: 2;
@@ -227,6 +235,7 @@ export default {
   position: relative;
   box-sizing: border-box;
   width: 120px;
+  background-color: #fff;
 }
 
 .base-input {

@@ -42,6 +42,7 @@
 import { ref, computed, watch } from "vue";
 import Multiselect from "@vueform/multiselect";
 import "@vueform/multiselect/themes/default.css";
+import "vue-multiselect/dist/vue-multiselect.css";
 
 // Nhận prop từ component cha
 const props = defineProps({

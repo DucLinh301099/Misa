@@ -14,7 +14,7 @@ export default {
   name: "BaseInput",
   props: {
     value: {
-      type: String,
+      type: Object,
       default: "",
     },
     type: {

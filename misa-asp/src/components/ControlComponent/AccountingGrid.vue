@@ -11,10 +11,14 @@
           <th></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="table-grid">
         <tr v-for="(row, rowIndex) in rows" :key="rowIndex">
           <td>{{ rowIndex + 1 }}</td>
-          <td v-for="(column, colIndex) in columnConfig" :key="colIndex">
+          <td
+            class="td-grid"
+            v-for="(column, colIndex) in columnConfig"
+            :key="colIndex"
+          >
             <div
               v-if="
                 column.dataType === 'dropdown' &&
@@ -127,6 +131,7 @@ export default {
     updateRowField(rowIndex, fieldName, selectedOption) {
       this.rows[rowIndex][fieldName] = selectedOption[fieldName];
       if (fieldName === "customer") {
+        this.rows[rowIndex].objectId = selectedOption.objectId;
         this.rows[rowIndex].objectName = selectedOption.objectName;
         this.rows[
           rowIndex
@@ -170,16 +175,25 @@ export default {
   padding-left: 20px;
   padding-right: 20px;
 }
+/* .table-grid {
+  height: 40px;
+} */
+/* background-color: #e6f0fa; */
+.td-grid {
+  height: 40px;
+}
 .btn-left {
   margin-right: 15px;
   border: 0.5px solid #999;
   width: 150px;
   background-color: #fff;
+  font-weight: bold;
 }
 .btn-right {
   border: 0.5px solid #999;
   width: 150px;
   background-color: #fff;
+  font-weight: bold;
 }
 .accounting {
   margin-bottom: 16px;
@@ -196,10 +210,14 @@ export default {
   margin-top: 8px;
 }
 
-.accounting-table th,
-.accounting-table td {
+.accounting-table th {
   border: 1px solid #ccc;
   padding: 8px;
+  text-align: left;
+}
+.accounting-table td {
+  border: 1px solid #ccc;
+  padding: 0px 10px 0px 10px;
   text-align: left;
 }
 
@@ -211,7 +229,7 @@ export default {
 .accounting-table input,
 .accounting-table select {
   width: 100%;
-  border: 1px solid #999;
+  border: 1px solid #ccc;
   padding: 4px;
   box-sizing: border-box;
   height: 30px;
@@ -241,6 +259,7 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  background-color: #fff;
 }
 
 button:hover {

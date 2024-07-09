@@ -16,13 +16,14 @@
               :selectedOption="selectedBankExpense"
               @update:selectedRow="updateSelectedRow('bankExpense', $event)"
               :config="paymentConfigCombo.comboxConfig.bankExpense"
+              :value="payment.accountExpenseNumber"
               :ComponentAdd="createBankAccountComponent"
             />
             <BaseInput
               v-model="bankNameInput"
               class="base-input second-input"
               :type="type"
-              :value="bankNameInput"
+              :value="payment.bankExpenseName"
             />
           </div>
           <div class="account-input-wrapper">
@@ -32,6 +33,7 @@
               :selectedOption="selectedCustomer"
               @update:selectedRow="updateSelectedRow('customer', $event)"
               :config="paymentConfigCombo.comboxConfig.customer"
+              :value="payment.customerName"
               :ComponentAdd="createCustomerComponent"
             />
             <!-- </div> -->
@@ -40,7 +42,7 @@
               v-model="addressValue"
               class="base-input second-input"
               :type="type"
-              :value="addressValue"
+              :value="payment.customerAddress"
             />
           </div>
           <div class="account-input-wrapper">
@@ -50,6 +52,7 @@
               :showButton="false"
               :selectedOption="selectedBankReceive"
               @update:selectedRow="updateSelectedRow('bankReceive', $event)"
+              :value="payment.accountReceiveNumber"
               :config="paymentConfigCombo.comboxConfig.bankReceive"
             />
             <BaseInput
@@ -57,7 +60,7 @@
               v-model="accountReceiveValue"
               class="base-input second-input"
               :type="type"
-              :value="accountReceiveValue"
+              :value="payment.bankReceiveName"
             />
           </div>
           <InformationInput v-if="!hideInformationInput" />
@@ -83,6 +86,7 @@
               :selectedOption="selectedEmployee"
               @update:selectedRow="updateSelectedRow('employee', $event)"
               :config="paymentConfigCombo.comboxConfig.employee"
+              :value="payment.employeeCode"
               :ComponentAdd="createEmployeeComponent"
             />
           </div>
@@ -107,6 +111,7 @@
     <div class=" ">
       <AccountingGrid
         :config="paymentConfigCombo.gridConfig"
+        :value="payment.paymentDetail"
         @changeValueInput="changeValueInput"
       />
       <div>
@@ -170,6 +175,16 @@ export default {
       bankNameInput: "",
       accountReceiveValue: "",
       paymentConfigCombo: paymentConfig,
+      payment: {
+        accountExpenseNumber: null,
+        accountReceiveNumber: null,
+        bankExpenseName: null,
+        bankReceiveName: null,
+        customerName: null,
+        customerAddress: null,
+        employeeCode: null,
+        paymentDetail: [],
+      },
       createCustomerComponent: CreateCustomer,
       createBankAccountComponent: CreateBankAccount,
       createEmployeeComponent: CreateEmployee,
@@ -212,18 +227,25 @@ export default {
         case "bankExpense":
           this.selectedBankExpense = item;
           this.bankNameInput = item.bankName;
+          this.payment.accountExpenseNumber = item.accountNumber;
+          this.payment.bankExpenseName = item.bankName;
           break;
         case "customer":
           this.selectedCustomer = item;
+          this.payment.customerName = item.objectName;
+          this.payment.customerAddress = item.address;
           this.inputValueCustomer = item.objectName;
           this.addressValue = item.address;
           break;
         case "bankReceive":
           this.selectedBankReceive = item;
           this.accountReceiveValue = item.bankName;
+          this.payment.accountReceiveNumber = item.accountNumber;
+          this.payment.bankReceiveName = item.bankName;
           break;
         case "employee":
           this.selectedEmployee = item;
+          this.payment.employeeCode = item.employeeCode;
           break;
       }
     },
@@ -355,7 +377,7 @@ label {
   border-radius: 2px;
   padding: 8px;
   box-sizing: border-box;
-  height: 37px;
+  height: 33px;
   flex-grow: 1;
   width: 50%;
   margin-top: 17px;
@@ -400,8 +422,7 @@ label {
   align-items: center;
 }
 .document {
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   display: flex;
 }
 .document-link {
@@ -417,7 +438,7 @@ label {
   border-radius: 2px;
   overflow: hidden;
   flex-grow: 2;
-  height: 35px;
+  height: 31px;
 }
 .base-input-1 {
   border: none;

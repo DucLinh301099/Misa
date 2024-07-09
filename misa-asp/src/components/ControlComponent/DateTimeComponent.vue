@@ -90,7 +90,7 @@ export default {
   overflow: hidden;
   flex-grow: 2;
   margin-right: auto;
-  height: 35px;
+  height: 30px;
   width: 70%;
 }
 .form-group {

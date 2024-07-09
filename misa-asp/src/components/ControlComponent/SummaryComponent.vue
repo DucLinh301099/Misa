@@ -26,7 +26,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  padding: 20px;
+  padding: 0px 20px 0 20px;
 }
 
 .total-label {

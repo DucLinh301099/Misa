@@ -61,10 +61,11 @@ const paymentConfig = {
       method: 'get',
       roleId: null,
       columnConfig: [
-        { columnName: "Đối tượng", fieldName: "objectId" },
+        { columnName: "Đối tượng", fieldName: "objectId", isDisplayGrid: true, isValue: true, },
         {
           columnName: "Tên đối tượng",
           fieldName: "objectName",
+          isDisplaySecondGrid: true,
           isDisplay: true,
           isValue: true,
         },
@@ -94,7 +95,7 @@ const paymentConfig = {
         {
           columnName: "Số tài khoản",
           fieldName: "accountNumber",
-          isDisplay: true,
+          isDisplayGrid: true,
           isValue: true,
         },
         { columnName: "Tên tài khoản", fieldName: "accountName" },
@@ -109,7 +110,7 @@ const paymentConfig = {
         {
           columnName: "Số tài khoản",
           fieldName: "accountNumber",
-          isDisplay: true,
+          isDisplayGrid: true,
           isValue: true,
         },
         { columnName: "Tên tài khoản", fieldName: "accountName" },
