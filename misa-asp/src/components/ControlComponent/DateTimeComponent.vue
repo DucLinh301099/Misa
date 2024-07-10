@@ -2,39 +2,51 @@
   <div class="datetime-component-wrapper">
     <div class="form-group">
       <label for="ngay-hach-toan">Ngày hạch toán</label>
-      <div class="input-with-button">
-        <BaseInput v-model="ngayHachToan" type="date" />
+      <div
+        class="input-with-button"
+        :class="{ focused: isNgayHachToanFocused }"
+      >
+        <BaseInput
+          v-model="ngayHachToan"
+          type="date"
+          @focus="handleFocus('isNgayHachToanFocused')"
+          @blur="handleBlur('isNgayHachToanFocused')"
+        />
       </div>
     </div>
     <div class="form-group">
       <label for="ngay-chung-tu">Ngày chứng từ</label>
-      <div class="input-with-button">
-        <BaseInput v-model="ngayChungTu" type="date" />
+      <div class="input-with-button" :class="{ focused: isNgayChungTuFocused }">
+        <BaseInput
+          v-model="ngayChungTu"
+          type="date"
+          @focus="handleFocus('isNgayChungTuFocused')"
+          @blur="handleBlur('isNgayChungTuFocused')"
+        />
       </div>
     </div>
     <div class="form-group">
       <label for="so-chung-tu">Số chứng từ</label>
-      <div
-        :class="{
-          'input-with-button': true,
-          'error-border': !isSoChungTuValid && soChungTuFocused,
-          'success-border': isSoChungTuValid && soChungTuFocused,
-        }"
-      >
+      <div class="input-with-button" :class="{ focused: isSoChungTuFocused }">
         <BaseInput
           v-model="soChungTu"
-          @focus="soChungTuFocused = true"
-          @blur="soChungTuFocused = false"
+          @focus="handleFocus('isSoChungTuFocused')"
+          @blur="handleBlur('isSoChungTuFocused')"
         />
       </div>
     </div>
     <div class="form-group" v-if="voucherType === '3.Tạm ứng cho nhân viên'">
       <label for="han-quyet-toan">Hạn quyết toán</label>
-      <div class="input-with-button">
+      <div
+        class="input-with-button"
+        :class="{ focused: isHanQuyetToanFocused }"
+      >
         <BaseInput
           v-model="hanQuyetToan"
           type="date"
           placeholder="DD/MM/YYYY"
+          @focus="handleFocus('isHanQuyetToanFocused')"
+          @blur="handleBlur('isHanQuyetToanFocused')"
         />
       </div>
     </div>
@@ -61,12 +73,26 @@ export default {
       ngayChungTu: "2024-06-18",
       soChungTu: "UNC00001",
       hanQuyetToan: "",
-      soChungTuFocused: false,
+      // Trạng thái focus cho từng ô input
+      isNgayHachToanFocused: false,
+      isNgayChungTuFocused: false,
+      isSoChungTuFocused: false,
+      isHanQuyetToanFocused: false,
     };
   },
-  computed: {
-    isSoChungTuValid() {
-      return this.soChungTu.trim() !== "";
+  methods: {
+    handleFocus(field) {
+      this.resetFocusStates();
+      this[field] = true;
+    },
+    handleBlur(field) {
+      this[field] = false;
+    },
+    resetFocusStates() {
+      this.isNgayHachToanFocused = false;
+      this.isNgayChungTuFocused = false;
+      this.isSoChungTuFocused = false;
+      this.isHanQuyetToanFocused = false;
     },
   },
 };
@@ -96,11 +122,11 @@ export default {
 .form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 8px; /* Reduce the bottom margin to move the input fields closer to the labels */
+  margin-bottom: 8px;
 }
 
 label {
-  margin-bottom: 2px; /* Reduce the bottom margin of the label */
+  margin-bottom: 2px;
   font-weight: bold;
 }
 
@@ -114,7 +140,7 @@ label {
 }
 
 .base-input input[type="date"] {
-  width: calc(100% - 30px); /* Adjust to leave space for calendar icon */
+  width: calc(100% - 30px);
   border: none;
   outline: none;
   padding: 0 8px;
@@ -142,8 +168,10 @@ label {
 .error-border {
   border: 2px solid red;
 }
-
+.focused {
+  border-color: green;
+}
 .success-border {
-  border: 2px solid green;
+  border: 1px solid green;
 }
 </style>

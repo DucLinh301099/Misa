@@ -4,13 +4,16 @@
       {{ label }} <span class="required" v-if="isRequired">*</span>
     </label>
     <div class="input-container">
-      <div class="input-with-button">
+      <div class="input-with-button" :class="{ focus: isInputFocused }">
         <BaseInput
           class="base-input"
           :type="type"
           :value="inputValue"
           @input="handleOnInput"
+          @focus="handleFocus"
+          @blur="handleBlur"
         />
+
         <button v-if="showButton" @click="openCreateModal" class="add-button">
           +
         </button>
@@ -23,6 +26,8 @@
           class="multiselect"
           @open="onExpandCombox"
           @close="showTable = false"
+          @focus="handleFocus"
+          @blur="handleBlur"
         />
       </div>
     </div>
@@ -232,6 +237,12 @@ export default {
       this.$emit("createSubmit", formData);
       this.closeCreateModal();
     },
+    handleFocus() {
+      this.isInputFocused = true;
+    },
+    handleBlur() {
+      this.isInputFocused = false;
+    },
   },
 };
 </script>
@@ -265,20 +276,30 @@ label {
   position: relative;
 }
 
+.focus {
+  border-color: green;
+}
+
+.input-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.base-input {
+  width: 100%;
+  height: 30px; /* Bạn có thể thay đổi giá trị này nếu cần */
+  border: none;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
 .base-input {
   border: none;
   padding: 8px;
   box-sizing: border-box;
   height: 30px;
   outline: none;
-}
-
-.base-input input {
-  width: 100%;
-  height: 100%;
-  border: none;
-  outline: none;
-  padding: 0 8px;
 }
 
 .add-button {
@@ -311,7 +332,7 @@ label {
   margin-left: 15px;
 }
 .second-input:focus {
-  border: 2px solid #68c75b;
+  border-color: 1px solid #68c75b;
 }
 .second-input-e {
   border-radius: 2px;
@@ -322,9 +343,7 @@ label {
   width: 50%;
   margin-left: 15px;
 }
-.second-input-e:focus {
-  border: 2px solid #0075c0;
-}
+
 .dropdown-table-wrapper {
   position: absolute;
   z-index: 500;

@@ -3,7 +3,10 @@
     <div class="input-container">
       <div
         class="input-with-button"
-        :class="{ invalid: isInputFocused && !inputValue, valid: inputValue }"
+        :class="{
+          invalid: isInputFocused && !inputValue,
+          valid: inputValue && isInputFocused,
+        }"
       >
         <input
           v-model="inputValue"
@@ -171,6 +174,7 @@ export default {
       document.removeEventListener("mousedown", this.handleClickOutside);
     },
     handleBlur() {
+      this.isInputFocused = false;
       setTimeout(() => {
         if (!this.optionSelected) {
           this.isMultiselectVisible = false;
@@ -257,7 +261,7 @@ export default {
 }
 
 .valid {
-  border-color: #68c75b;
+  border-color: green;
 }
 
 .input-status-container {

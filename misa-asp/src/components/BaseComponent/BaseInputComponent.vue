@@ -5,6 +5,8 @@
       :type="type"
       :value="value"
       @input="updateValue"
+      @focus="handleFocus"
+      @blur="handleBlur"
     />
   </div>
 </template>
@@ -30,6 +32,12 @@ export default {
     updateValue(event) {
       this.$emit("onInput", event.target.value);
     },
+    handleFocus(event) {
+      this.$emit("focus", event);
+    },
+    handleBlur(event) {
+      this.$emit("blur", event);
+    },
   },
   data() {
     return {
@@ -54,18 +62,12 @@ export default {
   padding: 0 8px;
   box-sizing: border-box;
 }
-.label {
-  margin-bottom: 8px;
-  font-weight: bold;
-}
+
 .base-input {
   border: none;
   padding: 8px;
   box-sizing: border-box;
   height: 30px;
   outline: none;
-}
-.base-input:focus {
-  outline: none; /* Ensure no outline appears on focus */
 }
 </style>

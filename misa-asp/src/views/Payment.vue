@@ -22,12 +22,14 @@
             <BaseInput
               v-model="bankNameInput"
               class="base-input second-input"
+              :class="{ onFocus: isBankNameInputFocused }"
               :type="type"
               :value="payment.bankExpenseName"
+              @focus="handleFocus('isBankNameInputFocused')"
+              @blur="handleBlur('isBankNameInputFocused')"
             />
           </div>
           <div class="account-input-wrapper">
-            <!-- <div class="customer-right"> -->
             <ComboboxInput
               label="Đối Tượng"
               :selectedOption="selectedCustomer"
@@ -36,13 +38,14 @@
               :value="payment.customerName"
               :ComponentAdd="createCustomerComponent"
             />
-            <!-- </div> -->
-
             <BaseInput
               v-model="addressValue"
               class="base-input second-input"
+              :class="{ onFocus: isCustomerFocused }"
               :type="type"
               :value="payment.customerAddress"
+              @focus="handleFocus('isCustomerFocused')"
+              @blur="handleBlur('isCustomerFocused')"
             />
           </div>
           <div class="account-input-wrapper">
@@ -59,8 +62,11 @@
               v-if="!hideAccountReceive"
               v-model="accountReceiveValue"
               class="base-input second-input"
+              :class="{ onFocus: isAccountReceiveValueFocused }"
               :type="type"
               :value="payment.bankReceiveName"
+              @focus="handleFocus('isAccountReceiveValueFocused')"
+              @blur="handleBlur('isAccountReceiveValueFocused')"
             />
           </div>
           <InformationInput v-if="!hideInformationInput" />
@@ -68,13 +74,18 @@
           <div class="bill-content-input-wrapper">
             <label for="bill-content-input">Nội dung thanh toán</label>
             <div class="input-container">
-              <div class="input-with-button-1">
+              <div
+                class="input-with-button-1"
+                :class="{ onFocus: isInputValueFocused }"
+              >
                 <BaseInput
                   v-model="inputValueCustomer"
                   :value="defaultBillContent"
                   :validator="inputValidator"
                   class="base-input-1"
                   @input="updateBillContent"
+                  @focus="handleFocus('isInputValueFocused')"
+                  @blur="handleBlur('isInputValueFocused')"
                 />
               </div>
             </div>
@@ -188,6 +199,10 @@ export default {
       createCustomerComponent: CreateCustomer,
       createBankAccountComponent: CreateBankAccount,
       createEmployeeComponent: CreateEmployee,
+      isBankNameInputFocused: false,
+      isCustomerFocused: false,
+      isAccountReceiveValueFocused: false,
+      isInputValueFocused: false,
     };
   },
   computed: {
@@ -212,16 +227,13 @@ export default {
   },
   methods: {
     changeValueInput(record, column) {
-      switch (column.fieldName) {
-        case "amount":
-          this.updateTotalAmount(record);
-          break;
+      if (column.fieldName === "amount") {
+        this.updateTotalAmount(record);
       }
     },
     updateTotalAmount(record) {
       this.totalAmount = record.amount;
     },
-
     updateSelectedRow(type, item) {
       switch (type) {
         case "bankExpense":
@@ -251,6 +263,19 @@ export default {
     },
     updateBillContent(newValue) {
       this.inputValueCustomer = newValue.replace("Chi tiền cho ", "");
+    },
+    handleFocus(field) {
+      this.resetFocusStates();
+      this[field] = true;
+    },
+    handleBlur(field) {
+      this[field] = false;
+    },
+    resetFocusStates() {
+      this.isBankNameInputFocused = false;
+      this.isCustomerFocused = false;
+      this.isAccountReceiveValueFocused = false;
+      this.isInputValueFocused = false;
     },
   },
 };
@@ -334,7 +359,15 @@ label {
 .payment {
   padding-top: 60px;
 }
-
+.focused {
+  border-color: green;
+}
+.input-wrapper.base-input.second-input.onFocus {
+  border: 1px solid green;
+}
+.input-with-button-1.onFocus {
+  border-color: green;
+}
 .header-payment {
   position: fixed;
   top: 0;

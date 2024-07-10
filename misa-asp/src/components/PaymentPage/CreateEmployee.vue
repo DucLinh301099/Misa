@@ -31,7 +31,7 @@
       </div>
       <div class="form-row">
         <div class="input-container">
-          <label for="mobile-phone">ĐT di động</label>
+          <label for="mobile-phone">Điện thoại</label>
           <input
             type="text"
             id="mobile-phone"

@@ -39,7 +39,12 @@
               <input
                 v-model="row[column.fieldName]"
                 @input="changeValueInput(rowIndex, column)"
-                class="right-align-input"
+                :class="{
+                  'right-align-input': true,
+                  focus: isInputFocused(rowIndex, column.fieldName),
+                }"
+                @focus="handleFocus(rowIndex, column.fieldName)"
+                @blur="handleBlur"
               />
             </div>
           </td>
@@ -72,6 +77,7 @@ export default {
       rows: paymentConfig.gridConfig.rows,
       columnConfig: paymentConfig.gridConfig.columnConfig,
       currentTotal: 0,
+      focusedCell: { rowIndex: null, fieldName: null },
     };
   },
   watch: {
@@ -138,7 +144,18 @@ export default {
         ].description = `Chi tiền cho ${selectedOption.objectName}`;
       }
     },
-
+    handleFocus(rowIndex, fieldName) {
+      this.focusedCell = { rowIndex, fieldName };
+    },
+    handleBlur() {
+      this.focusedCell = { rowIndex: null, fieldName: null };
+    },
+    isInputFocused(rowIndex, fieldName) {
+      return (
+        this.focusedCell.rowIndex === rowIndex &&
+        this.focusedCell.fieldName === fieldName
+      );
+    },
     changeValueInput(rowIndex, column) {
       let record = this.rows[rowIndex];
       if (record && column && column.dataType) {
@@ -175,13 +192,15 @@ export default {
   padding-left: 20px;
   padding-right: 20px;
 }
-/* .table-grid {
-  height: 40px;
-} */
-/* background-color: #e6f0fa; */
+
 .td-grid {
   height: 40px;
 }
+
+.right-align-input.focus {
+  border-color: green;
+}
+
 .btn-left {
   margin-right: 15px;
   border: 0.5px solid #999;
@@ -189,12 +208,14 @@ export default {
   background-color: #fff;
   font-weight: bold;
 }
+
 .btn-right {
   border: 0.5px solid #999;
   width: 150px;
   background-color: #fff;
   font-weight: bold;
 }
+
 .accounting {
   margin-bottom: 16px;
   font-weight: bold;
@@ -215,6 +236,7 @@ export default {
   padding: 8px;
   text-align: left;
 }
+
 .accounting-table td {
   border: 1px solid #ccc;
   padding: 0px 10px 0px 10px;
@@ -254,10 +276,11 @@ export default {
   display: flex;
   justify-content: flex-start;
 }
+
 button {
   padding: 8px 16px;
   border: none;
-  border-radius: 4px;
+  border-radius: 2.5px;
   cursor: pointer;
   background-color: #fff;
 }

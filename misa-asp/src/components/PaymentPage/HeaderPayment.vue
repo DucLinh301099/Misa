@@ -23,13 +23,13 @@
           ></Multiselect>
         </div>
         <div class="right-section">
-          <button class="icon-button">
+          <button class="icon-button-setting">
             <i class="material-icons">settings</i>
           </button>
-          <button class="icon-button">
+          <button class="icon-button-help">
             <i class="material-icons">help_outline</i>
           </button>
-          <button class="icon-button">
+          <button class="icon-button-close">
             <i class="material-icons">close</i>
           </button>
         </div>
@@ -120,6 +120,7 @@ const updatePaymentMethod = (value) => {
   align-items: center;
   justify-content: flex-start;
   width: 100%;
+  height: 45px;
 }
 
 .left-section {
@@ -130,6 +131,7 @@ const updatePaymentMethod = (value) => {
 .mi-recent-log {
   font-size: 25px;
   margin-right: 10px;
+  scale: 1.2;
 }
 
 .title {
@@ -144,10 +146,11 @@ const updatePaymentMethod = (value) => {
 
 .combo-input {
   border: 1px solid #ccc;
-  border-radius: 2px;
+  border-radius: 1.5px;
   min-width: 220px;
   font-size: 14px;
-  height: 30px;
+  height: 32px;
+  min-height: 30px;
   padding: 0 8px;
   margin-left: 15px;
   margin-right: 15px;
@@ -162,16 +165,30 @@ const updatePaymentMethod = (value) => {
   display: flex;
   align-items: center;
   margin-left: auto;
-  margin-right: 30px;
+  margin-right: 50px;
 }
 
-.icon-button {
-  background: none;
+.icon-button-close {
+  scale: 1.3;
   border: none;
-  cursor: pointer;
-  margin-left: 10px;
+  margin-left: 15px;
+  background-color: #f7f7f7;
 }
-
+button:hover {
+  background-color: #ccc;
+}
+.icon-button-setting {
+  scale: 1.3;
+  border: none;
+  margin-left: 15px;
+  background-color: #f7f7f7;
+}
+.icon-button-help {
+  scale: 1.3;
+  border: none;
+  margin-left: 15px;
+  background-color: #f7f7f7;
+}
 .icon-button i {
   font-size: 24px;
 }
@@ -247,7 +264,9 @@ form {
   margin-left: -30px;
   margin-top: 5px;
 }
-
+.multiselect-clear-icon {
+  display: none; /* Hide clear icon */
+}
 .btn-add:hover {
   background-color: #218838;
 }

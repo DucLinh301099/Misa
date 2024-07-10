@@ -7,6 +7,9 @@
         v-model="soCMND"
         placeholder="Số CMND"
         class="base-input cmnd-input"
+        :class="{ focus: isCMNDFocused }"
+        @focus="handleFocus('isCMNDFocused')"
+        @blur="handleBlur('isCMNDFocused')"
       />
     </div>
     <div class="input-container-2">
@@ -17,6 +20,9 @@
           type="date"
           placeholder="dd/mm/yyyy"
           class="base-input date-input"
+          :class="{ focus: isDateFocused }"
+          @focus="handleFocus('isDateFocused')"
+          @blur="handleBlur('isDateFocused')"
         />
       </div>
       <div class="input-field">
@@ -25,6 +31,9 @@
           v-model="noiCap"
           placeholder="Nơi cấp"
           class="base-input place-input"
+          :class="{ focus: isAddressFocused }"
+          @focus="handleFocus('isAddressFocused')"
+          @blur="handleBlur('isAddressFocused')"
         />
       </div>
     </div>
@@ -44,7 +53,25 @@ export default {
       soCMND: "",
       ngayCap: "",
       noiCap: "",
+      isAddressFocused: false,
+      isDateFocused: false,
+      isCMNDFocused: false,
     };
+  },
+  methods: {
+    handleFocus(field) {
+      this.resetFocusStates();
+      this[field] = true;
+    },
+    handleBlur(field) {
+      this[field] = false;
+    },
+    resetFocusStates() {
+      this.isNgayHachToanFocused = false;
+      this.isNgayChungTuFocused = false;
+      this.isSoChungTuFocused = false;
+      this.isHanQuyetToanFocused = false;
+    },
   },
 };
 </script>
@@ -81,7 +108,15 @@ label {
   margin-bottom: 4px;
   font-weight: bold;
 }
-
+.input-wrapper.base-input.cmnd-input.focus {
+  border-color: green;
+}
+.input-wrapper.base-input.date-input.focus {
+  border-color: green;
+}
+.input-wrapper.base-input.place-input.focus {
+  border-color: green;
+}
 .base-input {
   width: 100%;
   height: 32px;
