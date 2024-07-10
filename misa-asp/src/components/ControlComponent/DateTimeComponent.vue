@@ -27,9 +27,16 @@
     </div>
     <div class="form-group">
       <label for="so-chung-tu">Số chứng từ</label>
-      <div class="input-with-button" :class="{ focused: isSoChungTuFocused }">
+      <div
+        class="input-with-button"
+        :class="{
+          infocused: isSoChungTuFocused && !soChungTu,
+          focused: soChungTu && isSoChungTuFocused,
+        }"
+      >
         <BaseInput
-          v-model="soChungTu"
+          :value="soChungTu"
+          @onInput="updateSoChungTu"
           @focus="handleFocus('isSoChungTuFocused')"
           @blur="handleBlur('isSoChungTuFocused')"
         />
@@ -71,9 +78,8 @@ export default {
     return {
       ngayHachToan: "2024-06-18",
       ngayChungTu: "2024-06-18",
-      soChungTu: "UNC00001",
+      soChungTu: "",
       hanQuyetToan: "",
-      // Trạng thái focus cho từng ô input
       isNgayHachToanFocused: false,
       isNgayChungTuFocused: false,
       isSoChungTuFocused: false,
@@ -93,6 +99,9 @@ export default {
       this.isNgayChungTuFocused = false;
       this.isSoChungTuFocused = false;
       this.isHanQuyetToanFocused = false;
+    },
+    updateSoChungTu(value) {
+      this.soChungTu = value;
     },
   },
 };
@@ -170,6 +179,9 @@ label {
 }
 .focused {
   border-color: green;
+}
+.infocused {
+  border-color: red;
 }
 .success-border {
   border: 1px solid green;

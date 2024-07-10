@@ -39,12 +39,6 @@ export default {
       this.$emit("blur", event);
     },
   },
-  data() {
-    return {
-      internalValue: "",
-    };
-  },
-  watch: {},
 };
 </script>
 
@@ -61,13 +55,6 @@ export default {
   border: none;
   padding: 0 8px;
   box-sizing: border-box;
-}
-
-.base-input {
-  border: none;
-  padding: 8px;
-  box-sizing: border-box;
-  height: 30px;
   outline: none;
 }
 </style>
