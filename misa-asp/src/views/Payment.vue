@@ -13,7 +13,6 @@
           <div class="account-input-wrapper">
             <ComboboxInput
               label="Tài khoản chi"
-              :selectedOption="selectedBankExpense"
               @update:selectedRow="updateSelectedRow('bankExpense', $event)"
               :config="paymentConfigCombo.comboxConfig.bankExpense"
               :value="payment.accountExpenseNumber"
@@ -32,7 +31,6 @@
           <div class="account-input-wrapper">
             <ComboboxInput
               label="Đối Tượng"
-              :selectedOption="selectedCustomer"
               @update:selectedRow="updateSelectedRow('customer', $event)"
               :config="paymentConfigCombo.comboxConfig.customer"
               :value="payment.customerName"
@@ -53,7 +51,6 @@
               v-if="!hideAccountReceive"
               label="Tài Khoản Nhận"
               :showButton="false"
-              :selectedOption="selectedBankReceive"
               @update:selectedRow="updateSelectedRow('bankReceive', $event)"
               :value="payment.accountReceiveNumber"
               :config="paymentConfigCombo.comboxConfig.bankReceive"
@@ -94,7 +91,6 @@
             <ComboboxInput
               v-if="!hideCreateEmployeeInput"
               label="Nhân viên"
-              :selectedOption="selectedEmployee"
               @update:selectedRow="updateSelectedRow('employee', $event)"
               :config="paymentConfigCombo.comboxConfig.employee"
               :value="payment.employeeCode"
@@ -122,7 +118,7 @@
     <div class=" ">
       <AccountingGrid
         :config="paymentConfigCombo.gridConfig"
-        :value="payment.paymentDetail"
+        :modelValue="payment.paymentDetail"
         @changeValueInput="changeValueInput"
       />
       <div>
@@ -175,10 +171,6 @@ export default {
       voucherType: "1.Trả tiền nhà cung cấp",
       paymentMethod: "Ủy nhiệm chi",
       errorMessage: "",
-      selectedCustomer: null,
-      selectedBankExpense: null,
-      selectedEmployee: null,
-      selectedBankReceive: null,
       inputValue: "",
       inputValueCustomer: "",
       addressValue: "",
@@ -237,26 +229,22 @@ export default {
     updateSelectedRow(type, item) {
       switch (type) {
         case "bankExpense":
-          this.selectedBankExpense = item;
           this.bankNameInput = item.bankName;
           this.payment.accountExpenseNumber = item.accountNumber;
           this.payment.bankExpenseName = item.bankName;
           break;
         case "customer":
-          this.selectedCustomer = item;
           this.payment.customerName = item.objectName;
           this.payment.customerAddress = item.address;
           this.inputValueCustomer = item.objectName;
           this.addressValue = item.address;
           break;
         case "bankReceive":
-          this.selectedBankReceive = item;
           this.accountReceiveValue = item.bankName;
           this.payment.accountReceiveNumber = item.accountNumber;
           this.payment.bankReceiveName = item.bankName;
           break;
         case "employee":
-          this.selectedEmployee = item;
           this.payment.employeeCode = item.employeeCode;
           break;
       }

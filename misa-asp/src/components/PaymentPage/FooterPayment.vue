@@ -1,11 +1,13 @@
 <template>
   <div class="footer-payment">
-    <button class="cancel-btn">Hủy</button>
+    <button class="cancel-btn" @click="cancel">Hủy</button>
 
     <div class="dropdown">
-      <button class="save-btn">Cất</button>
+      <button class="save-btn" @click="submitForm('save')">Cất</button>
       <div class="dropdown-container">
-        <button class="btn save-add-btn">Cất và In</button>
+        <button class="btn save-add-btn" @click="submitForm('saveAndPrint')">
+          Cất và In
+        </button>
         <button class="dropdown-toggle" @click="toggleDropdown">&#9660;</button>
         <div class="dropdown-menu" v-if="isDropdownVisible">
           <button @click="handleAction('add')">Cất và Thêm</button>
@@ -18,6 +20,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "FooterPayment",
   data() {
@@ -32,7 +36,33 @@ export default {
     handleAction(action) {
       console.log(`Action selected: ${action}`);
       this.isDropdownVisible = false;
-      // Add your logic for handling the actions here
+      this.submitForm(action);
+    },
+    async submitForm(action) {
+      try {
+        const paymentData = this.$root.$data.payment; // đảm bảo payment có dữ liệu hoặc nó là 1 prop
+        console.log("Submitting payment data: ", paymentData);
+
+        // api call từ backend
+        const response = await axios.post("/api/payment", paymentData);
+
+        console.log("Payment submitted successfully", response);
+
+        // xử lý các submit khác nhau
+        if (action === "add") {
+          // Logic for "Cất và Thêm"
+        } else if (action === "close") {
+          // Logic for "Cất và Đóng"
+        } else if (action === "print") {
+          // Logic for "Cất và In"
+        }
+      } catch (error) {
+        console.error("Error submitting payment", error);
+      }
+    },
+    cancel() {
+      console.log("Cancel action");
+      // logic khi cancel
     },
   },
 };

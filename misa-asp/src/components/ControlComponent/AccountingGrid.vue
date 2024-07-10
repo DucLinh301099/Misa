@@ -48,7 +48,9 @@
               />
             </div>
           </td>
-          <td><button @click="removeRow(rowIndex)">🗑️</button></td>
+          <td>
+            <button @click="removeRow(rowIndex)" v-if="hasRemoveRow">🗑️</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -71,6 +73,14 @@ export default {
   props: {
     submitTotal: Function,
     changeInputRow: Function,
+    modelValue: {
+      type: Array,
+      default: null,
+    },
+    hasRemoveRow: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -119,14 +129,17 @@ export default {
       return true;
     },
     addRow() {
-      this.rows.push({
+      let model = {
         description: "",
         debitAccount: null,
         creditAccount: null,
         amount: "",
         customer: null,
         objectName: "",
-      });
+      };
+      this.rows.push(model);
+
+      this.modelValue.add(model);
     },
     removeRow(index) {
       this.rows.splice(index, 1);
@@ -171,6 +184,9 @@ export default {
             break;
         }
       }
+
+      this.modelValue[rowIndex][column.fieldName] =
+        this.record[column.fieldName];
 
       if (record) {
         this.$emit("changeValueInput", record, column);
