@@ -109,17 +109,28 @@
         </div>
       </div>
       <div class="input-information-center">
-        <DateTimeComponent :voucherType="voucherType" />
+        <DateTimeComponent
+          :voucherType="voucherType"
+          :value="{
+            ngayHachToan: payment.ngayHachToan,
+            ngayChungTu: payment.ngayChungTu,
+            soChungTu: payment.soChungTu,
+            hanQuyetToan: payment.hanQuyetToan,
+            hanQuyetToan: payment.hanQuyetToan,
+          }"
+          @input="updateDateTimeData"
+        />
       </div>
       <div class="input-information-left">
         <SummaryComponent :totalAmount="totalAmount" />
       </div>
     </div>
     <div class=" ">
-      <AccountingGrid
-        :config="paymentConfigCombo.gridConfig"
+      <MSGrid
         :modelValue="payment.paymentDetail"
         @changeValueInput="changeValueInput"
+        :configColumGrid="paymentConfigCombo.gridConfig"
+        @selectedCombox="selectedGridCombox"
       />
       <div>
         <AttachFile />
@@ -140,7 +151,7 @@ import BaseInput from "../components/BaseComponent/BaseInputComponent.vue";
 import DateTimeComponent from "../components/ControlComponent/DateTimeComponent.vue";
 import FooterPayment from "../components/PaymentPage/FooterPayment.vue";
 import SummaryComponent from "../components/ControlComponent/SummaryComponent.vue";
-import AccountingGrid from "../components/ControlComponent/AccountingGrid.vue";
+import MSGrid from "../components/ControlComponent/MSGrid.vue";
 import AttachFile from "../components/PaymentPage/AttachFile.vue";
 
 import CreateBankAccount from "../components/PaymentPage/CreateBankAccount.vue";
@@ -159,7 +170,7 @@ export default {
     DateTimeComponent,
     FooterPayment,
     SummaryComponent,
-    AccountingGrid,
+    MSGrid,
     AttachFile,
     InformationInput,
     CreateBankAccount,
@@ -186,6 +197,10 @@ export default {
         customerName: null,
         customerAddress: null,
         employeeCode: null,
+        ngayHachToan: null,
+        ngayChungTu: null,
+        soChungTu: null,
+        hanQuyetToan: null,
         paymentDetail: [],
       },
       createCustomerComponent: CreateCustomer,
@@ -218,6 +233,13 @@ export default {
     },
   },
   methods: {
+    selectedGridCombox(record, column, selectedOption) {
+      if (column.fieldName === "customer") {
+        record.objectId = selectedOption.objectId;
+        record.objectName = selectedOption.objectName;
+        record.description = `Chi tiền cho ${selectedOption.objectName}`;
+      }
+    },
     changeValueInput(record, column) {
       if (column.fieldName === "amount") {
         this.updateTotalAmount(record);
@@ -236,6 +258,7 @@ export default {
         case "customer":
           this.payment.customerName = item.objectName;
           this.payment.customerAddress = item.address;
+          this.payment.inputValueCustomer = item.objectName;
           this.inputValueCustomer = item.objectName;
           this.addressValue = item.address;
           break;
@@ -248,6 +271,9 @@ export default {
           this.payment.employeeCode = item.employeeCode;
           break;
       }
+    },
+    updateDateTimeData(updatedValue) {
+      this.payment = { ...this.payment, ...updatedValue };
     },
     updateBillContent(newValue) {
       this.inputValueCustomer = newValue.replace("Chi tiền cho ", "");

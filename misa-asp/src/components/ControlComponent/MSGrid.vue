@@ -12,27 +12,18 @@
         </tr>
       </thead>
       <tbody class="table-grid">
-        <tr v-for="(row, rowIndex) in rows" :key="rowIndex">
+        <tr v-for="(row, rowIndex) in modelValue" :key="rowIndex">
           <td>{{ rowIndex + 1 }}</td>
           <td
             class="td-grid"
             v-for="(column, colIndex) in columnConfig"
             :key="colIndex"
           >
-            <div
-              v-if="
-                column.dataType === 'dropdown' &&
-                shouldDisplayCombobox(column.fieldName, row)
-              "
-            >
+            <div v-if="column.dataType === 'dropdown'">
               <ComboboxGrid
                 v-model="row[column.fieldName]"
-                :endpoint="getEndpointKeyForField(column.fieldName)"
-                :options="getOptionsForField(column.fieldName)"
-                :columnConfig="getDropdownColumnConfig(column.fieldName)"
-                @update:selectedRow="
-                  updateRowField(rowIndex, column.fieldName, $event)
-                "
+                :config="column.dropDownConfig"
+                @update:selectedRow="updateRowField(rowIndex, column, $event)"
               />
             </div>
             <div v-else>
@@ -63,10 +54,9 @@
 
 <script>
 import ComboboxGrid from "../ControlComponent/ComboboxGrid.vue";
-import paymentConfig from "../../config/PaymentConfig";
 
 export default {
-  name: "AccountingGrid",
+  name: "MSGrid",
   components: {
     ComboboxGrid,
   },
@@ -81,17 +71,30 @@ export default {
       type: Boolean,
       default: true,
     },
+    isAutoAddNewRow: {
+      type: Boolean,
+      default: true,
+    },
+    configColumGrid: {
+      type: Object,
+      default: true,
+    },
   },
   data() {
     return {
-      rows: paymentConfig.gridConfig.rows,
-      columnConfig: paymentConfig.gridConfig.columnConfig,
+      columnConfig: this.configColumGrid.columnConfig,
       currentTotal: 0,
       focusedCell: { rowIndex: null, fieldName: null },
+      modelValue: [],
     };
   },
+  mounted() {
+    if (this.isAutoAddNewRow) {
+      this.addRow();
+    }
+  },
   watch: {
-    rows: {
+    modelValue: {
       deep: true,
       handler() {
         this.updateCurrentTotal();
@@ -99,62 +102,23 @@ export default {
     },
   },
   methods: {
-    getOptionsForField(field) {
-      if (field === "debitAccount") {
-        return paymentConfig.comboxConfig.debitAccount.options;
-      } else if (field === "creditAccount") {
-        return paymentConfig.comboxConfig.creditAccount.options;
-      } else if (field === "customer") {
-        return paymentConfig.comboxConfig.customer.options;
-      }
-      return [];
-    },
-    getDropdownColumnConfig(field) {
-      if (field === "debitAccount") {
-        return paymentConfig.comboxConfig.debitAccount.columnConfig;
-      } else if (field === "creditAccount") {
-        return paymentConfig.comboxConfig.creditAccount.columnConfig;
-      } else if (field === "customer") {
-        return paymentConfig.comboxConfig.customer.columnConfig;
-      }
-      return [];
-    },
-    getEndpointKeyForField(field) {
-      if (field === "customer") {
-        return "customer";
-      }
-      return null;
-    },
-    shouldDisplayCombobox(field, row) {
-      return true;
-    },
     addRow() {
-      let model = {
-        description: "",
-        debitAccount: null,
-        creditAccount: null,
-        amount: "",
-        customer: null,
-        objectName: "",
-      };
-      this.rows.push(model);
-
-      this.modelValue.add(model);
+      let model = this.configColumGrid.model;
+      const newRow = new model();
+      this.modelValue.push(newRow);
     },
     removeRow(index) {
-      this.rows.splice(index, 1);
+      this.modelValue.splice(index, 1);
     },
     clearRows() {
-      this.rows = [];
+      this.modelValue = [];
     },
-    updateRowField(rowIndex, fieldName, selectedOption) {
-      this.rows[rowIndex][fieldName] = selectedOption[fieldName];
-      if (fieldName === "customer") {
-        this.rows[rowIndex].objectId = selectedOption.objectId;
-        this.rows[rowIndex].objectName = selectedOption.objectName;
-        this.rows[
-          rowIndex
-        ].description = `Chi tiền cho ${selectedOption.objectName}`;
+    updateRowField(rowIndex, column, selectedOption) {
+      let record = this.modelValue[rowIndex],
+        fieldName = column.fieldName;
+      record[fieldName] = selectedOption[fieldName];
+      if (record) {
+        this.$emit("selectedCombox", record, column, selectedOption);
       }
     },
     handleFocus(rowIndex, fieldName) {
@@ -170,30 +134,24 @@ export default {
       );
     },
     changeValueInput(rowIndex, column) {
-      let record = this.rows[rowIndex];
+      let record = this.modelValue[rowIndex];
       if (record && column && column.dataType) {
         let fieldName = column.fieldName;
         switch (column.dataType) {
           case "currency":
-            let value = this.rows[rowIndex][fieldName].replace(/[^\d]/g, "");
+            let value = record[fieldName].replace(/[^\d]/g, "");
             value = value.replace(/^0+/, "") || "0";
-            this.rows[rowIndex][fieldName] = value.replace(
-              /\B(?=(\d{3})+(?!\d))/g,
-              "."
-            );
+            record[fieldName] = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             break;
         }
       }
-
-      this.modelValue[rowIndex][column.fieldName] =
-        this.record[column.fieldName];
 
       if (record) {
         this.$emit("changeValueInput", record, column);
       }
     },
     updateCurrentTotal() {
-      this.currentTotal = this.rows.reduce(
+      this.currentTotal = this.modelValue.reduce(
         (sum, row) =>
           sum + Number(row.amount.toString().replace(/\./g, "") || 0),
         0

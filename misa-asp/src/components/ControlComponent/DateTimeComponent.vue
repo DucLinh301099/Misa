@@ -7,7 +7,8 @@
         :class="{ focused: isNgayHachToanFocused }"
       >
         <BaseInput
-          v-model="ngayHachToan"
+          :value="ngayHachToan"
+          @onInput="updateNgayHachToan"
           type="date"
           @focus="handleFocus('isNgayHachToanFocused')"
           @blur="handleBlur('isNgayHachToanFocused')"
@@ -18,7 +19,8 @@
       <label for="ngay-chung-tu">Ngày chứng từ</label>
       <div class="input-with-button" :class="{ focused: isNgayChungTuFocused }">
         <BaseInput
-          v-model="ngayChungTu"
+          :value="ngayChungTu"
+          @onInput="updateNgayChungTu"
           type="date"
           @focus="handleFocus('isNgayChungTuFocused')"
           @blur="handleBlur('isNgayChungTuFocused')"
@@ -49,7 +51,8 @@
         :class="{ focused: isHanQuyetToanFocused }"
       >
         <BaseInput
-          v-model="hanQuyetToan"
+          :value="hanQuyetToan"
+          @onInput="updateHanQuyetToan"
           type="date"
           placeholder="DD/MM/YYYY"
           @focus="handleFocus('isHanQuyetToanFocused')"
@@ -73,19 +76,24 @@ export default {
       type: String,
       required: true,
     },
+    value: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data() {
     return {
-      ngayHachToan: "2024-06-18",
-      ngayChungTu: "2024-06-18",
-      soChungTu: "",
-      hanQuyetToan: "",
+      ngayHachToan: this.value.ngayHachToan || "",
+      ngayChungTu: this.value.ngayChungTu || "",
+      soChungTu: this.value.soChungTu || "",
+      hanQuyetToan: this.value.hanQuyetToan || "",
       isNgayHachToanFocused: false,
       isNgayChungTuFocused: false,
       isSoChungTuFocused: false,
       isHanQuyetToanFocused: false,
     };
   },
+
   methods: {
     handleFocus(field) {
       this.resetFocusStates();
@@ -102,6 +110,19 @@ export default {
     },
     updateSoChungTu(value) {
       this.soChungTu = value;
+      this.$emit("input", { ...this.value, soChungTu: value });
+    },
+    updateNgayHachToan(value) {
+      this.ngayHachToan = value;
+      this.$emit("input", { ...this.value, ngayHachToan: value });
+    },
+    updateNgayChungTu(value) {
+      this.ngayChungTu = value;
+      this.$emit("input", { ...this.value, ngayChungTu: value });
+    },
+    updateHanQuyetToan(value) {
+      this.hanQuyetToan = value;
+      this.$emit("input", { ...this.value, hanQuyetToan: value });
     },
   },
 };

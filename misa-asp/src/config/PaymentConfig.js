@@ -1,6 +1,7 @@
 // apiConfig.js
 import accApi from "../api/apiConst";
-const paymentConfig = {
+import RowModel from "../models/RowModel";
+let paymentConfig = {
   comboxConfig: {
     bankExpense: {
       endpoint: accApi.bankExpense.url,
@@ -117,48 +118,39 @@ const paymentConfig = {
       ],
     },
   },
-  gridConfig: {
-    url: '',
-    columnConfig: [
-      { columnName: "Diễn giải", fieldName: "description", dataType: "text" },
-      {
-        columnName: "TK Nợ",
-        fieldName: "debitAccount",
-        dataType: "dropdown",
+};
+
+paymentConfig.gridConfig = {
+  url: '',
+  columnConfig: [
+    { columnName: "Diễn giải", fieldName: "description", dataType: "text" },
+    {
+      columnName: "TK Nợ",
+      fieldName: "debitAccount",
+      dataType: "dropdown",
+      dropDownConfig: paymentConfig.comboxConfig.debitAccount
+    },
+    {
+      columnName: "TK Có",
+      fieldName: "creditAccount",
+      dataType: "dropdown",
+      dropDownConfig: paymentConfig.comboxConfig.creditAccount
+    },
+    { columnName: "Số tiền", fieldName: "amount", dataType: "currency" },
+    {
+      columnName: "Đối tượng",
+      fieldName: "customer",
+      dataType: "dropdown",
+      dropDownConfig: paymentConfig.comboxConfig.customer
+    },
+    {
+      columnName: "Tên đối tượng",
+      fieldName: "objectName",
+      dataType: "text",
         
-      },
-      {
-        columnName: "TK Có",
-        fieldName: "creditAccount",
-        dataType: "dropdown",
-        
-      },
-      { columnName: "Số tiền", fieldName: "amount", dataType: "currency" },
-      {
-        columnName: "Đối tượng",
-        fieldName: "customer",
-        dataType: "dropdown",
-        
-      },
-      {
-        columnName: "Tên đối tượng",
-        fieldName: "objectName",
-        dataType: "text",
-        
-      },
-    ],
-    rows: [
-      {
-        description: "",
-        debitAccount: null,
-        creditAccount: null,
-        amount: 0,
-        customer: null,
-        objectName: "",
-      },
-    ],
-  },
-  
+    },
+  ],
+  model: RowModel
 };
 
 

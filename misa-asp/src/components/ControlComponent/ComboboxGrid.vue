@@ -45,7 +45,7 @@
         <table class="dropdown-table">
           <thead>
             <tr>
-              <th v-for="(column, index) in columnConfig" :key="index">
+              <th v-for="(column, index) in config.columnConfig" :key="index">
                 {{ column.columnName }}
               </th>
             </tr>
@@ -56,7 +56,10 @@
               :key="index"
               @click="selectRow(item)"
             >
-              <td v-for="(column, colIndex) in columnConfig" :key="colIndex">
+              <td
+                v-for="(column, colIndex) in config.columnConfig"
+                :key="colIndex"
+              >
                 {{ item[column.fieldName] }}
               </td>
             </tr>
@@ -70,7 +73,6 @@
 <script>
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
-import paymentConfig from "../../config/PaymentConfig";
 import { apiClient } from "../../api/base";
 
 export default {
@@ -79,47 +81,34 @@ export default {
     Multiselect,
   },
   props: {
-    endpoint: {
-      type: String,
-      required: true,
-    },
-    options: {
-      type: Array,
-      default: () => [],
-    },
     selectedRow: {
       type: Object,
       default: null,
     },
-    columnConfig: {
-      type: Array,
+    config: {
+      type: Object,
       required: true,
     },
   },
   data() {
+    debugger;
     return {
       inputValue: "",
       showTable: false,
       isInputFocused: false,
       isMultiselectVisible: false,
-      optionsData: this.options != null ? this.options : [],
+      optionsData: this.config.options != null ? this.config.options : [],
       optionSelected: false, // Thêm biến để kiểm tra xem có tùy chọn đã được chọn hay chưa
     };
   },
   computed: {
-    config() {
-      const config = paymentConfig.comboxConfig[this.endpoint];
-      if (!config) {
-        console.error(`Configuration for ${this.endpoint} is not found.`);
-      }
-      return config || {};
-    },
     filteredOptions() {
+      let columnConfig = this.config.columnConfig;
       if (this.inputValue === "") {
         return this.optionsData;
       }
 
-      let displayField = this.columnConfig.find(
+      let displayField = columnConfig.find(
         (col) => col.isDisplayGrid
       )?.fieldName;
 
@@ -132,10 +121,7 @@ export default {
   },
   methods: {
     async fetchData() {
-      if (!this.config) {
-        return;
-      }
-      if (!this.config.endpoint) {
+      if (!this.config || !this.config.endpoint) {
         return;
       }
       try {
@@ -192,13 +178,14 @@ export default {
       }
     },
     selectRow(item) {
-      let displayFirstValue = this.columnConfig?.find(
+      let columnConfig = this.config.columnConfig;
+      let displayFirstValue = columnConfig?.find(
         (col) => col.isDisplayGrid
       )?.fieldName;
       if (displayFirstValue) {
         this.inputValue = item[displayFirstValue];
       }
-      let displaySecondValue = this.columnConfig?.find(
+      let displaySecondValue = columnConfig?.find(
         (col) => col.isDisplaySecondGrid
       )?.fieldName;
       if (displaySecondValue) {
