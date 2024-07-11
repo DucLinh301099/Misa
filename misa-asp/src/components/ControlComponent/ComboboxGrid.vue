@@ -91,7 +91,6 @@ export default {
     },
   },
   data() {
-    debugger;
     return {
       inputValue: "",
       showTable: false,
